@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PREMIUM TECHS (AR) | بريميوم تكس</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-deep:#030814;
+  --bg-mid:#0a1a3a;
+  --cyan:#00e5ff;
+  --blue:#2f7bff;
+  --violet:#7b5cff;
+  --glow: 0 0 25px rgba(0,229,255,.55);
+  --card-bg: rgba(10,25,60,.45);
+  --border: rgba(0,229,255,.28);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html,body{height:100%;}
+
+body{
+  font-family:'Cairo',sans-serif;
+  background:var(--bg-deep);
+  color:#eaf6ff;
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:40px 18px 70px;
+}
+
+/* ====== الخلفية المتحركة ====== */
+.bg-layer{position:fixed;inset:0;z-index:-3;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(47,123,255,.35), transparent 45%),
+    radial-gradient(circle at 80% 20%, rgba(123,92,255,.30), transparent 45%),
+    radial-gradient(circle at 50% 90%, rgba(0,229,255,.22), transparent 50%),
+    linear-gradient(160deg,#030814 0%,#061229 45%,#030814 100%);
+  animation:bgShift 18s ease-in-out infinite alternate;
+}
+@keyframes bgShift{
+  0%{filter:hue-rotate(0deg) brightness(1);}
+  100%{filter:hue-rotate(28deg) brightness(1.18);}
+}
+
+/* شبكة تقنية */
+.grid-layer{position:fixed;inset:-50%;z-index:-2;
+  background-image:
+    linear-gradient(rgba(0,229,255,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,.07) 1px, transparent 1px);
+  background-size:55px 55px;
+  transform:perspective(600px) rotateX(58deg) translateY(0);
+  animation:gridMove 12s linear infinite;
+  mask-image:radial-gradient(ellipse at 50% 40%, #000 10%, transparent 72%);
+  -webkit-mask-image:radial-gradient(ellipse at 50% 40%, #000 10%, transparent 72%);
+}
+@keyframes gridMove{ to{ background-position:0 55px, 55px 0; } }
+
+/* الجسيمات */
+#particles{position:fixed;inset:0;z-index:-1;pointer-events:none;}
+
+/* ====== الهيدر ====== */
+.hero{
+  width:100%;
+  max-width:880px;
+  text-align:center;
+  position:relative;
+  animation:fadeUp .9s ease both;
+}
+
+.badge-top{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Orbitron',sans-serif;
+  font-size:.7rem;letter-spacing:3px;
+  color:var(--cyan);
+  border:1px solid var(--border);
+  background:rgba(0,229,255,.07);
+  padding:8px 18px;border-radius:50px;
+  backdrop-filter:blur(8px);
+  margin-bottom:26px;
+  box-shadow:0 0 20px rgba(0,229,255,.18) inset;
+}
+.dot-live{
+  width:8px;height:8px;border-radius:50%;
+  background:#00ff9d;
+  box-shadow:0 0 10px #00ff9d;
+  animation:pulse 1.4s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.7);}}
+
+/* إطار الصورة */
+.logo-wrap{
+  position:relative;
+  display:inline-block;
+  padding:14px;
+  border-radius:26px;
+  margin-bottom:30px;
+  background:linear-gradient(145deg, rgba(0,229,255,.14), rgba(123,92,255,.10));
+  border:1px solid var(--border);
+  backdrop-filter:blur(14px);
+  box-shadow:0 0 45px rgba(0,229,255,.30), 0 0 90px rgba(47,123,255,.18);
+  animation:floatLogo 5s ease-in-out infinite;
+}
+@keyframes floatLogo{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-12px);}
+}
+/* الحلقة الدوارة */
+.logo-wrap::before{
+  content:'';
+  position:absolute;inset:-3px;
+  border-radius:29px;
+  background:conic-gradient(from 0deg, transparent 0%, var(--cyan) 18%, transparent 36%, var(--violet) 58%, transparent 78%, var(--cyan) 100%);
+  z-index:-1;
+  filter:blur(9px);
+  opacity:.85;
+  animation:spinRing 6s linear infinite;
+}
+@keyframes spinRing{ to{ transform:rotate(360deg); } }
+
+.logo-wrap img{
+  display:block;
+  width:100%;
+  max-width:620px;
+  border-radius:16px;
+  background:#04122b;
+}
+
+/* العنوان */
+.site-title{
+  font-family:'Orbitron',sans-serif;
+  font-weight:900;
+  font-size:clamp(1.7rem,5.5vw,3rem);
+  letter-spacing:2px;
+  background:linear-gradient(90deg,#ffffff,#00e5ff,#7b5cff,#00e5ff,#ffffff);
+  background-size:300% auto;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  animation:shine 6s linear infinite;
+  margin-bottom:10px;
+}
+@keyframes shine{ to{ background-position:300% center; } }
+
+.site-sub{
+  font-size:clamp(.9rem,2.6vw,1.15rem);
+  color:#9fc4e8;
+  letter-spacing:1px;
+  margin-bottom:8px;
+}
+.team-line{
+  font-family:'Orbitron',sans-serif;
+  font-size:.85rem;
+  letter-spacing:4px;
+  color:var(--cyan);
+  text-shadow:0 0 14px rgba(0,229,255,.7);
+}
+
+/* ====== البطاقات ====== */
+.cards{
+  width:100%;
+  max-width:880px;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:18px;
+  margin-top:44px;
+}
+@media(min-width:720px){
+  .cards{grid-template-columns:1fr 1fr;}
+  .card.full{grid-column:1/-1;}
+}
+
+.card{
+  position:relative;
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:24px 22px;
+  backdrop-filter:blur(14px);
+  overflow:hidden;
+  transition:transform .35s cubic-bezier(.2,.8,.3,1), box-shadow .35s, border-color .35s;
+  animation:fadeUp .8s ease both;
+}
+.card:nth-child(1){animation-delay:.15s;}
+.card:nth-child(2){animation-delay:.28s;}
+.card:nth-child(3){animation-delay:.41s;}
+.card:nth-child(4){animation-delay:.54s;}
+.card:nth-child(5){animation-delay:.67s;}
+
+.card::after{
+  content:'';
+  position:absolute;top:0;right:-120%;
+  width:80%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(0,229,255,.13),transparent);
+  transform:skewX(-18deg);
+  transition:right .8s ease;
+}
+.card:hover::after{ right:130%; }
+
+.card:hover{
+  transform:translateY(-7px);
+  border-color:rgba(0,229,255,.65);
+  box-shadow:0 18px 50px rgba(0,0,0,.55), 0 0 35px rgba(0,229,255,.25);
+}
+
+.card-icon{
+  width:48px;height:48px;
+  display:grid;place-items:center;
+  border-radius:14px;
+  font-size:1.35rem;
+  background:linear-gradient(145deg, rgba(0,229,255,.20), rgba(123,92,255,.18));
+  border:1px solid var(--border);
+  margin-bottom:14px;
+  box-shadow:0 0 18px rgba(0,229,255,.20);
+}
+
+.card h3{
+  font-size:1.05rem;
+  font-weight:700;
+  line-height:1.7;
+  color:#ffffff;
+  margin-bottom:8px;
+}
+.card p{
+  font-size:.92rem;
+  line-height:1.9;
+  color:#a9c9e6;
+}
+
+.highlight{
+  color:var(--cyan);
+  font-weight:700;
+  text-shadow:0 0 12px rgba(0,229,255,.55);
+}
+
+/* ====== الأزرار ====== */
+.actions{
+  width:100%;
+  max-width:880px;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:16px;
+  margin-top:34px;
+}
+@media(min-width:640px){ .actions{grid-template-columns:1fr 1fr;} }
+
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:18px 22px;
+  border-radius:16px;
+  font-weight:700;
+  font-size:1rem;
+  text-decoration:none;
+  color:#eaf6ff;
+  border:1px solid var(--border);
+  background:rgba(8,22,50,.55);
+  backdrop-filter:blur(12px);
+  position:relative;
+  overflow:hidden;
+  transition:transform .3s, box-shadow .3s, background .3s;
+}
+.btn svg{width:22px;height:22px;fill:currentColor;flex-shrink:0;}
+
+.btn:hover{ transform:translateY(-4px); }
+
+.btn-channel{
+  background:linear-gradient(135deg, rgba(0,229,255,.22), rgba(47,123,255,.28));
+  border-color:rgba(0,229,255,.6);
+  box-shadow:0 0 28px rgba(0,229,255,.30);
+}
+.btn-channel:hover{ box-shadow:0 0 45px rgba(0,229,255,.60); }
+
+.btn-bot{
+  background:linear-gradient(135deg, rgba(123,92,255,.25), rgba(47,123,255,.22));
+  border-color:rgba(123,92,255,.6);
+  box-shadow:0 0 28px rgba(123,92,255,.30);
+}
+.btn-bot:hover{ box-shadow:0 0 45px rgba(123,92,255,.60); }
+
+.btn-en{
+  background:linear-gradient(135deg, rgba(0,255,157,.18), rgba(0,229,255,.18));
+  border-color:rgba(0,255,157,.5);
+  box-shadow:0 0 28px rgba(0,255,157,.22);
+}
+.btn-en:hover{ box-shadow:0 0 45px rgba(0,255,157,.55); }
+
+/* ====== الفوتر ====== */
+.footer{
+  margin-top:52px;
+  text-align:center;
+  font-size:.8rem;
+  color:#5c7fa5;
+  letter-spacing:1px;
+  animation:fadeUp 1s .9s ease both;
+}
+.footer span{color:var(--cyan);}
+
+/* ====== أنيميشن الظهور ====== */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(28px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* خطوط مضيئة على الجوانب */
+.scanline{
+  position:fixed;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(0,229,255,.55),transparent);
+  z-index:5;pointer-events:none;
+  animation:scan 7s linear infinite;
+  opacity:.6;
+}
+@keyframes scan{
+  0%{top:-5%;}
+  100%{top:105%;}
+}
+
+/* شريط علوي متحرك */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#00e5ff,#2f7bff,#7b5cff,#00e5ff);
+  background-size:300% 100%;
+  animation:shine 3s linear infinite;
+  z-index:10;
+  box-shadow:0 0 18px rgba(0,229,255,.8);
+}
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="grid-layer"></div>
+<canvas id="particles"></canvas>
+<div class="scanline"></div>
+<div class="topbar"></div>
+
+<!-- ======= الهيدر ======= -->
+<header class="hero">
+
+  <div class="badge-top">
+    <span class="dot-live"></span>
+    AI POWERED • ONLINE
+  </div>
+
+  <div class="logo-wrap">
+    <img src="IMG_20260927_183531_095.jpg" alt="PREMIUM TECHS (AR)">
+  </div>
+
+  <h1 class="site-title">PREMIUM TECHS (AR)</h1>
+  <p class="site-sub">العاب وتطبيقات مدفوعة ومعدّلة • شروحات • أخبار تقنية</p>
+  <p class="team-line">IA TEAM ★</p>
+
+</header>
+
+<!-- ======= المحتوى ======= -->
+<main class="cards">
+
+  <div class="card">
+    <div class="card-icon">🎮</div>
+    <h3>🔷 ألعاب وتطبيقات مدفوعة ومعدّلة أندرويد</h3>
+    <p>نوفّرها لك <span class="highlight">مجاناً</span> وبأحدث الإصدارات، مع تحديث مستمر لكل ما هو مميز.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-icon">📡</div>
+    <h3>🔷 شروحات — أخبار تقنية — حسابات ✅</h3>
+    <p>كل ما تحتاجه من شروحات مبسّطة، آخر الأخبار التقنية، وحسابات جاهزة بجودة عالية.</p>
+  </div>
+
+  <div class="card full">
+    <div class="card-icon">🤖</div>
+    <h3>بوت الطلبات : <span class="highlight">@IA_Assistantbot</span></h3>
+    <p>أرفق رابط التطبيق من <span class="highlight">جوجل بلاي</span> مع طلبك، وسيتم تجهيزه لك في أسرع وقت.</p>
+  </div>
+
+</main>
+
+<!-- ======= الأزرار ======= -->
+<div class="actions">
+
+  <a class="btn btn-channel" href="https://t.me/+ij7-LS669ahhMDFk" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+    قناة تليجرام الرسمية
+  </a>
+
+  <a class="btn btn-bot" href="https://t.me/IA_Assistantbot" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18 2.5 2.5 0 0 0 10 15.5 2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5z"/></svg>
+    بوت الطلبات
+  </a>
+
+  <a class="btn btn-en" href="https://t.me/premium_techs_EN" target="_blank" rel="noopener" style="grid-column:1/-1;">
+    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m6.93 6h-2.95a15.6 15.6 0 0 0-1.38-3.56A8 8 0 0 1 18.93 8M12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96M4.26 14A8 8 0 0 1 4 12c0-.69.1-1.36.26-2h3.38a17 17 0 0 0 0 4zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56A8 8 0 0 1 5.08 16m2.95-8H5.08a8 8 0 0 1 4.33-3.56A15.6 15.6 0 0 0 8.03 8M12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96M14.34 14H9.66a15 15 0 0 1 0-4h4.68a15 15 0 0 1 0 4m.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8 8 0 0 1-4.33 3.56M16.36 14a17 17 0 0 0 0-4h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2z"/></svg>
+    Our Other Channel in English — @premium_techs_EN
+  </a>
+
+</div>
+
+<!-- ======= الفوتر ======= -->
+<footer class="footer">
+  © <span>PREMIUM TECHS</span> — IA TEAM ★ جميع الحقوق محفوظة
+</footer>
+
+<!-- ======= سكربت الجسيمات ======= -->
+<script>
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let W, H, particles = [];
+const COUNT = window.innerWidth < 700 ? 45 : 90;
+
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+class Particle{
+  constructor(){ this.reset(true); }
+  reset(init){
+    this.x = Math.random() * W;
+    this.y = init ? Math.random() * H : H + 10;
+    this.r = Math.random() * 1.8 + 0.4;
+    this.speed = Math.random() * 0.5 + 0.15;
+    this.drift = (Math.random() - 0.5) * 0.35;
+    this.alpha = Math.random() * 0.6 + 0.15;
+    this.hue = Math.random() > 0.5 ? 188 : 255;
+  }
+  update(){
+    this.y -= this.speed;
+    this.x += this.drift;
+    if(this.y < -10 || this.x < -10 || this.x > W + 10) this.reset(false);
+  }
+  draw(){
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = `hsla(${this.hue}, 100%, 65%, ${this.alpha})`;
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = `hsla(${this.hue}, 100%, 60%, 0.9)`;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+}
+
+for(let i = 0; i < COUNT; i++) particles.push(new Particle());
+
+function connect(){
+  for(let i = 0; i < particles.length; i++){
+    for(let j = i + 1; j < particles.length; j++){
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if(d < 120){
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(0,229,255,${0.10 * (1 - d/120)})`;
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function loop(){
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => { p.update(); p.draw(); });
+  connect();
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+
+</body>
+</html>
