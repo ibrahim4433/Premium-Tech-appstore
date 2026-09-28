@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Tech</title>
+    <title>Premium Tech AppStore</title>
     <meta name="description" content="Download the latest premium apps and games directly to your device.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,11 +13,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Sci-Fi Geometric Background -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+        <div class="shape shape-5"></div>
+        <div class="shape shape-6"></div>
+    </div>
+
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
-                <i class="fa-brands fa-google-play"></i>
-                <span>Premium Tech</span>
+                <img src="assets/logo.jpg" alt="Premium Tech" class="brand-logo" onerror="this.src='https://ui-avatars.com/api/?name=PT&background=00a8e8&color=fff&rounded=true'">
+                <span class="brand-text">Premium Tech</span>
             </div>
             
             <div class="search-bar">
@@ -27,7 +37,7 @@
 
             <div class="nav-actions">
                 <button id="theme-toggle" class="icon-btn" title="تغيير المظهر">
-                    <i class="fa-solid fa-moon"></i>
+                    <i class="fa-solid fa-sun"></i>
                 </button>
                 <button id="lang-toggle" class="icon-btn" title="تغيير اللغة">
                     <i class="fa-solid fa-language"></i>
@@ -43,7 +53,9 @@
     </nav>
 
     <main>
-        <div id="loading" class="loading">جاري التحميل...</div>
+        <div id="loading" class="loading">
+            <i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحميل...
+        </div>
         <div id="apps-grid" class="apps-grid">
             <!-- App cards injected here -->
         </div>
