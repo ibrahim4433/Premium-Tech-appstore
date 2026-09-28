@@ -1,0 +1,56 @@
+name: Scrape Full Channel History
+
+on:
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  scrape-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install telethon
+
+      - name: Run MTProto Scraper
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python scripts/scrape_history.py
+
+      - name: Commit and Push full history
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add apps.json
+          git diff --cached --quiet && { echo "No changes to commit"; exit 0; }
+          git commit -m "Auto-scrape full channel history via MTProto"
+
+          for attempt in 1 2 3; do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              break
+            fi
+
+            if [ "${attempt}" -eq 3 ]; then
+              echo "Push failed after ${attempt} attempts."
+              exit 1
+            fi
+
+            echo "Push rejected, rebuilding commit on latest branch (${attempt}/3)..."
+            git fetch origin "${GITHUB_REF_NAME}"
+            git reset --hard "origin/${GITHUB_REF_NAME}"
+            python scripts/scrape_history.py
+            git add apps.json
+            git diff --cached --quiet && { echo "No changes to commit after refresh"; exit 0; }
+            git commit -m "Auto-scrape full channel history via MTProto"
+            sleep 2
+          done
