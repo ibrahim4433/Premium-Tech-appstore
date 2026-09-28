@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=2">
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -30,6 +30,15 @@
                 <img src="assets/logo.jpg" alt="Premium Tech" class="brand-logo" onerror="this.src='https://ui-avatars.com/api/?name=PT&background=00a8e8&color=fff&rounded=true'">
                 <span class="brand-text">Premium Tech</span>
             </div>
+
+            <!-- Desktop Tabs (Visible only on large screens, centered) -->
+            <div class="desktop-tabs">
+                <button class="desktop-tab active" data-view="home">الرئيسية</button>
+                <button class="desktop-tab" data-view="apps">التطبيقات</button>
+                <button class="desktop-tab" data-view="games">الألعاب</button>
+                <button class="desktop-tab" data-view="categories">التصنيفات</button>
+            </div>
+
             <div class="nav-actions">
                 <button id="theme-toggle" class="icon-btn" title="تغيير المظهر">
                     <i class="fa-solid fa-sun"></i>
@@ -46,37 +55,12 @@
                 <input type="text" id="search-input" placeholder="البحث عن تطبيقات وألعاب...">
             </div>
         </div>
-
-        <!-- Desktop Tabs (Visible only on large screens) -->
-        <div class="desktop-tabs">
-            <button class="desktop-tab active" data-view="home">الرئيسية</button>
-            <button class="desktop-tab" data-view="apps">التطبيقات</button>
-            <button class="desktop-tab" data-view="games">الألعاب</button>
-            <button class="desktop-tab" data-view="categories">التصنيفات</button>
-        </div>
     </header>
 
     <main class="main-content">
         <!-- Banners Section (Only visible on Home) -->
         <section id="banners-section" class="banners-slider">
-            <div class="banner banner-1">
-                <div class="banner-content">
-                    <h2 id="banner-title">اكتشف الجديد</h2>
-                    <p id="banner-desc">أفضل التطبيقات والألعاب المميزة</p>
-                </div>
-            </div>
-            <div class="banner banner-2">
-                <div class="banner-content">
-                    <h2>الأكثر تحميلاً</h2>
-                    <p>تطبيقات لا غنى عنها في هاتفك</p>
-                </div>
-            </div>
-            <div class="banner banner-3">
-                <div class="banner-content">
-                    <h2>ألعاب مميزة</h2>
-                    <p>عش المغامرة مع أفضل الألعاب</p>
-                </div>
-            </div>
+            <!-- Banners injected dynamically by JS -->
         </section>
 
         <!-- Categories Page (Tags) -->

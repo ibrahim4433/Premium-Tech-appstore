@@ -90,7 +90,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    padding: 0.5rem 1rem 1rem;
+    padding: 0.5rem 1rem 0.5rem;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
@@ -100,7 +100,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.5rem 0 1rem;
+    padding: 0.5rem 0 0.5rem;
+    gap: 1rem;
 }
 
 .nav-brand {
@@ -168,12 +169,9 @@ body {
 /* Desktop Tabs */
 .desktop-tabs {
     display: none; /* hidden on mobile */
-    max-width: 1200px;
-    margin: 1rem auto 0;
-    gap: 1rem;
+    gap: 0.5rem;
     overflow-x: auto;
     scrollbar-width: none;
-    padding-bottom: 0.5rem;
 }
 .desktop-tabs::-webkit-scrollbar { display: none; }
 .desktop-tab {
@@ -195,7 +193,7 @@ body {
 .desktop-tab.active::after {
     content: '';
     position: absolute;
-    bottom: -5px;
+    bottom: -2px;
     left: 0;
     right: 0;
     height: 3px;
@@ -207,6 +205,8 @@ body {
 @media (min-width: 768px) {
     .desktop-tabs {
         display: flex;
+        flex: 1;
+        justify-content: center;
     }
 }
 
@@ -257,11 +257,20 @@ body {
     align-items: flex-end;
     padding: 1.5rem;
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    text-decoration: none;
 }
-.banner-2 { background: linear-gradient(45deg, #4b134f, #c94b4b); }
-.banner-3 { background: linear-gradient(45deg, #134e5e, #71b280); }
-.banner-2::before { content: '\f3df'; color: rgba(255,255,255,0.05); }
-.banner-3::before { content: '\f11b'; color: rgba(255,255,255,0.05); }
+.banner-img {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+.banner-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0.2));
+    z-index: 1;
+}
 
 @media (min-width: 768px) {
     .banners-slider {
@@ -275,20 +284,18 @@ body {
     .banner h2 { font-size: 2.2rem; }
     .banner p { font-size: 1.2rem; }
 }
-.banner::before {
-    content: '\f135'; /* Rocket icon */
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;
+.banner i.bg-icon {
     position: absolute;
     right: -20px;
     top: -20px;
     font-size: 12rem;
     color: rgba(255,255,255,0.1);
     transform: rotate(-45deg);
+    z-index: 0;
 }
-.banner h2 { font-size: 1.6rem; font-weight: 800; color: white; text-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 1;}
-.banner p { color: rgba(255,255,255,0.9); font-weight: 600; z-index: 1;}
-.banner-content { z-index: 1; }
+.banner h2 { font-size: 1.6rem; font-weight: 800; color: white; text-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 2; position: relative;}
+.banner p { color: rgba(255,255,255,0.9); font-weight: 600; z-index: 2; position: relative;}
+.banner-content { z-index: 2; position: relative; }
 
 /* Apps Grid */
 .apps-grid {
