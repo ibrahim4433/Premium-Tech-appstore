@@ -1,70 +1,93 @@
 const WORKER_URL = "https://appstore-proxy.4445622.workers.dev"; // The worker URL from user
 
 let allApps = [];
-let currentCategory = 'All';
 let currentLanguage = 'ar';
-let currentTag = null;
-
-const TAG_LABELS = {
-    '#games': 'العاب',
-    '#Social': 'تواصل اجتماعي',
-    '#editing': 'مونتاج وتصميم',
-    '#vpn': 'كاسر بروكسي VPN',
-    '#Tools': 'ادوات',
-    '#watching': 'مشاهدة',
-    '#multimedia': 'ملتيميديا',
-    '#browser': 'متصفحات',
-    '#translate': 'ترجمة',
-    '#store': 'متاجر',
-    '#record': 'تسجيل',
-    '#tips': 'شروحات',
-    '#books': 'كتب',
-    '#wallpapers': 'خلفيات',
-    '#themes': 'ثيمات',
-    '#learning': 'تعليم',
-    '#religious': 'دينيات',
-    '#news': 'أخبار',
-    '#music': 'موسيقى',
-    '#keyboard': 'كيبوردات',
-    '#camera': 'كاميرا وفلاتر',
-    '#IA': 'ذكاء اصطناعي'
-};
+let activeView = 'home';
+let currentSearch = '';
 
 // DOM Elements
-const grid = document.getElementById('apps-grid');
+const views = {
+    home: document.getElementById('apps-page'), // Home reuses apps-page grid
+    apps: document.getElementById('apps-page'),
+    games: document.getElementById('apps-page'),
+    categories: document.getElementById('categories-page')
+};
+
+const appsGrid = document.getElementById('apps-grid');
+const categoriesGrid = document.getElementById('categories-grid');
 const loading = document.getElementById('loading');
 const searchInput = document.getElementById('search-input');
-const tabBtns = document.querySelectorAll('.tab-btn');
 const themeToggle = document.getElementById('theme-toggle');
 const langToggle = document.getElementById('lang-toggle');
+const navItems = document.querySelectorAll('.bottom-nav .nav-item');
+const pageTitle = document.getElementById('page-title');
+const bannersSection = document.getElementById('banners-section');
 const modal = document.getElementById('app-modal');
-const closeModal = document.querySelector('.close-modal');
 
-// Language Strings
+// Data Definitions
+const TAG_MAP = {
+    '#games': { ar: 'ألعاب', en: 'Games', icon: 'fa-gamepad' },
+    '#Social': { ar: 'تواصل اجتماعي', en: 'Social', icon: 'fa-users' },
+    '#editing': { ar: 'مونتاج وتصميم', en: 'Editing', icon: 'fa-wand-magic-sparkles' },
+    '#vpn': { ar: 'كاسر بروكسي VPN', en: 'VPN', icon: 'fa-shield-halved' },
+    '#Tools': { ar: 'أدوات', en: 'Tools', icon: 'fa-wrench' },
+    '#watching': { ar: 'مشاهدة', en: 'Watching', icon: 'fa-play' },
+    '#multimedia': { ar: 'ملتيميديا', en: 'Multimedia', icon: 'fa-photo-film' },
+    '#browser': { ar: 'متصفحات', en: 'Browsers', icon: 'fa-globe' },
+    '#translate': { ar: 'ترجمة', en: 'Translation', icon: 'fa-language' },
+    '#store': { ar: 'متاجر', en: 'Stores', icon: 'fa-store' },
+    '#record': { ar: 'تسجيل', en: 'Recording', icon: 'fa-microphone' },
+    '#tips': { ar: 'شروحات', en: 'Tips', icon: 'fa-lightbulb' },
+    '#books': { ar: 'كتب', en: 'Books', icon: 'fa-book' },
+    '#wallpapers': { ar: 'خلفيات', en: 'Wallpapers', icon: 'fa-image' },
+    '#themes': { ar: 'ثيمات', en: 'Themes', icon: 'fa-palette' },
+    '#learning': { ar: 'تعليم', en: 'Education', icon: 'fa-graduation-cap' },
+    '#religious': { ar: 'دينيات', en: 'Religious', icon: 'fa-mosque' },
+    '#news': { ar: 'أخبار', en: 'News', icon: 'fa-newspaper' },
+    '#music': { ar: 'موسيقى', en: 'Music', icon: 'fa-music' },
+    '#keyboard': { ar: 'كيبوردات', en: 'Keyboards', icon: 'fa-keyboard' },
+    '#camera': { ar: 'كاميرا وفلاتر', en: 'Camera', icon: 'fa-camera' },
+    '#IA': { ar: 'ذكاء اصطناعي', en: 'AI', icon: 'fa-robot' }
+};
+
 const strings = {
     ar: {
         search: "البحث عن تطبيقات وألعاب...",
-        all: "الكل",
-        apps: "التطبيقات",
-        games: "الألعاب",
         loading: "جاري التحميل...",
         empty: "لم يتم العثور على نتائج.",
-        download: "تنزيل",
+        download: "تثبيت",
         about: "حول هذا التطبيق",
         categoryApp: "تطبيق",
-        categoryGame: "لعبة"
+        categoryGame: "لعبة",
+        titleHome: "الأحدث",
+        titleApps: "التطبيقات",
+        titleGames: "الألعاب",
+        titleSearch: "نتائج البحث",
+        navHome: "الرئيسية",
+        navGames: "الألعاب",
+        navApps: "التطبيقات",
+        navCategories: "التصنيفات",
+        bannerTitle: "اكتشف الجديد",
+        bannerDesc: "أفضل التطبيقات والألعاب المميزة"
     },
     en: {
         search: "Search for apps & games...",
-        all: "All",
-        apps: "Apps",
-        games: "Games",
         loading: "Loading...",
         empty: "No results found.",
-        download: "Download",
+        download: "Install",
         about: "About this app",
         categoryApp: "App",
-        categoryGame: "Game"
+        categoryGame: "Game",
+        titleHome: "Latest",
+        titleApps: "Apps",
+        titleGames: "Games",
+        titleSearch: "Search Results",
+        navHome: "Home",
+        navGames: "Games",
+        navApps: "Apps",
+        navCategories: "Categories",
+        bannerTitle: "Discover",
+        bannerDesc: "The best premium apps & games"
     }
 };
 
@@ -75,11 +98,15 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
 });
 
-// Initialization
 function initTheme() {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateThemeIcon(savedTheme);
+}
+
+function updateThemeIcon(theme) {
+    const icon = themeToggle.querySelector('i');
+    icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
 }
 
 function initLanguage() {
@@ -87,162 +114,184 @@ function initLanguage() {
     setLanguage(savedLang);
 }
 
-// Event Listeners
-function setupEventListeners() {
-    // Search
-    searchInput.addEventListener('input', (e) => {
-        renderApps(e.target.value);
-    });
-
-    // Tabs
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            tabBtns.forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            currentCategory = e.target.getAttribute('data-category');
-            renderApps(searchInput.value);
-        });
-    });
-
-    // Theme Toggle
-    themeToggle.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
-    });
-
-    // Language Toggle
-    langToggle.addEventListener('click', () => {
-        currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
-        localStorage.setItem('lang', currentLanguage);
-        setLanguage(currentLanguage);
-    });
-
-    // Modal Close
-    closeModal.addEventListener('click', () => {
-        modal.classList.remove('active');
-    });
-    
-    // Close modal when clicking outside content
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.classList.remove('active');
-        }
-    });
-}
-
-function updateThemeIcon(theme) {
-    const icon = themeToggle.querySelector('i');
-    if (theme === 'dark') {
-        icon.className = 'fa-solid fa-sun';
-    } else {
-        icon.className = 'fa-solid fa-moon';
-    }
-}
-
 function setLanguage(lang) {
     currentLanguage = lang;
     document.documentElement.setAttribute('lang', lang);
     document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
     
-    // Update Text
+    // Update Text UI
     searchInput.placeholder = strings[lang].search;
-    loading.textContent = strings[lang].loading;
-    
-    document.querySelector('[data-category="All"]').textContent = strings[lang].all;
-    document.querySelector('[data-category="Apps"]').textContent = strings[lang].apps;
-    document.querySelector('[data-category="Games"]').textContent = strings[lang].games;
-    
-    document.querySelector('.modal-body h3').textContent = strings[lang].about;
+    document.getElementById('loading-text').textContent = strings[lang].loading;
+    document.getElementById('about-title').textContent = strings[lang].about;
     document.getElementById('download-text').textContent = strings[lang].download;
+    document.getElementById('banner-title').textContent = strings[lang].bannerTitle;
+    document.getElementById('banner-desc').textContent = strings[lang].bannerDesc;
+    
+    // Update Nav Labels
+    document.querySelector('[data-view="home"] .nav-label').textContent = strings[lang].navHome;
+    document.querySelector('[data-view="games"] .nav-label').textContent = strings[lang].navGames;
+    document.querySelector('[data-view="apps"] .nav-label').textContent = strings[lang].navApps;
+    document.querySelector('[data-view="categories"] .nav-label').textContent = strings[lang].navCategories;
 
-    // Re-render to update categories and tags
+    // Refresh UI
+    updateViewTitle();
     if (allApps.length > 0) {
-        renderTags();
-        renderApps(searchInput.value);
+        renderCategories();
+        renderApps();
     }
 }
 
-// Data Fetching and Rendering
+function setupEventListeners() {
+    searchInput.addEventListener('input', (e) => {
+        currentSearch = e.target.value.trim();
+        if (currentSearch && activeView === 'categories') {
+            switchView('home'); // Automatically switch to a grid view to show results
+        }
+        renderApps();
+    });
+
+    navItems.forEach(btn => {
+        btn.addEventListener('click', () => {
+            switchView(btn.getAttribute('data-view'));
+        });
+    });
+
+    themeToggle.addEventListener('click', () => {
+        const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+    });
+
+    langToggle.addEventListener('click', () => {
+        setLanguage(currentLanguage === 'ar' ? 'en' : 'ar');
+        localStorage.setItem('lang', currentLanguage);
+    });
+
+    document.querySelector('.close-modal').addEventListener('click', () => modal.classList.remove('active'));
+    window.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+}
+
+function switchView(viewName) {
+    activeView = viewName;
+    
+    // Update active nav button
+    navItems.forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
+
+    // Hide all pages
+    Object.values(views).forEach(page => {
+        if(page) page.classList.add('hidden');
+    });
+
+    // Handle Search Override
+    if (currentSearch !== '') {
+        currentSearch = '';
+        searchInput.value = '';
+    }
+
+    // Show selected page
+    if (viewName === 'categories') {
+        bannersSection.style.display = 'none';
+        views.categories.classList.remove('hidden');
+    } else {
+        bannersSection.style.display = viewName === 'home' ? 'flex' : 'none';
+        views.apps.classList.remove('hidden');
+        updateViewTitle();
+        renderApps();
+    }
+}
+
+function updateViewTitle(customTitle = null) {
+    if (customTitle) {
+        pageTitle.textContent = customTitle;
+        return;
+    }
+    if (currentSearch) {
+        pageTitle.textContent = strings[currentLanguage].titleSearch;
+    } else if (activeView === 'home') {
+        pageTitle.textContent = strings[currentLanguage].titleHome;
+    } else if (activeView === 'apps') {
+        pageTitle.textContent = strings[currentLanguage].titleApps;
+    } else if (activeView === 'games') {
+        pageTitle.textContent = strings[currentLanguage].titleGames;
+    }
+}
+
 async function fetchApps() {
     try {
         const response = await fetch('apps.json');
         if (!response.ok) throw new Error('Failed to load apps');
-        
         allApps = await response.json();
-        
-        // Fix old data without categories
-        allApps.forEach(app => {
-            if(!app.category) app.category = 'Apps';
-        });
-
+        allApps.forEach(app => { if(!app.category) app.category = 'Apps'; });
         loading.style.display = 'none';
-        renderTags();
+        renderCategories();
         renderApps();
     } catch (error) {
         console.error(error);
-        loading.textContent = 'Error loading store data.';
+        document.getElementById('loading-text').textContent = 'Error loading store data.';
     }
 }
 
-function renderTags() {
-    const tagsFilter = document.getElementById('tags-filter');
-    if (!tagsFilter) return;
-    
-    tagsFilter.innerHTML = '';
-    
-    // Get all unique tags from apps
-    const allTags = new Set();
-    allApps.forEach(app => {
-        if(app.tags) {
-            app.tags.forEach(t => allTags.add(t));
-        }
-    });
+function renderCategories() {
+    categoriesGrid.innerHTML = '';
+    const uniqueTags = new Set();
+    allApps.forEach(app => { if(app.tags) app.tags.forEach(t => uniqueTags.add(t)); });
 
-    if(allTags.size === 0) return;
+    if(uniqueTags.size === 0) return;
 
-    allTags.forEach(tag => {
-        const btn = document.createElement('button');
-        btn.className = `tag-btn ${currentTag === tag ? 'active' : ''}`;
+    uniqueTags.forEach(tag => {
+        const card = document.createElement('div');
+        card.className = 'category-card';
         
-        if (currentLanguage === 'ar' && TAG_LABELS[tag]) {
-            btn.textContent = TAG_LABELS[tag];
-        } else {
-            // Capitalize first letter if English
-            let t = tag.replace('#', '');
-            btn.textContent = t.charAt(0).toUpperCase() + t.slice(1);
-        }
-        
-        btn.onclick = () => {
-            if(currentTag === tag) {
-                currentTag = null;
-                btn.classList.remove('active');
-            } else {
-                currentTag = tag;
-                document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-            }
-            renderApps(searchInput.value);
+        const tagData = TAG_MAP[tag] || { 
+            ar: tag.replace('#', ''), 
+            en: tag.replace('#', ''), 
+            icon: 'fa-hashtag' 
         };
-        tagsFilter.appendChild(btn);
+
+        const label = currentLanguage === 'ar' ? tagData.ar : tagData.en;
+        
+        card.innerHTML = `
+            <i class="fa-solid ${tagData.icon}"></i>
+            <span>${label}</span>
+        `;
+        
+        card.onclick = () => {
+            // Switch to apps view filtered by this tag
+            switchView('home'); // reuse apps grid
+            currentSearch = tag; // Hack: use search query for tag filtering for simplicity
+            searchInput.value = ''; // Don't show tag in search bar
+            updateViewTitle(label);
+            renderApps();
+        };
+        categoriesGrid.appendChild(card);
     });
 }
 
-function renderApps(searchQuery = '') {
-    grid.innerHTML = '';
+function renderApps() {
+    appsGrid.innerHTML = '';
     
     const filteredApps = allApps.filter(app => {
-        const matchesCategory = currentCategory === 'All' || app.category === currentCategory;
-        const matchesTag = currentTag === null || (app.tags && app.tags.includes(currentTag));
-        const matchesSearch = app.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                              app.description.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesCategory && matchesTag && matchesSearch;
+        // Handle explicit Tag filtering from Category click
+        if (currentSearch.startsWith('#')) {
+            return app.tags && app.tags.includes(currentSearch);
+        }
+
+        // View Filtering
+        if (activeView === 'apps' && app.category !== 'Apps') return false;
+        if (activeView === 'games' && app.category !== 'Games') return false;
+        
+        // Text Search
+        if (currentSearch) {
+            const term = currentSearch.toLowerCase();
+            return app.name.toLowerCase().includes(term) || app.description.toLowerCase().includes(term);
+        }
+        return true;
     });
 
     if (filteredApps.length === 0) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 2rem;">${strings[currentLanguage].empty}</div>`;
+        appsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 3rem;">${strings[currentLanguage].empty}</div>`;
         return;
     }
 
@@ -251,14 +300,12 @@ function renderApps(searchQuery = '') {
         card.className = 'app-card';
         card.onclick = () => openAppDetails(app);
 
-        let imgHTML = '';
-        if (app.icon_id) {
-            imgHTML = `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="card-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'card-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`;
-        } else {
-            imgHTML = `<div class="card-icon fallback"><i class="fa-brands fa-android"></i></div>`;
-        }
+        let imgHTML = app.icon_id 
+            ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="card-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'card-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
+            : `<div class="card-icon fallback"><i class="fa-brands fa-android"></i></div>`;
 
         const categoryText = app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp;
+        const downloadLink = `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
 
         card.innerHTML = `
             ${imgHTML}
@@ -266,42 +313,35 @@ function renderApps(searchQuery = '') {
                 <div class="card-title">${app.name}</div>
                 <div class="card-category">${categoryText}</div>
             </div>
+            <!-- Prevent modal open when clicking download -->
+            <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+                <i class="fa-solid fa-download"></i> ${strings[currentLanguage].download}
+            </a>
         `;
-        grid.appendChild(card);
+        appsGrid.appendChild(card);
     });
 }
 
-function formatBytes(bytes, decimals = 2) {
+function formatBytes(bytes) {
     if (!+bytes) return '0 B';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+    const k = 1024, i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${['B', 'KB', 'MB', 'GB'][i]}`;
 }
 
-// Modal Logic
 function openAppDetails(app) {
-    const modalTitle = document.getElementById('modal-title');
-    const modalCategory = document.getElementById('modal-category');
-    const modalSize = document.getElementById('modal-size');
-    const modalDesc = document.getElementById('modal-description');
+    document.getElementById('modal-title').textContent = app.name;
+    document.getElementById('modal-category').textContent = app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp;
+    document.getElementById('modal-size').textContent = formatBytes(app.size);
+    document.getElementById('modal-description').textContent = app.description;
+    
+    document.getElementById('modal-download').href = `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
+
     const modalIcon = document.getElementById('modal-icon');
-    const modalDownload = document.getElementById('modal-download');
-
-    modalTitle.textContent = app.name;
-    modalCategory.textContent = app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp;
-    modalSize.textContent = formatBytes(app.size);
-    modalDesc.textContent = app.description;
-
-    // Use filename param for Cloudflare worker download
-    modalDownload.href = `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
-
     if (app.icon_id) {
         modalIcon.src = `${WORKER_URL}/?id=${app.icon_id}&action=image`;
         modalIcon.style.display = 'block';
     } else {
-        modalIcon.style.display = 'none'; // Could replace with fallback icon in modal too
+        modalIcon.style.display = 'none';
     }
 
     modal.classList.add('active');
