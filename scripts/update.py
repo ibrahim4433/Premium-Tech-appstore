@@ -46,7 +46,7 @@ def save_pending(pending):
         json.dump(pending, f, ensure_ascii=False)
 
 def extract_text_info(text):
-    app_data = {'name': 'Unknown App', 'description': '', 'version': ''}
+    app_data = {'name': 'Unknown App', 'description': '', 'version': '', 'category': 'Apps'}
     lines = text.split('\n')
     desc_lines = []
     in_desc = False
@@ -56,8 +56,10 @@ def extract_text_info(text):
         
         if '🧩 تطبيق' in line_stripped:
             app_data['name'] = line_stripped.split('🧩 تطبيق')[-1].strip()
+            app_data['category'] = 'Apps'
         elif '🎮 لعبة' in line_stripped:
             app_data['name'] = line_stripped.split('🎮 لعبة')[-1].strip()
+            app_data['category'] = 'Games'
             
         elif '🧊 الإصدار' in line_stripped:
             app_data['version'] = line_stripped.split(':')[-1].strip() if ':' in line_stripped else line_stripped.replace('🧊 الإصدار', '').strip()

@@ -31,8 +31,10 @@ export default {
       const newHeaders = new Headers(fileRes.headers);
       newHeaders.set("Access-Control-Allow-Origin", "*");
 
+      const filename = url.searchParams.get("filename") || "download.apk";
+
       if (action === "download") {
-        newHeaders.set("Content-Disposition", `attachment`);
+        newHeaders.set("Content-Disposition", `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`);
       } else if (action === "image") {
         newHeaders.set("Cache-Control", "public, max-age=86400"); // Cache images for 24h
       }
