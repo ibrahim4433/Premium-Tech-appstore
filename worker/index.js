@@ -14,6 +14,16 @@ export default {
     }
 
     try {
+      // Check Cache first
+      const cache = caches.default;
+      const cacheKey = new Request(url.toString(), request);
+      if (action === "image") {
+        const cachedResponse = await cache.match(cacheKey);
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+      }
+
       // 1. Ask Telegram for the file path
       const getFileRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getFile?file_id=${fileId}`);
       const fileData = await getFileRes.json();
@@ -36,13 +46,26 @@ export default {
       if (action === "download") {
         newHeaders.set("Content-Disposition", `attachment; filename*=UTF-8''${encodeURIComponent(filename)}`);
       } else if (action === "image") {
-        newHeaders.set("Cache-Control", "public, max-age=86400"); // Cache images for 24h
+        newHeaders.set("Cache-Control", "public, s-maxage=86400, max-age=86400"); // Cache images for 24h
       }
 
-      return new Response(fileRes.body, {
+      const response = new Response(fileRes.body, {
         status: fileRes.status,
         headers: newHeaders
       });
+
+      // Save to Cloudflare Cache if it's an image
+      if (action === "image" && fileRes.status === 200) {
+        // Cloudflare requires we clone the response before putting it in cache
+        // wait until the cache is written (using ctx.waitUntil if available, but in module syntax we can just await)
+        // actually standard worker syntax allows cache.put without blocking
+        env.waitUntil && env.waitUntil(cache.put(cacheKey, response.clone()));
+        if (!env.waitUntil) {
+             await cache.put(cacheKey, response.clone());
+        }
+      }
+
+      return response;
 
     } catch (e) {
       return new Response("Error processing request: " + e.message, { status: 500 });
