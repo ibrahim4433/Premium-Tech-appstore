@@ -1,27 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Tech AppStore</title>
+    <title>Premium Tech</title>
     <meta name="description" content="Download the latest premium apps and games directly to your device.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header>
-        <h1>Premium Tech</h1>
-        <p>Your source for exclusive apps and games</p>
-    </header>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fa-brands fa-google-play"></i>
+                <span>Premium Tech</span>
+            </div>
+            
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="search-input" placeholder="البحث عن تطبيقات وألعاب...">
+            </div>
+
+            <div class="nav-actions">
+                <button id="theme-toggle" class="icon-btn" title="تغيير المظهر">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button id="lang-toggle" class="icon-btn" title="تغيير اللغة">
+                    <i class="fa-solid fa-language"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-category="All">الكل</button>
+            <button class="tab-btn" data-category="Apps">التطبيقات</button>
+            <button class="tab-btn" data-category="Games">الألعاب</button>
+        </div>
+    </nav>
 
     <main>
-        <div id="loading" class="loading">Loading apps...</div>
+        <div id="loading" class="loading">جاري التحميل...</div>
         <div id="apps-grid" class="apps-grid">
-            <!-- App cards will be injected here by app.js -->
+            <!-- App cards injected here -->
         </div>
     </main>
+
+    <!-- App Details Modal -->
+    <div id="app-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div class="modal-header">
+                <img id="modal-icon" class="modal-app-icon" src="" alt="App Icon">
+                <div class="modal-title-group">
+                    <h2 id="modal-title">App Title</h2>
+                    <p id="modal-category" class="app-category">Apps</p>
+                    <p id="modal-size" class="app-size">0 MB</p>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <a id="modal-download" href="#" class="download-btn btn-large" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-solid fa-download"></i> <span id="download-text">تنزيل</span>
+                </a>
+            </div>
+
+            <div class="modal-body">
+                <h3>حول هذا التطبيق</h3>
+                <p id="modal-description" class="app-description"></p>
+            </div>
+        </div>
+    </div>
 
     <script src="js/app.js"></script>
 </body>
