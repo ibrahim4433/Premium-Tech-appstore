@@ -8,23 +8,23 @@ const WORKER_URL = "https://appstore-proxy.4445622.workers.dev"; // The worker U
 // Icons use FontAwesome class names (e.g., 'fa-rocket', 'fa-fire', 'fa-gamepad').
 const STORE_BANNERS = [
     {
-        title: { ar: "اكتشف الجديد", en: "Discover New" },
-        subtitle: { ar: "أفضل التطبيقات والألعاب المميزة", en: "The best premium apps & games" },
-        image: "", 
+        title: { ar: "قناة Premium Tech", en: "Premium Tech Channel" },
+        subtitle: { ar: "أفضل التطبيقات والألعاب من تليجرام مباشرة", en: "The best premium apps & games directly from Telegram" },
+        image: "assets/banner1.jpg", 
         background: "linear-gradient(45deg, #024773, #11a6d4)",
         icon: "fa-rocket"
     },
     {
-        title: { ar: "الأكثر تحميلاً", en: "Most Downloaded" },
-        subtitle: { ar: "تطبيقات لا غنى عنها في هاتفك", en: "Must-have apps for your phone" },
-        image: "", 
+        title: { ar: "ألعاب عالم مفتوح", en: "Open World Games" },
+        subtitle: { ar: "عش المغامرة مع أفضل ألعاب الأكشن والإثارة", en: "Live the adventure with the best action games" },
+        image: "assets/banner2.jpg", 
         background: "linear-gradient(45deg, #4b134f, #c94b4b)",
         icon: "fa-fire"
     },
     {
-        title: { ar: "ألعاب مميزة", en: "Featured Games" },
-        subtitle: { ar: "عش المغامرة مع أفضل الألعاب", en: "Live the adventure with best games" },
-        image: "", 
+        title: { ar: "تطبيقات المونتاج", en: "Video Editing Apps" },
+        subtitle: { ar: "أطلق العنان لإبداعك مع أفضل برامج التصميم", en: "Unleash your creativity with the best editing apps" },
+        image: "assets/banner3.jpg", 
         background: "linear-gradient(45deg, #134e5e, #71b280)",
         icon: "fa-gamepad"
     }
