@@ -46,7 +46,11 @@ def save_pending(pending):
         json.dump(pending, f, ensure_ascii=False)
 
 def extract_text_info(text):
-    app_data = {'name': 'Unknown App', 'description': '', 'version': '', 'category': 'Apps'}
+    app_data = {'name': 'Unknown App', 'description': '', 'version': '', 'category': 'Apps', 'tags': []}
+    
+    # Extract tags (e.g., #games, #Social)
+    app_data['tags'] = list(set(re.findall(r'#\w+', text)))
+    
     lines = text.split('\n')
     desc_lines = []
     in_desc = False
@@ -63,27 +67,25 @@ def extract_text_info(text):
             
         elif '🧊 الإصدار' in line_stripped:
             app_data['version'] = line_stripped.split(':')[-1].strip() if ':' in line_stripped else line_stripped.replace('🧊 الإصدار', '').strip()
-            in_desc = False
+            if in_desc:
+                desc_lines.append(line_stripped)
             
         elif 'الوصف' in line_stripped and ('⚡' in line_stripped or '⚡️' in line_stripped):
             in_desc = True
-            # Check if description is on the same line or next line
             if ':' in line_stripped:
                 desc_text = line_stripped.split(':', 1)[-1].strip()
                 if desc_text:
                     desc_lines.append(desc_text)
                     
-        elif '🏷' in line_stripped or '༺' in line_stripped or line_stripped.startswith('للتنزيل') or 'تم التعديل' in line_stripped:
+        elif '༺' in line_stripped or line_stripped.startswith('للتنزيل') or 'تم التعديل' in line_stripped:
             in_desc = False
             
         elif in_desc:
-            if line_stripped:
+            # Don't add lines that are just tags
+            if not line_stripped.startswith('#'):
                 desc_lines.append(line_stripped)
             
     app_data['description'] = '\n'.join(desc_lines).strip()
-    if app_data['version']:
-        app_data['description'] += f"\n\nالإصدار: {app_data['version']}"
-    
     return app_data
 
 def main():

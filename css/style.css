@@ -241,6 +241,46 @@ body {
     box-shadow: 0 -2px 10px rgba(0, 168, 232, 0.8);
 }
 
+/* Tags Filter */
+.tags-container {
+    max-width: 1200px;
+    margin: 1rem auto 0;
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding-bottom: 0.75rem;
+    scrollbar-width: none;
+}
+
+.tags-container::-webkit-scrollbar {
+    display: none;
+}
+
+.tag-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.3s;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+:root[data-theme="light"] .tag-btn {
+    background: rgba(17, 166, 212, 0.1);
+}
+
+.tag-btn:hover, .tag-btn.active {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 10px rgba(0, 168, 232, 0.4);
+}
+
 /* Main Grid */
 main {
     max-width: 1200px;
