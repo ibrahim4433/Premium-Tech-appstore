@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Premium Tech AppStore</title>
     <meta name="description" content="Download the latest premium apps and games directly to your device.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,18 +23,13 @@
         <div class="shape shape-6"></div>
     </div>
 
-    <nav class="navbar">
+    <!-- Top Header -->
+    <header class="top-header">
         <div class="nav-container">
             <div class="nav-brand">
                 <img src="assets/logo.jpg" alt="Premium Tech" class="brand-logo" onerror="this.src='https://ui-avatars.com/api/?name=PT&background=00a8e8&color=fff&rounded=true'">
                 <span class="brand-text">Premium Tech</span>
             </div>
-            
-            <div class="search-bar">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="search-input" placeholder="البحث عن تطبيقات وألعاب...">
-            </div>
-
             <div class="nav-actions">
                 <button id="theme-toggle" class="icon-btn" title="تغيير المظهر">
                     <i class="fa-solid fa-sun"></i>
@@ -45,25 +40,64 @@
             </div>
         </div>
         
-        <div class="tabs">
-            <button class="tab-btn active" data-category="All">الكل</button>
-            <button class="tab-btn" data-category="Apps">التطبيقات</button>
-            <button class="tab-btn" data-category="Games">الألعاب</button>
+        <div class="search-container">
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="search-input" placeholder="البحث عن تطبيقات وألعاب...">
+            </div>
         </div>
-        
-        <div class="tags-container" id="tags-filter">
-            <!-- Dynamic tags injected here -->
-        </div>
-    </nav>
+    </header>
 
-    <main>
-        <div id="loading" class="loading">
-            <i class="fa-solid fa-circle-notch fa-spin"></i> جاري التحميل...
-        </div>
-        <div id="apps-grid" class="apps-grid">
-            <!-- App cards injected here -->
-        </div>
+    <main class="main-content">
+        <!-- Banners Section (Only visible on Home) -->
+        <section id="banners-section" class="banners-slider">
+            <div class="banner">
+                <div class="banner-content">
+                    <h2 id="banner-title">اكتشف الجديد</h2>
+                    <p id="banner-desc">أفضل التطبيقات والألعاب المميزة</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories Page (Tags) -->
+        <section id="categories-page" class="page hidden">
+            <h2 class="section-title" id="categories-title">التصنيفات</h2>
+            <div id="categories-grid" class="categories-grid">
+                <!-- Category cards injected here -->
+            </div>
+        </section>
+
+        <!-- Main Apps Grid -->
+        <section id="apps-page" class="page">
+            <h2 id="page-title" class="section-title">الأحدث</h2>
+            <div id="loading" class="loading">
+                <i class="fa-solid fa-circle-notch fa-spin"></i> <span id="loading-text">جاري التحميل...</span>
+            </div>
+            <div id="apps-grid" class="apps-grid">
+                <!-- App cards injected here -->
+            </div>
+        </section>
     </main>
+
+    <!-- Bottom Navigation Bar for Mobile UI -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-view="home">
+            <i class="fa-solid fa-house"></i>
+            <span class="nav-label">الرئيسية</span>
+        </button>
+        <button class="nav-item" data-view="games">
+            <i class="fa-solid fa-gamepad"></i>
+            <span class="nav-label">الألعاب</span>
+        </button>
+        <button class="nav-item" data-view="apps">
+            <i class="fa-solid fa-table-cells-large"></i>
+            <span class="nav-label">التطبيقات</span>
+        </button>
+        <button class="nav-item" data-view="categories">
+            <i class="fa-solid fa-layer-group"></i>
+            <span class="nav-label">التصنيفات</span>
+        </button>
+    </nav>
 
     <!-- App Details Modal -->
     <div id="app-modal" class="modal">
@@ -81,12 +115,12 @@
             
             <div class="modal-actions">
                 <a id="modal-download" href="#" class="download-btn btn-large" target="_blank" rel="noopener noreferrer">
-                    <i class="fa-solid fa-download"></i> <span id="download-text">تنزيل</span>
+                    <i class="fa-solid fa-download"></i> <span id="download-text">تثبيت</span>
                 </a>
             </div>
 
             <div class="modal-body">
-                <h3>حول هذا التطبيق</h3>
+                <h3 id="about-title">حول هذا التطبيق</h3>
                 <p id="modal-description" class="app-description"></p>
             </div>
         </div>
