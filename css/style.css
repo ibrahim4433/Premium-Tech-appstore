@@ -129,6 +129,9 @@ main {
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    white-space: pre-wrap;
+    direction: rtl;
+    text-align: right;
 }
 
 .download-btn {

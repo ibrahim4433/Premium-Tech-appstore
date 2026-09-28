@@ -1,10 +1,12 @@
 import os
 import json
 import requests
+import re
 
 BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
 APPS_FILE = 'apps.json'
 OFFSET_FILE = 'offset.txt'
+PENDING_FILE = 'pending_app.json'
 
 def get_offset():
     if os.path.exists(OFFSET_FILE):
@@ -27,43 +29,59 @@ def load_apps():
     return []
 
 def save_apps(apps):
-    with open(APPS_FILE, 'w') as f:
-        json.dump(apps, f, indent=4)
+    with open(APPS_FILE, 'w', encoding='utf-8') as f:
+        json.dump(apps, f, indent=4, ensure_ascii=False)
 
-def fetch_updates(offset):
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates"
-    params = {'offset': offset, 'timeout': 10, 'allowed_updates': ['channel_post']}
-    response = requests.get(url, params=params)
-    if response.status_code == 200:
-        return response.json().get('result', [])
-    return []
+def load_pending():
+    if os.path.exists(PENDING_FILE):
+        try:
+            with open(PENDING_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            return {}
+    return {}
 
-def extract_app_info(message):
-    app_data = {}
+def save_pending(pending):
+    with open(PENDING_FILE, 'w', encoding='utf-8') as f:
+        json.dump(pending, f, ensure_ascii=False)
+
+def extract_text_info(text):
+    app_data = {'name': 'Unknown App', 'description': '', 'version': ''}
+    lines = text.split('\n')
+    desc_lines = []
+    in_desc = False
     
-    if 'document' in message:
-        app_data['file_id'] = message['document']['file_id']
-        app_data['file_name'] = message['document'].get('file_name', 'Download')
-        app_data['size'] = message['document'].get('file_size', 0)
-    else:
-        return None # Only care about posts with files (APKs/ZIPs)
+    for line in lines:
+        line_stripped = line.strip()
         
-    text = message.get('caption') or message.get('text', '')
-    lines = [line.strip() for line in text.split('\n') if line.strip()]
+        if '🧩 تطبيق' in line_stripped:
+            app_data['name'] = line_stripped.split('🧩 تطبيق')[-1].strip()
+        elif '🎮 لعبة' in line_stripped:
+            app_data['name'] = line_stripped.split('🎮 لعبة')[-1].strip()
+            
+        elif '🧊 الإصدار' in line_stripped:
+            app_data['version'] = line_stripped.split(':')[-1].strip() if ':' in line_stripped else line_stripped.replace('🧊 الإصدار', '').strip()
+            in_desc = False
+            
+        elif 'الوصف' in line_stripped and ('⚡' in line_stripped or '⚡️' in line_stripped):
+            in_desc = True
+            # Check if description is on the same line or next line
+            if ':' in line_stripped:
+                desc_text = line_stripped.split(':', 1)[-1].strip()
+                if desc_text:
+                    desc_lines.append(desc_text)
+                    
+        elif '🏷' in line_stripped or '༺' in line_stripped or line_stripped.startswith('للتنزيل') or 'تم التعديل' in line_stripped:
+            in_desc = False
+            
+        elif in_desc:
+            if line_stripped:
+                desc_lines.append(line_stripped)
+            
+    app_data['description'] = '\n'.join(desc_lines).strip()
+    if app_data['version']:
+        app_data['description'] += f"\n\nالإصدار: {app_data['version']}"
     
-    if lines:
-        app_data['name'] = lines[0]
-        app_data['description'] = '\n'.join(lines[1:]) if len(lines) > 1 else 'No description provided.'
-    else:
-        app_data['name'] = app_data.get('file_name', 'Unknown App')
-        app_data['description'] = 'No description provided.'
-
-    # Handle image (thumbnail)
-    if 'document' in message and 'thumbnail' in message['document']:
-         app_data['icon_id'] = message['document']['thumbnail']['file_id']
-    elif 'photo' in message:
-         app_data['icon_id'] = message['photo'][-1]['file_id']
-         
     return app_data
 
 def main():
@@ -73,9 +91,13 @@ def main():
 
     offset = get_offset()
     apps = load_apps()
+    current_app = load_pending()
     
     print(f"Fetching updates from offset: {offset}")
-    updates = fetch_updates(offset)
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates"
+    params = {'offset': offset, 'timeout': 10, 'allowed_updates': ['channel_post']}
+    response = requests.get(url, params=params)
+    updates = response.json().get('result', []) if response.status_code == 200 else []
     
     highest_offset = offset
     added_count = 0
@@ -88,25 +110,38 @@ def main():
         if not message:
             continue
             
-        app_info = extract_app_info(message)
-        if app_info:
-            app_info['id'] = str(message['message_id'])
-            
-            # Remove older version of the same app post if we are editing
-            apps = [a for a in apps if a.get('id') != app_info['id']]
-            
-            # Insert at the beginning (newest first)
-            apps.insert(0, app_info) 
-            added_count += 1
-            print(f"Added/Updated app: {app_info['name']}")
+        # Check for Message 1: Photo + Caption (App Info)
+        if 'photo' in message and ('caption' in message or 'text' in message):
+            text = message.get('caption', message.get('text', ''))
+            if '🧩 تطبيق' in text or '🎮 لعبة' in text:
+                current_app = extract_text_info(text)
+                current_app['icon_id'] = message['photo'][-1]['file_id']
+                save_pending(current_app)
+                print(f"Found info for: {current_app['name']}, waiting for APK...")
+                
+        # Check for Message 2: Document (APK)
+        elif 'document' in message:
+            if current_app and 'name' in current_app:
+                current_app['file_id'] = message['document']['file_id']
+                current_app['file_name'] = message['document'].get('file_name', 'Download.apk')
+                current_app['size'] = message['document'].get('file_size', 0)
+                current_app['id'] = str(message['message_id'])
+                
+                # Add to database
+                apps = [a for a in apps if a.get('id') != current_app['id']]
+                apps.insert(0, current_app)
+                added_count += 1
+                print(f"Successfully added app: {current_app['name']} with its APK file!")
+                
+                # Reset pending state
+                current_app = {}
+                save_pending(current_app)
 
     if added_count > 0:
         save_apps(apps)
-        save_offset(highest_offset)
-        print(f"Successfully processed {added_count} app updates.")
-    else:
-        print("No new apps found.")
-        save_offset(highest_offset) # Save offset anyway to skip these updates next time
+        
+    save_offset(highest_offset)
+    print(f"Processed {added_count} new apps.")
 
 if __name__ == "__main__":
     main()
