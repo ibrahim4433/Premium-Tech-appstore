@@ -370,7 +370,14 @@ function renderApps() {
             : `<div class="card-icon fallback"><i class="fa-brands fa-android"></i></div>`;
 
         const categoryText = app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp;
-        const downloadLink = `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
+        
+        const isLarge = app.size > 19.5 * 1024 * 1024; // Telegram Bot API limit is 20MB
+        const downloadLink = isLarge 
+            ? `https://t.me/premium_techs/${app.id}`
+            : `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
+        
+        const btnIcon = isLarge ? 'fa-paper-plane' : 'fa-download';
+        const btnText = isLarge ? (currentLanguage === 'ar' ? 'تليجرام' : 'Telegram') : strings[currentLanguage].download;
 
         card.innerHTML = `
             ${imgHTML}
@@ -380,7 +387,7 @@ function renderApps() {
             </div>
             <!-- Prevent modal open when clicking download -->
             <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
-                <i class="fa-solid fa-download"></i> ${strings[currentLanguage].download}
+                <i class="fa-solid ${btnIcon}"></i> ${btnText}
             </a>
         `;
         appsGrid.appendChild(card);
@@ -399,7 +406,16 @@ function openAppDetails(app) {
     document.getElementById('modal-size').textContent = formatBytes(app.size);
     document.getElementById('modal-description').textContent = app.description;
     
-    document.getElementById('modal-download').href = `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
+    const isLarge = app.size > 19.5 * 1024 * 1024;
+    const downloadBtn = document.getElementById('modal-download');
+    
+    if (isLarge) {
+        downloadBtn.href = `https://t.me/premium_techs/${app.id}`;
+        downloadBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> ${currentLanguage === 'ar' ? 'تنزيل عبر تليجرام' : 'Download via Telegram'}`;
+    } else {
+        downloadBtn.href = `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
+        downloadBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span id="download-text">${strings[currentLanguage].download}</span>`;
+    }
 
     const modalIcon = document.getElementById('modal-icon');
     if (app.icon_id) {
