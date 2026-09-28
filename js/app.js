@@ -3,6 +3,32 @@ const WORKER_URL = "https://appstore-proxy.4445622.workers.dev"; // The worker U
 let allApps = [];
 let currentCategory = 'All';
 let currentLanguage = 'ar';
+let currentTag = null;
+
+const TAG_LABELS = {
+    '#games': 'العاب',
+    '#Social': 'تواصل اجتماعي',
+    '#editing': 'مونتاج وتصميم',
+    '#vpn': 'كاسر بروكسي VPN',
+    '#Tools': 'ادوات',
+    '#watching': 'مشاهدة',
+    '#multimedia': 'ملتيميديا',
+    '#browser': 'متصفحات',
+    '#translate': 'ترجمة',
+    '#store': 'متاجر',
+    '#record': 'تسجيل',
+    '#tips': 'شروحات',
+    '#books': 'كتب',
+    '#wallpapers': 'خلفيات',
+    '#themes': 'ثيمات',
+    '#learning': 'تعليم',
+    '#religious': 'دينيات',
+    '#news': 'أخبار',
+    '#music': 'موسيقى',
+    '#keyboard': 'كيبوردات',
+    '#camera': 'كاميرا وفلاتر',
+    '#IA': 'ذكاء اصطناعي'
+};
 
 // DOM Elements
 const grid = document.getElementById('apps-grid');
@@ -132,8 +158,11 @@ function setLanguage(lang) {
     document.querySelector('.modal-body h3').textContent = strings[lang].about;
     document.getElementById('download-text').textContent = strings[lang].download;
 
-    // Re-render to update categories
-    if (allApps.length > 0) renderApps(searchInput.value);
+    // Re-render to update categories and tags
+    if (allApps.length > 0) {
+        renderTags();
+        renderApps(searchInput.value);
+    }
 }
 
 // Data Fetching and Rendering
@@ -150,6 +179,7 @@ async function fetchApps() {
         });
 
         loading.style.display = 'none';
+        renderTags();
         renderApps();
     } catch (error) {
         console.error(error);
@@ -157,14 +187,58 @@ async function fetchApps() {
     }
 }
 
+function renderTags() {
+    const tagsFilter = document.getElementById('tags-filter');
+    if (!tagsFilter) return;
+    
+    tagsFilter.innerHTML = '';
+    
+    // Get all unique tags from apps
+    const allTags = new Set();
+    allApps.forEach(app => {
+        if(app.tags) {
+            app.tags.forEach(t => allTags.add(t));
+        }
+    });
+
+    if(allTags.size === 0) return;
+
+    allTags.forEach(tag => {
+        const btn = document.createElement('button');
+        btn.className = `tag-btn ${currentTag === tag ? 'active' : ''}`;
+        
+        if (currentLanguage === 'ar' && TAG_LABELS[tag]) {
+            btn.textContent = TAG_LABELS[tag];
+        } else {
+            // Capitalize first letter if English
+            let t = tag.replace('#', '');
+            btn.textContent = t.charAt(0).toUpperCase() + t.slice(1);
+        }
+        
+        btn.onclick = () => {
+            if(currentTag === tag) {
+                currentTag = null;
+                btn.classList.remove('active');
+            } else {
+                currentTag = tag;
+                document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+            renderApps(searchInput.value);
+        };
+        tagsFilter.appendChild(btn);
+    });
+}
+
 function renderApps(searchQuery = '') {
     grid.innerHTML = '';
     
     const filteredApps = allApps.filter(app => {
         const matchesCategory = currentCategory === 'All' || app.category === currentCategory;
+        const matchesTag = currentTag === null || (app.tags && app.tags.includes(currentTag));
         const matchesSearch = app.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                               app.description.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesCategory && matchesSearch;
+        return matchesCategory && matchesTag && matchesSearch;
     });
 
     if (filteredApps.length === 0) {
