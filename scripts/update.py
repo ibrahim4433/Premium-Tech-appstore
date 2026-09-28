@@ -162,6 +162,7 @@ def main():
                 current_app['file_name'] = message['document'].get('file_name', 'Download.apk')
                 current_app['size'] = message['document'].get('file_size', 0)
                 current_app['id'] = str(message['message_id'])
+                current_app['chat_id'] = str(message['chat']['id'])
                 
                 # Remove older versions of the same app (Deduplication by Name)
                 apps = [a for a in apps if a.get('name', '').strip().lower() != current_app['name'].strip().lower()]
