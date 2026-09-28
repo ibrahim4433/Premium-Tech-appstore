@@ -2,478 +2,617 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PREMIUM TECHS (AR) | بريميوم تكس</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#030814">
+<title>PREMIUM TECHS (AR) — المتجر</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg-deep:#030814;
-  --bg-mid:#0a1a3a;
-  --cyan:#00e5ff;
-  --blue:#2f7bff;
-  --violet:#7b5cff;
-  --glow: 0 0 25px rgba(0,229,255,.55);
-  --card-bg: rgba(10,25,60,.45);
-  --border: rgba(0,229,255,.28);
+  --bg:#030814;--cyan:#00e5ff;--blue:#2f7bff;--violet:#7b5cff;--green:#00ff9d;
+  --card:rgba(10,25,60,.5);--border:rgba(0,229,255,.25);--txt:#eaf6ff;--muted:#9fc4e8;
 }
-
-*{margin:0;padding:0;box-sizing:border-box;}
-
-html,body{height:100%;}
-
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
 body{
-  font-family:'Cairo',sans-serif;
-  background:var(--bg-deep);
-  color:#eaf6ff;
-  min-height:100vh;
-  overflow-x:hidden;
-  position:relative;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:40px 18px 70px;
+  font-family:'Cairo',system-ui,sans-serif;background:var(--bg);color:var(--txt);
+  min-height:100vh;overflow-x:hidden;padding:0 14px 60px;position:relative;
 }
-
-/* ====== الخلفية المتحركة ====== */
-.bg-layer{position:fixed;inset:0;z-index:-3;
+body::before{
+  content:'';position:fixed;inset:0;z-index:-2;
   background:
-    radial-gradient(circle at 20% 15%, rgba(47,123,255,.35), transparent 45%),
-    radial-gradient(circle at 80% 20%, rgba(123,92,255,.30), transparent 45%),
-    radial-gradient(circle at 50% 90%, rgba(0,229,255,.22), transparent 50%),
-    linear-gradient(160deg,#030814 0%,#061229 45%,#030814 100%);
-  animation:bgShift 18s ease-in-out infinite alternate;
+    radial-gradient(circle at 15% 8%, rgba(47,123,255,.28), transparent 45%),
+    radial-gradient(circle at 85% 12%, rgba(123,92,255,.22), transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(0,229,255,.16), transparent 55%),
+    linear-gradient(160deg,#030814 0%,#061229 50%,#030814 100%);
 }
-@keyframes bgShift{
-  0%{filter:hue-rotate(0deg) brightness(1);}
-  100%{filter:hue-rotate(28deg) brightness(1.18);}
+body::after{
+  content:'';position:fixed;top:0;left:0;right:0;height:3px;z-index:50;
+  background:linear-gradient(90deg,#00e5ff,#2f7bff,#7b5cff,#00e5ff);
+  background-size:300% 100%;animation:shine 3.5s linear infinite;
+  box-shadow:0 0 16px rgba(0,229,255,.8);
 }
+@keyframes shine{to{background-position:300% center}}
 
-/* شبكة تقنية */
-.grid-layer{position:fixed;inset:-50%;z-index:-2;
-  background-image:
-    linear-gradient(rgba(0,229,255,.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,229,255,.07) 1px, transparent 1px);
-  background-size:55px 55px;
-  transform:perspective(600px) rotateX(58deg) translateY(0);
-  animation:gridMove 12s linear infinite;
-  mask-image:radial-gradient(ellipse at 50% 40%, #000 10%, transparent 72%);
-  -webkit-mask-image:radial-gradient(ellipse at 50% 40%, #000 10%, transparent 72%);
+.wrap{max-width:1000px;margin:0 auto}
+header{text-align:center;padding:34px 0 10px}
+
+.logo{
+  display:inline-block;padding:9px;border-radius:20px;
+  background:linear-gradient(145deg,rgba(0,229,255,.13),rgba(123,92,255,.10));
+  border:1px solid var(--border);box-shadow:0 0 34px rgba(0,229,255,.28);
+  position:relative;animation:float 5s ease-in-out infinite;
 }
-@keyframes gridMove{ to{ background-position:0 55px, 55px 0; } }
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.logo img{display:block;width:100%;max-width:520px;border-radius:13px;background:#04122b}
 
-/* الجسيمات */
-#particles{position:fixed;inset:0;z-index:-1;pointer-events:none;}
-
-/* ====== الهيدر ====== */
-.hero{
-  width:100%;
-  max-width:880px;
-  text-align:center;
-  position:relative;
-  animation:fadeUp .9s ease both;
+h1{
+  font-family:'Orbitron',sans-serif;font-weight:900;
+  font-size:clamp(1.25rem,5vw,2.1rem);letter-spacing:1.5px;margin:18px 0 6px;
+  background:linear-gradient(90deg,#fff,#00e5ff,#7b5cff,#00e5ff,#fff);
+  background-size:300% auto;-webkit-background-clip:text;background-clip:text;
+  color:transparent;animation:shine 6s linear infinite;
 }
-
-.badge-top{
-  display:inline-flex;align-items:center;gap:8px;
-  font-family:'Orbitron',sans-serif;
-  font-size:.7rem;letter-spacing:3px;
-  color:var(--cyan);
-  border:1px solid var(--border);
-  background:rgba(0,229,255,.07);
+.sub{font-size:.85rem;color:var(--muted);letter-spacing:.5px;line-height:1.9}
+.sub b{color:var(--cyan)}
+.dev{
+  display:inline-flex;align-items:center;gap:8px;margin-top:14px;
+  font-family:'Cairo',sans-serif;font-weight:800;font-size:.85rem;
+  background:linear-gradient(135deg,rgba(0,255,157,.16),rgba(0,229,255,.14));
+  border:1px solid rgba(0,255,157,.45);color:#9dffd6;
   padding:8px 18px;border-radius:50px;
-  backdrop-filter:blur(8px);
-  margin-bottom:26px;
-  box-shadow:0 0 20px rgba(0,229,255,.18) inset;
+  box-shadow:0 0 22px rgba(0,255,157,.22);
 }
-.dot-live{
-  width:8px;height:8px;border-radius:50%;
-  background:#00ff9d;
-  box-shadow:0 0 10px #00ff9d;
-  animation:pulse 1.4s infinite;
-}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.7);}}
+.team{font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:3px;color:var(--cyan);margin-top:10px;text-shadow:0 0 12px rgba(0,229,255,.7)}
 
-/* إطار الصورة */
-.logo-wrap{
-  position:relative;
-  display:inline-block;
-  padding:14px;
-  border-radius:26px;
-  margin-bottom:30px;
-  background:linear-gradient(145deg, rgba(0,229,255,.14), rgba(123,92,255,.10));
-  border:1px solid var(--border);
-  backdrop-filter:blur(14px);
-  box-shadow:0 0 45px rgba(0,229,255,.30), 0 0 90px rgba(47,123,255,.18);
-  animation:floatLogo 5s ease-in-out infinite;
+/* TOP LINKS */
+.top-links{display:grid;grid-template-columns:1fr;gap:10px;margin:20px 0 6px}
+@media(min-width:560px){.top-links{grid-template-columns:1fr 1fr}}
+.tlink{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  padding:14px;border-radius:14px;text-decoration:none;color:#eaf6ff;
+  font-weight:800;font-size:.86rem;background:rgba(8,22,50,.55);
+  border:1px solid var(--border);transition:.28s;
 }
-@keyframes floatLogo{
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-12px);}
-}
-/* الحلقة الدوارة */
-.logo-wrap::before{
-  content:'';
-  position:absolute;inset:-3px;
-  border-radius:29px;
-  background:conic-gradient(from 0deg, transparent 0%, var(--cyan) 18%, transparent 36%, var(--violet) 58%, transparent 78%, var(--cyan) 100%);
-  z-index:-1;
-  filter:blur(9px);
-  opacity:.85;
-  animation:spinRing 6s linear infinite;
-}
-@keyframes spinRing{ to{ transform:rotate(360deg); } }
+.tlink:active{transform:scale(.98)}
+.tlink svg{width:19px;height:19px;fill:currentColor}
+.tlink.c1{background:linear-gradient(135deg,rgba(0,229,255,.18),rgba(47,123,255,.22));border-color:rgba(0,229,255,.5)}
+.tlink.c2{background:linear-gradient(135deg,rgba(123,92,255,.2),rgba(47,123,255,.18));border-color:rgba(123,92,255,.5)}
 
-.logo-wrap img{
-  display:block;
-  width:100%;
-  max-width:620px;
-  border-radius:16px;
-  background:#04122b;
+/* TOOLS */
+.tools{margin:26px 0 16px;display:flex;flex-direction:column;gap:12px}
+.search{
+  width:100%;padding:14px 18px;border-radius:14px;
+  background:rgba(8,22,50,.6);border:1px solid var(--border);
+  color:var(--txt);font-family:'Cairo',sans-serif;font-size:.95rem;outline:none;transition:.25s;
 }
+.search::placeholder{color:#5c7fa5}
+.search:focus{border-color:rgba(0,229,255,.7);box-shadow:0 0 22px rgba(0,229,255,.28)}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto;padding:9px 16px;border-radius:50px;
+  background:rgba(8,22,50,.55);border:1px solid var(--border);
+  color:var(--muted);font-family:'Cairo',sans-serif;font-weight:700;
+  font-size:.82rem;cursor:pointer;transition:.25s;white-space:nowrap;
+}
+.tab.active{
+  background:linear-gradient(135deg,rgba(0,229,255,.25),rgba(47,123,255,.28));
+  color:#fff;border-color:rgba(0,229,255,.7);box-shadow:0 0 20px rgba(0,229,255,.4);
+}
+.count{font-size:.78rem;color:#5c7fa5;margin-bottom:14px;text-align:center}
 
-/* العنوان */
-.site-title{
-  font-family:'Orbitron',sans-serif;
-  font-weight:900;
-  font-size:clamp(1.7rem,5.5vw,3rem);
-  letter-spacing:2px;
-  background:linear-gradient(90deg,#ffffff,#00e5ff,#7b5cff,#00e5ff,#ffffff);
-  background-size:300% auto;
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
-  animation:shine 6s linear infinite;
-  margin-bottom:10px;
-}
-@keyframes shine{ to{ background-position:300% center; } }
-
-.site-sub{
-  font-size:clamp(.9rem,2.6vw,1.15rem);
-  color:#9fc4e8;
-  letter-spacing:1px;
-  margin-bottom:8px;
-}
-.team-line{
-  font-family:'Orbitron',sans-serif;
-  font-size:.85rem;
-  letter-spacing:4px;
-  color:var(--cyan);
-  text-shadow:0 0 14px rgba(0,229,255,.7);
-}
-
-/* ====== البطاقات ====== */
-.cards{
-  width:100%;
-  max-width:880px;
-  display:grid;
-  grid-template-columns:1fr;
-  gap:18px;
-  margin-top:44px;
-}
-@media(min-width:720px){
-  .cards{grid-template-columns:1fr 1fr;}
-  .card.full{grid-column:1/-1;}
-}
+/* GRID */
+.grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:6px}
+@media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+@media(min-width:920px){.grid{grid-template-columns:1fr 1fr 1fr}}
 
 .card{
-  position:relative;
-  background:var(--card-bg);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:24px 22px;
-  backdrop-filter:blur(14px);
-  overflow:hidden;
-  transition:transform .35s cubic-bezier(.2,.8,.3,1), box-shadow .35s, border-color .35s;
-  animation:fadeUp .8s ease both;
+  background:var(--card);border:1px solid var(--border);border-radius:18px;
+  padding:18px 16px;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+  transition:transform .3s,border-color .3s,box-shadow .3s;
+  animation:pop .45s ease both;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
 }
-.card:nth-child(1){animation-delay:.15s;}
-.card:nth-child(2){animation-delay:.28s;}
-.card:nth-child(3){animation-delay:.41s;}
-.card:nth-child(4){animation-delay:.54s;}
-.card:nth-child(5){animation-delay:.67s;}
+@keyframes pop{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.card:hover{transform:translateY(-5px);border-color:rgba(0,229,255,.6);box-shadow:0 14px 40px rgba(0,0,0,.5),0 0 26px rgba(0,229,255,.22)}
 
-.card::after{
-  content:'';
-  position:absolute;top:0;right:-120%;
-  width:80%;height:100%;
-  background:linear-gradient(100deg,transparent,rgba(0,229,255,.13),transparent);
-  transform:skewX(-18deg);
-  transition:right .8s ease;
+.card-head{display:flex;align-items:center;gap:11px;margin-bottom:11px}
+.ico{
+  width:44px;height:44px;flex:0 0 44px;display:grid;place-items:center;
+  border-radius:13px;font-size:1.25rem;
+  background:linear-gradient(145deg,rgba(0,229,255,.2),rgba(123,92,255,.18));
+  border:1px solid var(--border);box-shadow:0 0 16px rgba(0,229,255,.18);
 }
-.card:hover::after{ right:130%; }
+.name{font-size:1.02rem;font-weight:900;color:#fff;line-height:1.35}
+.ver{
+  display:inline-block;margin-top:4px;font-family:'Orbitron',sans-serif;
+  font-size:.62rem;letter-spacing:1px;color:var(--cyan);
+  background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.3);
+  padding:2px 8px;border-radius:50px;
+}
+.tag{
+  position:absolute;top:12px;left:12px;font-size:.6rem;font-weight:700;
+  padding:3px 9px;border-radius:50px;
+  background:rgba(123,92,255,.18);border:1px solid rgba(123,92,255,.45);color:#c3b3ff;
+}
+.tag.iptv{background:rgba(0,255,157,.14);border-color:rgba(0,255,157,.45);color:#8affd0}
 
-.card:hover{
-  transform:translateY(-7px);
-  border-color:rgba(0,229,255,.65);
-  box-shadow:0 18px 50px rgba(0,0,0,.55), 0 0 35px rgba(0,229,255,.25);
+.desc{font-size:.85rem;line-height:1.9;color:var(--muted);margin-bottom:12px;white-space:pre-line}
+
+.feats{display:flex;flex-direction:column;gap:6px;margin-bottom:13px}
+.feat{
+  font-size:.78rem;font-weight:700;padding:6px 11px;border-radius:9px;
+  background:rgba(0,255,157,.08);border-right:3px solid rgba(0,255,157,.5);
+  color:#b8ffe0;line-height:1.6;
+}
+.feat.no{background:rgba(255,80,120,.08);border-right-color:rgba(255,80,120,.55);color:#ffc2d2}
+.feat.warn{background:rgba(255,190,0,.08);border-right-color:rgba(255,190,0,.6);color:#ffd97a}
+.feat.blue{background:rgba(0,229,255,.08);border-right-color:rgba(0,229,255,.55);color:#a8ecff}
+.feat.violet{background:rgba(123,92,255,.1);border-right-color:rgba(123,92,255,.55);color:#cabfff}
+
+.creds{
+  background:rgba(0,0,0,.32);border:1px dashed rgba(0,229,255,.32);
+  border-radius:12px;padding:11px;margin-bottom:12px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.cred{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.8rem}
+.cred .k{color:#7fa4c9;font-weight:700;flex:0 0 auto}
+.cred .v{
+  color:var(--cyan);font-family:'Orbitron',sans-serif;font-size:.72rem;
+  direction:ltr;word-break:break-all;text-align:left;flex:1;
+}
+.copy{
+  flex:0 0 auto;width:28px;height:28px;border-radius:8px;cursor:pointer;
+  background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.35);
+  color:var(--cyan);font-size:.72rem;display:grid;place-items:center;transition:.2s;
+}
+.copy:active{transform:scale(.88)}
+.copy.done{background:rgba(0,255,157,.2);border-color:rgba(0,255,157,.6);color:var(--green)}
+
+.note{
+  font-size:.76rem;line-height:1.8;color:#ffd97a;
+  background:rgba(255,190,0,.07);border-right:3px solid rgba(255,190,0,.55);
+  padding:9px 11px;border-radius:8px;margin-bottom:12px;white-space:pre-line;
 }
 
-.card-icon{
-  width:48px;height:48px;
-  display:grid;place-items:center;
-  border-radius:14px;
-  font-size:1.35rem;
-  background:linear-gradient(145deg, rgba(0,229,255,.20), rgba(123,92,255,.18));
-  border:1px solid var(--border);
-  margin-bottom:14px;
-  box-shadow:0 0 18px rgba(0,229,255,.20);
+.channel-line{
+  font-family:'Orbitron',sans-serif;font-size:.7rem;letter-spacing:1px;
+  color:var(--cyan);text-align:center;padding:8px 0;margin-bottom:10px;
+  border-top:1px dashed rgba(0,229,255,.2);
+  border-bottom:1px dashed rgba(0,229,255,.2);
+  text-shadow:0 0 12px rgba(0,229,255,.5);
 }
-
-.card h3{
-  font-size:1.05rem;
-  font-weight:700;
-  line-height:1.7;
-  color:#ffffff;
-  margin-bottom:8px;
-}
-.card p{
-  font-size:.92rem;
-  line-height:1.9;
-  color:#a9c9e6;
-}
-
-.highlight{
-  color:var(--cyan);
-  font-weight:700;
-  text-shadow:0 0 12px rgba(0,229,255,.55);
-}
-
-/* ====== الأزرار ====== */
-.actions{
-  width:100%;
-  max-width:880px;
-  display:grid;
-  grid-template-columns:1fr;
-  gap:16px;
-  margin-top:34px;
-}
-@media(min-width:640px){ .actions{grid-template-columns:1fr 1fr;} }
 
 .btn{
-  display:flex;align-items:center;justify-content:center;gap:12px;
-  padding:18px 22px;
-  border-radius:16px;
-  font-weight:700;
-  font-size:1rem;
-  text-decoration:none;
-  color:#eaf6ff;
-  border:1px solid var(--border);
-  background:rgba(8,22,50,.55);
-  backdrop-filter:blur(12px);
-  position:relative;
-  overflow:hidden;
-  transition:transform .3s, box-shadow .3s, background .3s;
+  margin-top:auto;display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px 14px;border-radius:13px;font-weight:900;font-size:.88rem;
+  text-decoration:none;color:#eaf6ff;
+  background:linear-gradient(135deg,rgba(0,229,255,.2),rgba(47,123,255,.26));
+  border:1px solid rgba(0,229,255,.5);
+  box-shadow:0 0 20px rgba(0,229,255,.2);transition:.28s;
 }
-.btn svg{width:22px;height:22px;fill:currentColor;flex-shrink:0;}
-
-.btn:hover{ transform:translateY(-4px); }
-
-.btn-channel{
-  background:linear-gradient(135deg, rgba(0,229,255,.22), rgba(47,123,255,.28));
-  border-color:rgba(0,229,255,.6);
-  box-shadow:0 0 28px rgba(0,229,255,.30);
+.btn:active{transform:scale(.97)}
+.btn:hover{box-shadow:0 0 34px rgba(0,229,255,.5)}
+.btn svg{width:17px;height:17px;fill:currentColor;flex:0 0 17px}
+.btn.green{
+  background:linear-gradient(135deg,rgba(0,255,157,.18),rgba(0,229,255,.18));
+  border-color:rgba(0,255,157,.5);box-shadow:0 0 20px rgba(0,255,157,.2);
 }
-.btn-channel:hover{ box-shadow:0 0 45px rgba(0,229,255,.60); }
+.btn.green:hover{box-shadow:0 0 34px rgba(0,255,157,.5)}
 
-.btn-bot{
-  background:linear-gradient(135deg, rgba(123,92,255,.25), rgba(47,123,255,.22));
-  border-color:rgba(123,92,255,.6);
-  box-shadow:0 0 28px rgba(123,92,255,.30);
-}
-.btn-bot:hover{ box-shadow:0 0 45px rgba(123,92,255,.60); }
+.empty{text-align:center;padding:50px 20px;color:#5c7fa5;font-size:.9rem}
 
-.btn-en{
-  background:linear-gradient(135deg, rgba(0,255,157,.18), rgba(0,229,255,.18));
-  border-color:rgba(0,255,157,.5);
-  box-shadow:0 0 28px rgba(0,255,157,.22);
+footer{
+  text-align:center;margin-top:44px;padding-top:22px;
+  border-top:1px solid rgba(0,229,255,.12);
+  font-size:.75rem;color:#5c7fa5;letter-spacing:.5px;line-height:2;
 }
-.btn-en:hover{ box-shadow:0 0 45px rgba(0,255,157,.55); }
-
-/* ====== الفوتر ====== */
-.footer{
-  margin-top:52px;
-  text-align:center;
-  font-size:.8rem;
-  color:#5c7fa5;
-  letter-spacing:1px;
-  animation:fadeUp 1s .9s ease both;
-}
-.footer span{color:var(--cyan);}
-
-/* ====== أنيميشن الظهور ====== */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(28px);}
-  to{opacity:1;transform:translateY(0);}
-}
-
-/* خطوط مضيئة على الجوانب */
-.scanline{
-  position:fixed;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,rgba(0,229,255,.55),transparent);
-  z-index:5;pointer-events:none;
-  animation:scan 7s linear infinite;
-  opacity:.6;
-}
-@keyframes scan{
-  0%{top:-5%;}
-  100%{top:105%;}
-}
-
-/* شريط علوي متحرك */
-.topbar{
-  position:fixed;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,#00e5ff,#2f7bff,#7b5cff,#00e5ff);
-  background-size:300% 100%;
-  animation:shine 3s linear infinite;
-  z-index:10;
-  box-shadow:0 0 18px rgba(0,229,255,.8);
+footer span{color:var(--cyan)}
+footer .devf{
+  display:inline-block;margin-top:10px;padding:8px 18px;border-radius:50px;
+  background:linear-gradient(135deg,rgba(0,255,157,.16),rgba(0,229,255,.14));
+  border:1px solid rgba(0,255,157,.4);color:#9dffd6;font-weight:800;
 }
 </style>
 </head>
 <body>
 
-<div class="bg-layer"></div>
-<div class="grid-layer"></div>
-<canvas id="particles"></canvas>
-<div class="scanline"></div>
-<div class="topbar"></div>
+<div class="wrap">
 
-<!-- ======= الهيدر ======= -->
-<header class="hero">
+  <header>
+    <div class="logo">
+      <img src="IMG_20260927_183531_095.jpg" alt="PREMIUM TECHS (AR)">
+    </div>
+    <h1>PREMIUM TECHS (AR)</h1>
+    <p class="sub">
+      🔷 العاب و تطبيقات مدفوعة و معدلة اندرويد (مجاناً)<br>
+      🔷 شروحات — اخبار تقنية — حسابات ✅
+    </p>
+    <div class="dev">👨‍💻 المطور: ابو علاوي🇸🇦</div>
+    <p class="team">IA TEAM ★</p>
 
-  <div class="badge-top">
-    <span class="dot-live"></span>
-    AI POWERED • ONLINE
+    <div class="top-links">
+      <a class="tlink c1" href="https://t.me/+ij7-LS669ahhMDFk" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+        قناة تليجرام الرسمية
+      </a>
+      <a class="tlink c2" href="https://t.me/IA_Assistantbot" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18 2.5 2.5 0 0 0 10 15.5 2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5z"/></svg>
+        بوت الطلبات
+      </a>
+    </div>
+  </header>
+
+  <div class="tools">
+    <input id="search" class="search" type="search" placeholder="🔍 ابحث عن تطبيق...">
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-cat="all">الكل</button>
+      <button class="tab" data-cat="app">📱 تطبيقات</button>
+      <button class="tab" data-cat="iptv">📺 IPTV</button>
+    </div>
   </div>
 
-  <div class="logo-wrap">
-    <img src="IMG_20260927_183531_095.jpg" alt="PREMIUM TECHS (AR)">
-  </div>
+  <p class="count" id="count"></p>
 
-  <h1 class="site-title">PREMIUM TECHS (AR)</h1>
-  <p class="site-sub">العاب وتطبيقات مدفوعة ومعدّلة • شروحات • أخبار تقنية</p>
-  <p class="team-line">IA TEAM ★</p>
+  <main class="grid" id="grid"></main>
 
-</header>
-
-<!-- ======= المحتوى ======= -->
-<main class="cards">
-
-  <div class="card">
-    <div class="card-icon">🎮</div>
-    <h3>🔷 ألعاب وتطبيقات مدفوعة ومعدّلة أندرويد</h3>
-    <p>نوفّرها لك <span class="highlight">مجاناً</span> وبأحدث الإصدارات، مع تحديث مستمر لكل ما هو مميز.</p>
-  </div>
-
-  <div class="card">
-    <div class="card-icon">📡</div>
-    <h3>🔷 شروحات — أخبار تقنية — حسابات ✅</h3>
-    <p>كل ما تحتاجه من شروحات مبسّطة، آخر الأخبار التقنية، وحسابات جاهزة بجودة عالية.</p>
-  </div>
-
-  <div class="card full">
-    <div class="card-icon">🤖</div>
-    <h3>بوت الطلبات : <span class="highlight">@IA_Assistantbot</span></h3>
-    <p>أرفق رابط التطبيق من <span class="highlight">جوجل بلاي</span> مع طلبك، وسيتم تجهيزه لك في أسرع وقت.</p>
-  </div>
-
-</main>
-
-<!-- ======= الأزرار ======= -->
-<div class="actions">
-
-  <a class="btn btn-channel" href="https://t.me/+ij7-LS669ahhMDFk" target="_blank" rel="noopener">
-    <svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
-    قناة تليجرام الرسمية
-  </a>
-
-  <a class="btn btn-bot" href="https://t.me/IA_Assistantbot" target="_blank" rel="noopener">
-    <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18 2.5 2.5 0 0 0 10 15.5 2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5z"/></svg>
-    بوت الطلبات
-  </a>
-
-  <a class="btn btn-en" href="https://t.me/premium_techs_EN" target="_blank" rel="noopener" style="grid-column:1/-1;">
-    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m6.93 6h-2.95a15.6 15.6 0 0 0-1.38-3.56A8 8 0 0 1 18.93 8M12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96M4.26 14A8 8 0 0 1 4 12c0-.69.1-1.36.26-2h3.38a17 17 0 0 0 0 4zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56A8 8 0 0 1 5.08 16m2.95-8H5.08a8 8 0 0 1 4.33-3.56A15.6 15.6 0 0 0 8.03 8M12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96M14.34 14H9.66a15 15 0 0 1 0-4h4.68a15 15 0 0 1 0 4m.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8 8 0 0 1-4.33 3.56M16.36 14a17 17 0 0 0 0-4h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2z"/></svg>
-    Our Other Channel in English — @premium_techs_EN
-  </a>
+  <footer>
+    © <span>PREMIUM TECHS</span> — IA TEAM ★<br>
+    بوت الطلبات: <span>@IA_Assistantbot</span><br>
+    <span class="devf">👨‍💻 المطور: ابو علاوي🇸🇦</span>
+  </footer>
 
 </div>
 
-<!-- ======= الفوتر ======= -->
-<footer class="footer">
-  © <span>PREMIUM TECHS</span> — IA TEAM ★ جميع الحقوق محفوظة
-</footer>
-
-<!-- ======= سكربت الجسيمات ======= -->
 <script>
-const canvas = document.getElementById('particles');
-const ctx = canvas.getContext('2d');
-let W, H, particles = [];
-const COUNT = window.innerWidth < 700 ? 45 : 90;
+/* ================== بيانات المتجر ================== */
+const CH = '༺━━ @premium_techs ━━༻';
 
-function resize(){
-  W = canvas.width = window.innerWidth;
-  H = canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener('resize', resize);
+const APPS = [
+  {
+    cat:'app', icon:'🎬', name:'Nuvio', tag:'طلب مشترك',
+    desc:'تطبيق Nuvio — للمشاهدة والترفيه.',
+    creds:[
+      {k:'البريد الالكتروني', v:'gjhh611@gmail.com'},
+      {k:'كلمه المرور', v:'castillo.123e'}
+    ],
+    link:'https://t.me/c/1423595432/29304'
+  },
+  {
+    cat:'app', icon:'📺', name:'Alaraby Plus', ver:'v16.8', tag:'طلب مشترك',
+    desc:'العربي بلس هي منصة تضم جميع قنوات مجموعة فضائل الإعلامية التي تهدف إلى تقديم تغطية موضوعية وتحليل معمق للأخبار للمواطن العربي، ودعم الثقافة والإنتاج الثقافي، بما في ذلك الأدب والفن والترفيه الراقي.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''},
+      {t:'❌ بدون اعلانات', k:'no'},
+      {t:'👍🏻 ويعمل بدون اي مشاكل', k:''},
+      {t:'👍🏻 الاصدار الي في جوجل بلاي', k:''},
+      {t:'🤫 وتم نشر التطبيق ابو علاوي', k:'violet'}
+    ],
+    link:'https://t.me/c/1423595432/29299'
+  },
+  {
+    cat:'app', icon:'🎵', name:'Zedge', ver:'v9.38.3', tag:'طلب مشترك',
+    desc:'أفضل تطبيق للنغمات وخلفيات الهاتف على الإطلاق، ZEDGE يُتيح لك التمتع بمكتبة ضخمة جداً من نغمات الهاتف والخلفيات الثابتة والمتحركة.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29296'
+  },
+  {
+    cat:'app', icon:'📞', name:'Call Recorder', ver:'v3.7.6', tag:'طلب مشترك',
+    desc:'تطبيق لتسجيل المكالمات الهاتفية تلقائيًا بجودة عالية، مع حفظ وتنظيم التسجيلات، وإضافة المفضلة، والنسخ الاحتياطي السحابي، وحماية التسجيلات بقفل التطبيق.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29293'
+  },
+  {
+    cat:'app', icon:'👆', name:'Touch The Notch', ver:'v2.2.0', tag:'طلب مشترك',
+    desc:'إلمس النوتش: افتح الإمكانات المخفية لهاتفك! قم بتحويل نوتش الكاميرا الخاص بك إلى زر اختصار قوي باستخدام Touch the Notch! يمكّنك هذا التطبيق المبتكر من تنفيذ الإجراءات الأساسية بمجرد لمسة أو لمسة طويلة أو لمسة مزدوجة أو تمرير سريع.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29290'
+  },
+  {
+    cat:'app', icon:'✨', name:'Muviz Edge', ver:'v2.1.5.0', tag:'طلب مشترك',
+    desc:'تطبيق Muviz Edge هو تطبيق مميز لإضافة مؤثرات إضاءة متحركة على حواف الشاشة أثناء تشغيل الموسيقى أو المقاطع الصوتية، ويمنح الهاتف شكلا جذابا يشبه هواتف الفلاجشيب مع إمكانية تخصيص الألوان والأشكال حسب ذوقك.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 فتح جميع الثيمات المدفوعة', k:''},
+      {t:'❌ ازالة الاعلانات', k:'no'}
+    ],
+    link:'https://t.me/c/1423595432/29287'
+  },
+  {
+    cat:'app', icon:'⚽', name:'365Scores', ver:'v14.9.5', tag:'طلب مشترك',
+    desc:'التطبيق الأفضل بلا شك في متابعة الأحداث الرياضية ونتائج المباريات وجداول البطولات بشكل لحظي، يوفر لك 365Scores إمكانية متابعة فريقك المفضل وارسال اشعارات لحظية بمجريات المباريات.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''},
+      {t:'💎 التطبيق يأتي بتصميم جديد كلياً', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29284'
+  },
+  {
+    cat:'app', icon:'🗂️', name:'AnExplorer Pro', ver:'v6.0.9', tag:'طلب مشترك',
+    desc:'مدير ملفات قوي وغني بالميزات بواجهة أنيقة وسهلة الاستخدام. مصمم لجميع أجهزة أندرويد، بما في ذلك الهواتف، والهواتف اللوحية، والأجهزة اللوحية، والساعات الذكية، وأجهزة التلفاز، وأجهزة...',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29281'
+  },
+  {
+    cat:'app', icon:'🛡️', name:'CallApp', ver:'v2.290R',
+    desc:'تطبيق Caller ID & Call Blocker الرائد في أمريكا و عبر العالم أيضا من قبل المستخدمين والمجلات التقنية الأعلى تقييمًا.\nتطبيق CallApp هو تطبيق معرف المتصل مجاني موثوق به من قبل 85 مليون مستخدم لحظر مكالمات البريد العشوائي ومعرفة معرف المتصل الحقيقي!',
+    feats:[
+      {t:'🏷 النسخة المعدلة وفيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''},
+      {t:'☑️ وبدون اعلانات', k:'no'},
+      {t:'👍🏻 مفتوح كل شي', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29278'
+  },
+  {
+    cat:'app', icon:'💱', name:'Currency Converter', ver:'v3.4.3', tag:'طلب مشترك',
+    desc:'وهو أسهل وأكثر البرامج ملاءمة للمستخدم للحصول على أسعار صرف العملات العالمية، مع AccuRate!',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29275'
+  },
+  {
+    cat:'app', icon:'🎸', name:'Songsterr', ver:'v7.0.38', tag:'طلب مشترك',
+    desc:'تطبيق لتعلّم العزف على الجيتار والباس والدرامز، يوفّر ملايين التابات والأكوردات مع تشغيل تفاعلي، والتحكم بسرعة التشغيل، والتكرار، والتدرب خطوة بخطوة.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29272'
+  },
+  {
+    cat:'app', icon:'💬', name:'AutoResponder', ver:'v5.2.8', tag:'طلب مشترك',
+    desc:'تطبيق الرد التلقائي لفيسبوك ماسنجر هو تطبيق يُتيح الرد التلقائي على رسائل ماسنجر عند تخصيصه داخل التطبيق. سيجد المستخدمون خيارات متنوعة في الإعدادات لتخصيص كل رسالة يرغبون في الرد عليها تلقائيًا، وفقًا لتفضيلاتهم واحتياجاتهم. تحميل التطبيق مجاني تمامًا، لذا يُمكن لأي شخص استخدامه لأغراضه التجارية.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29269'
+  },
+  {
+    cat:'app', icon:'😂', name:'Meme Generator', ver:'v4.6863', tag:'طلب مشترك',
+    desc:'تطبيق لصنع الميمز و صور النكت و الفكاهات اللي بتشوفوها على الفيسبوك\nبمكنك انك تصنع ميمز على قوالب جاهزة و مع ادوات كتيرة رائعة',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29266'
+  },
+  {
+    cat:'app', icon:'👁️', name:'Bluelight Filter', ver:'v6.15.1', tag:'طلب مشترك',
+    desc:'احمِ عينيك باستخدام فلتر الضوء الأزرق للعناية بالعين. قلل من الضوء الأزرق المنبعث من الشاشات وحسّن من استرخائك.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29263'
+  },
+  {
+    cat:'app', icon:'📋', name:'Clipboard Pro', ver:'v5.4.2', tag:'طلب مشترك',
+    desc:'تطبيق الحافظة الاحترافي مصمم ليكون عمليًا وسهل الاستخدام. تطبيق حافظة مريح مع شاشة عرض شفافة. يسجل تلقائيًا جميع النصوص المنسوخة.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29260'
+  },
+  {
+    cat:'app', icon:'🧮', name:'Smart Accountant', ver:'v135.3.3', tag:'طلب مشترك',
+    desc:'تطبيق المحاسب الذكي برو هو تطبيق مخصص لإدارة الحسابات وتنظيم المصروفات والإيرادات بطريقة سهلة واحترافية، مناسب للأفراد وأصحاب المشاريع الصغيرة.',
+    feats:[
+      {t:'🏷 النسخة المعدلة وفيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29257',
+    hash:'#finances'
+  },
+  {
+    cat:'app', icon:'🚀', name:'QuixVPN', ver:'v1.14.4', tag:'طلب مشترك',
+    desc:'تطبيق QuixVPN هو تطبيق VPN مصمم لتوفير اتصال أكثر خصوصية وأمانًا أثناء تصفح الإنترنت، مع التركيز على السرعة وسهولة الاستخدام.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29254'
+  },
+  {
+    cat:'app', icon:'🟢', name:'GreenTuber', ver:'v0.2.0.0', tag:'طلب مشترك',
+    desc:'هل سئمت من الإعلانات المتواصلة التي تُقاطع مشاهدة فيديوهاتك؟ يُقدم GreenTuber الحل الأمثل — حظر إعلانات سلس لتتمكن أخيرًا من مشاهدة الفيديوهات دون انقطاع. يُقدم هذا التطبيق العملي مزايا مميزة، مثل التشغيل في الخلفية، والنوافذ العائمة، والتشغيل عالي الجودة دون أي تكلفة. تابع القراءة لمعرفة سبب أهمية GreenTuber للبث المباشر بدون إعلانات.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29251'
+  },
+  {
+    cat:'app', icon:'🌐', name:'Vpn Super Unlimited', ver:'v2.33.0', tag:'طلب مشترك',
+    desc:'تطبيق Vpn Super Unlimited هو واحد من أشهر وأقوى تطبيقات الـ VPN في العالم، يُستخدم لتأمين اتصالك وتجاوز الحجب وفتح المواقع والتطبيقات المحظورة بكفاءة عالية وسرعة لا تُضاهى.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29248'
+  },
+  {
+    cat:'app', icon:'📍', name:'Waloc', ver:'v22.5', tag:'طلب مشترك',
+    desc:'ابحث عن موقع الشخص عن طريق رقم الهاتف عن طريق رسالة.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29245'
+  },
+  {
+    cat:'app', icon:'📝', name:'Jnotes', ver:'v3.6.4.2', tag:'طلب مشترك',
+    desc:'تدوين الملاحظات بالذكاء الاصطناعي، محرر ملفات PDF ودفتر ملاحظات رقمي.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'💎 مفتوح Premium', k:''}
+    ],
+    link:'https://t.me/c/1423595432/29242'
+  },
+  {
+    cat:'app', icon:'🔐', name:'VeePN', ver:'v3.9.10', tag:'طلب مشترك',
+    desc:'تمتع بخدمة الشبكة الخاصة الافتراضية VPN بسرعة مذهلة ودون تتبع لسجلاتك مع VeePN.',
+    feats:[
+      {t:'🏷 النسخة المعدلة و فيها', k:'blue'},
+      {t:'🔓 المميزات مفتوح البروتوكول الذي يعمل IKEv2 فقط — باقي البروتوكولات لا تعمل والذكاء الاصطناعي لا يعمل ومضاد الفائروسات لا يعمل وتنبيه الاختراق لا يعمل', k:'warn'}
+    ],
+    note:'👍🏻 ملاحظه: انشاء الحساب عن طريق الموقع تسجيل الدخول داخل التطبيق.',
+    link:'https://t.me/c/1423595432/29239'
+  },
 
-class Particle{
-  constructor(){ this.reset(true); }
-  reset(init){
-    this.x = Math.random() * W;
-    this.y = init ? Math.random() * H : H + 10;
-    this.r = Math.random() * 1.8 + 0.4;
-    this.speed = Math.random() * 0.5 + 0.15;
-    this.drift = (Math.random() - 0.5) * 0.35;
-    this.alpha = Math.random() * 0.6 + 0.15;
-    this.hue = Math.random() > 0.5 ? 188 : 255;
+  /* ============ IPTV ============ */
+  {
+    cat:'iptv', icon:'📡', name:'Nour 4K', ver:'IPTV',
+    desc:'تطبيق Nour 4K\nاذا تردون تنزلوة علة الشاشة اكتبو علة المتجر Nour 4K',
+    creds:[
+      {k:'الاسم المستخدم', v:'2739272920'},
+      {k:'الباسورد', v:'1639032730'}
+    ],
+    link:'https://play.google.com/store/apps/details?id=com.nour4k.yorch',
+    linkText:'رابط التحميل 👇'
+  },
+  {
+    cat:'iptv', icon:'🛰️', name:'اكستريم نوفا', ver:'Xtream',
+    desc:'تنتضرونا في اكستريمات جديدة.\nلاتشغيل الاكستريم اذا ماتعرفون، هذا البرنامج يشغل اكستريمات 👇',
+    creds:[
+      {k:'السيرفر', v:'http://tv.nv2.info:80'},
+      {k:'الاسم المستخدم', v:'ibrahimsaad'},
+      {k:'الباسورد', v:'01115730922'}
+    ],
+    link:'https://play.google.com/store/apps/details?id=com.nathnetwork.xciptv',
+    linkText:'تحميل مشغّل XCIPTV'
   }
-  update(){
-    this.y -= this.speed;
-    this.x += this.drift;
-    if(this.y < -10 || this.x < -10 || this.x > W + 10) this.reset(false);
+];
+
+/* ================== الرسم ================== */
+const grid = document.getElementById('grid');
+const countEl = document.getElementById('count');
+const searchEl = document.getElementById('search');
+const tabsEl = document.getElementById('tabs');
+
+let state = { cat:'all', q:'' };
+
+const DL_ICON = '<svg viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>';
+const COPY_ICON = '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>';
+
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function render(){
+  const q = state.q.trim().toLowerCase();
+  const list = APPS.filter(a=>{
+    const okCat = state.cat === 'all' || a.cat === state.cat;
+    const okQ = !q || a.name.toLowerCase().includes(q) || (a.desc||'').toLowerCase().includes(q);
+    return okCat && okQ;
+  });
+
+  countEl.textContent = 'عدد العناصر: ' + list.length;
+
+  if(!list.length){
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">🔍 لا توجد نتائج مطابقة</div>';
+    return;
   }
-  draw(){
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-    ctx.fillStyle = `hsla(${this.hue}, 100%, 65%, ${this.alpha})`;
-    ctx.shadowBlur = 12;
-    ctx.shadowColor = `hsla(${this.hue}, 100%, 60%, 0.9)`;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-  }
+
+  grid.innerHTML = list.map((a,i)=>{
+    const tag = a.tag ? `<span class="tag ${a.cat==='iptv'?'iptv':''}">${esc(a.tag)}</span>` : '';
+    const ver = a.ver ? `<span class="ver">${esc(a.ver)}</span>` : '';
+
+    const feats = (a.feats||[]).map(f=>{
+      const cls = 'feat ' + (f.k||'');
+      return `<span class="${cls}">${esc(f.t)}</span>`;
+    }).join('');
+
+    const creds = (a.creds||[]).map(c=>`
+      <div class="cred">
+        <span class="k">${esc(c.k)}</span>
+        <span class="v">${esc(c.v)}</span>
+        <button class="copy" data-copy="${esc(c.v)}" title="نسخ">${COPY_ICON}</button>
+      </div>`).join('');
+    const credBox = creds ? `<div class="creds">${creds}</div>` : '';
+
+    const note = a.note ? `<div class="note">⚠️ ${esc(a.note)}</div>` : '';
+    const btnText = a.linkText || 'للتنزيل من هنا ⬇️';
+    const hash = a.hash ? `<div style="font-size:.7rem;color:#7fa4c9;text-align:center;margin-bottom:8px">${esc(a.hash)}</div>` : '';
+
+    return `
+    <article class="card" style="animation-delay:${Math.min(i*0.03,0.5)}s">
+      ${tag}
+      <div class="card-head">
+        <div class="ico">${a.icon}</div>
+        <div>
+          <div class="name">🧩 تطبيق ${esc(a.name)}</div>
+          ${ver}
+        </div>
+      </div>
+      <p class="desc">${esc(a.desc)}</p>
+      ${feats ? `<div class="feats">${feats}</div>` : ''}
+      ${credBox}
+      ${note}
+      <div class="channel-line">${CH}</div>
+      <a class="btn ${a.cat==='iptv'?'green':''}" href="${esc(a.link)}" target="_blank" rel="noopener">
+        ${DL_ICON} ${esc(btnText)}
+      </a>
+    </article>`;
+  }).join('');
 }
 
-for(let i = 0; i < COUNT; i++) particles.push(new Particle());
+tabsEl.addEventListener('click', e=>{
+  const b = e.target.closest('.tab');
+  if(!b) return;
+  tabsEl.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  b.classList.add('active');
+  state.cat = b.dataset.cat;
+  render();
+});
 
-function connect(){
-  for(let i = 0; i < particles.length; i++){
-    for(let j = i + 1; j < particles.length; j++){
-      const dx = particles[i].x - particles[j].x;
-      const dy = particles[i].y - particles[j].y;
-      const d = Math.sqrt(dx*dx + dy*dy);
-      if(d < 120){
-        ctx.beginPath();
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.strokeStyle = `rgba(0,229,255,${0.10 * (1 - d/120)})`;
-        ctx.lineWidth = 0.6;
-        ctx.stroke();
-      }
-    }
-  }
+let t;
+searchEl.addEventListener('input', e=>{
+  clearTimeout(t);
+  t = setTimeout(()=>{ state.q = e.target.value; render(); }, 130);
+});
+
+grid.addEventListener('click', e=>{
+  const b = e.target.closest('.copy');
+  if(!b) return;
+  const txt = b.dataset.copy;
+  const done = ()=>{
+    b.classList.add('done');
+    b.innerHTML = '✓';
+    setTimeout(()=>{ b.classList.remove('done'); b.innerHTML = COPY_ICON; }, 1200);
+  };
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(txt).then(done).catch(()=>fallback(txt,done));
+  } else fallback(txt, done);
+});
+
+function fallback(txt, cb){
+  const ta = document.createElement('textarea');
+  ta.value = txt; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); cb(); }catch(e){}
+  document.body.removeChild(ta);
 }
 
-function loop(){
-  ctx.clearRect(0, 0, W, H);
-  particles.forEach(p => { p.update(); p.draw(); });
-  connect();
-  requestAnimationFrame(loop);
-}
-loop();
+render();
 </script>
 
 </body>
