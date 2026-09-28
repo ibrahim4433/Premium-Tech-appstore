@@ -21,9 +21,18 @@ def save_offset(offset):
 
 def load_apps():
     if os.path.exists(APPS_FILE):
-        with open(APPS_FILE, 'r') as f:
+        with open(APPS_FILE, 'r', encoding='utf-8') as f:
             try:
-                return json.load(f)
+                apps = json.load(f)
+                # Aggressive deduplication on load to clean up any existing duplicates
+                seen = set()
+                dedup_apps = []
+                for app in apps:
+                    name = app.get('name', '').strip().lower()
+                    if name and name not in seen:
+                        seen.add(name)
+                        dedup_apps.append(app)
+                return dedup_apps
             except:
                 return []
     return []
@@ -123,13 +132,13 @@ def main():
                 extracted_info['icon_id'] = message['photo'][-1]['file_id']
                 
                 if is_edit:
-                    # Update existing app in database by name
-                    existing_app = next((a for a in apps if a.get('name') == extracted_info['name']), None)
+                    # Update existing app in database by name (case-insensitive)
+                    existing_app = next((a for a in apps if a.get('name', '').strip().lower() == extracted_info['name'].strip().lower()), None)
                     if existing_app:
                         existing_app.update(extracted_info)
                         added_count += 1
                         print(f"Updated info for existing app: {existing_app['name']}")
-                    elif current_app and current_app.get('name') == extracted_info['name']:
+                    elif current_app and current_app.get('name', '').strip().lower() == extracted_info['name'].strip().lower():
                         current_app.update(extracted_info)
                         save_pending(current_app)
                 else:
@@ -155,7 +164,7 @@ def main():
                 current_app['id'] = str(message['message_id'])
                 
                 # Remove older versions of the same app (Deduplication by Name)
-                apps = [a for a in apps if a.get('name') != current_app['name']]
+                apps = [a for a in apps if a.get('name', '').strip().lower() != current_app['name'].strip().lower()]
                 
                 # Add to database
                 apps.insert(0, current_app)
