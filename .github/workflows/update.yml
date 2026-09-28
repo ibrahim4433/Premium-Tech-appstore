@@ -28,6 +28,8 @@ jobs:
         run: python scripts/update.py
 
       - name: Commit and Push Changes
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -36,7 +38,6 @@ jobs:
           git commit -m "Auto-update apps database from Telegram"
 
           for attempt in 1 2 3; do
-            git pull --rebase origin "${GITHUB_REF_NAME}"
             if git push origin "HEAD:${GITHUB_REF_NAME}"; then
               break
             fi
@@ -46,6 +47,12 @@ jobs:
               exit 1
             fi
 
-            echo "Push rejected, retrying (${attempt}/3)..."
+            echo "Push rejected, rebuilding commit on latest branch (${attempt}/3)..."
+            git fetch origin "${GITHUB_REF_NAME}"
+            git reset --hard "origin/${GITHUB_REF_NAME}"
+            python scripts/update.py
+            git add apps.json offset.txt pending_app.json
+            git diff --cached --quiet && { echo "No changes to commit after refresh"; exit 0; }
+            git commit -m "Auto-update apps database from Telegram"
             sleep 2
           done
