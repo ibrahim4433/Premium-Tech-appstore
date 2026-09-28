@@ -19,7 +19,7 @@ const loading = document.getElementById('loading');
 const searchInput = document.getElementById('search-input');
 const themeToggle = document.getElementById('theme-toggle');
 const langToggle = document.getElementById('lang-toggle');
-const navItems = document.querySelectorAll('.bottom-nav .nav-item');
+const navItems = document.querySelectorAll('.bottom-nav .nav-item, .desktop-tab');
 const pageTitle = document.getElementById('page-title');
 const bannersSection = document.getElementById('banners-section');
 const modal = document.getElementById('app-modal');
@@ -127,11 +127,17 @@ function setLanguage(lang) {
     document.getElementById('banner-title').textContent = strings[lang].bannerTitle;
     document.getElementById('banner-desc').textContent = strings[lang].bannerDesc;
     
-    // Update Nav Labels
-    document.querySelector('[data-view="home"] .nav-label').textContent = strings[lang].navHome;
-    document.querySelector('[data-view="games"] .nav-label').textContent = strings[lang].navGames;
-    document.querySelector('[data-view="apps"] .nav-label').textContent = strings[lang].navApps;
-    document.querySelector('[data-view="categories"] .nav-label').textContent = strings[lang].navCategories;
+    // Update Nav Labels (Mobile)
+    document.querySelector('.bottom-nav [data-view="home"] .nav-label').textContent = strings[lang].navHome;
+    document.querySelector('.bottom-nav [data-view="games"] .nav-label').textContent = strings[lang].navGames;
+    document.querySelector('.bottom-nav [data-view="apps"] .nav-label').textContent = strings[lang].navApps;
+    document.querySelector('.bottom-nav [data-view="categories"] .nav-label').textContent = strings[lang].navCategories;
+
+    // Update Desktop Tabs
+    document.querySelector('.desktop-tabs [data-view="home"]').textContent = strings[lang].navHome;
+    document.querySelector('.desktop-tabs [data-view="games"]').textContent = strings[lang].navGames;
+    document.querySelector('.desktop-tabs [data-view="apps"]').textContent = strings[lang].navApps;
+    document.querySelector('.desktop-tabs [data-view="categories"]').textContent = strings[lang].navCategories;
 
     // Refresh UI
     updateViewTitle();
@@ -177,11 +183,11 @@ function switchView(viewName) {
     
     // Update active nav button
     navItems.forEach(btn => btn.classList.remove('active'));
-    document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
+    document.querySelectorAll(`[data-view="${viewName}"]`).forEach(btn => btn.classList.add('active'));
 
     // Hide all pages
     Object.values(views).forEach(page => {
-        if(page) page.classList.add('hidden');
+        if(page) page.classList.remove('active');
     });
 
     // Handle Search Override
@@ -193,10 +199,10 @@ function switchView(viewName) {
     // Show selected page
     if (viewName === 'categories') {
         bannersSection.style.display = 'none';
-        views.categories.classList.remove('hidden');
+        views.categories.classList.add('active');
     } else {
         bannersSection.style.display = viewName === 'home' ? 'flex' : 'none';
-        views.apps.classList.remove('hidden');
+        views.apps.classList.add('active');
         updateViewTitle();
         renderApps();
     }
