@@ -143,6 +143,7 @@ async def main():
                     pending_app['file_name'] = file_name
                     pending_app['size'] = doc.size
                     pending_app['id'] = str(message.id)
+                    pending_app['chat_id'] = str(message.chat_id)
 
                     apps = [a for a in apps if a.get('name', '').strip().lower() != pending_app['name'].strip().lower()]
                     apps.insert(0, pending_app)
