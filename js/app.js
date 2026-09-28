@@ -1,4 +1,35 @@
+// ==========================================
+// STORE CONFIGURATION
+// ==========================================
 const WORKER_URL = "https://appstore-proxy.4445622.workers.dev"; // The worker URL from user
+
+// Add or edit your sliding banners here!
+// You can use a custom image (e.g., 'assets/banner1.jpg') or a gradient background.
+// Icons use FontAwesome class names (e.g., 'fa-rocket', 'fa-fire', 'fa-gamepad').
+const STORE_BANNERS = [
+    {
+        title: { ar: "اكتشف الجديد", en: "Discover New" },
+        subtitle: { ar: "أفضل التطبيقات والألعاب المميزة", en: "The best premium apps & games" },
+        image: "", 
+        background: "linear-gradient(45deg, #024773, #11a6d4)",
+        icon: "fa-rocket"
+    },
+    {
+        title: { ar: "الأكثر تحميلاً", en: "Most Downloaded" },
+        subtitle: { ar: "تطبيقات لا غنى عنها في هاتفك", en: "Must-have apps for your phone" },
+        image: "", 
+        background: "linear-gradient(45deg, #4b134f, #c94b4b)",
+        icon: "fa-fire"
+    },
+    {
+        title: { ar: "ألعاب مميزة", en: "Featured Games" },
+        subtitle: { ar: "عش المغامرة مع أفضل الألعاب", en: "Live the adventure with best games" },
+        image: "", 
+        background: "linear-gradient(45deg, #134e5e, #71b280)",
+        icon: "fa-gamepad"
+    }
+];
+// ==========================================
 
 let allApps = [];
 let currentLanguage = 'ar';
@@ -94,6 +125,7 @@ const strings = {
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initLanguage();
+    renderBanners();
     fetchApps();
     setupEventListeners();
 });
@@ -124,9 +156,6 @@ function setLanguage(lang) {
     document.getElementById('loading-text').textContent = strings[lang].loading;
     document.getElementById('about-title').textContent = strings[lang].about;
     document.getElementById('download-text').textContent = strings[lang].download;
-    document.getElementById('banner-title').textContent = strings[lang].bannerTitle;
-    document.getElementById('banner-desc').textContent = strings[lang].bannerDesc;
-    
     // Update Nav Labels (Mobile)
     document.querySelector('.bottom-nav [data-view="home"] .nav-label').textContent = strings[lang].navHome;
     document.querySelector('.bottom-nav [data-view="games"] .nav-label').textContent = strings[lang].navGames;
@@ -139,8 +168,8 @@ function setLanguage(lang) {
     document.querySelector('.desktop-tabs [data-view="apps"]').textContent = strings[lang].navApps;
     document.querySelector('.desktop-tabs [data-view="categories"]').textContent = strings[lang].navCategories;
 
-    // Refresh UI
     updateViewTitle();
+    renderBanners();
     if (allApps.length > 0) {
         renderCategories();
         renderApps();
@@ -237,6 +266,36 @@ async function fetchApps() {
         console.error(error);
         document.getElementById('loading-text').textContent = 'Error loading store data.';
     }
+}
+
+function renderBanners() {
+    bannersSection.innerHTML = '';
+    
+    STORE_BANNERS.forEach(banner => {
+        const div = document.createElement('div');
+        div.className = 'banner';
+        
+        let html = '';
+        if (banner.image) {
+            html += `<img src="${banner.image}" class="banner-img" alt="Banner">`;
+            html += `<div class="banner-overlay"></div>`;
+        } else {
+            div.style.background = banner.background;
+            if (banner.icon) {
+                html += `<i class="fa-solid ${banner.icon} bg-icon"></i>`;
+            }
+        }
+        
+        html += `
+            <div class="banner-content">
+                <h2>${banner.title[currentLanguage]}</h2>
+                <p>${banner.subtitle[currentLanguage]}</p>
+            </div>
+        `;
+        
+        div.innerHTML = html;
+        bannersSection.appendChild(div);
+    });
 }
 
 function renderCategories() {
