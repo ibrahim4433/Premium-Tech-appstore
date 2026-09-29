@@ -754,22 +754,15 @@ function createFloatingBackground() {
 // ==========================================
 // PWA INSTALLATION LOGIC
 // ==========================================
-let deferredPrompt;
 const installBtn = document.getElementById('pwa-install-btn');
 const installModal = document.getElementById('install-modal');
 const closeInstallModalBtn = document.getElementById('close-install-modal');
 const confirmInstallBtn = document.getElementById('confirm-install-btn');
 
-window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevent the mini-infobar from appearing on mobile
-    e.preventDefault();
-    // Stash the event so it can be triggered later.
-    deferredPrompt = e;
-    // Update UI notify the user they can install the PWA
-    if (installBtn) {
-        installBtn.style.display = 'flex';
-    }
-});
+// If the event fired before this script loaded, show the button immediately
+if (window.deferredPrompt && installBtn) {
+    installBtn.style.display = 'flex';
+}
 
 if (installBtn) {
     installBtn.addEventListener('click', () => {
@@ -787,14 +780,14 @@ if (closeInstallModalBtn) {
 if (confirmInstallBtn) {
     confirmInstallBtn.addEventListener('click', async () => {
         installModal.classList.remove('active');
-        if (deferredPrompt) {
+        if (window.deferredPrompt) {
             // Show the install prompt
-            deferredPrompt.prompt();
+            window.deferredPrompt.prompt();
             // Wait for the user to respond to the prompt
-            const { outcome } = await deferredPrompt.userChoice;
+            const { outcome } = await window.deferredPrompt.userChoice;
             console.log(`User response to the install prompt: ${outcome}`);
             // We've used the prompt, and can't use it again, throw it away
-            deferredPrompt = null;
+            window.deferredPrompt = null;
             installBtn.style.display = 'none';
         }
     });
@@ -803,8 +796,8 @@ if (confirmInstallBtn) {
 window.addEventListener('appinstalled', () => {
     // Hide the app-provided install promotion
     if (installBtn) installBtn.style.display = 'none';
-    installModal.classList.remove('active');
+    if (installModal) installModal.classList.remove('active');
     // Clear the deferredPrompt so it can be garbage collected
-    deferredPrompt = null;
+    window.deferredPrompt = null;
     console.log('PWA was installed');
 });
