@@ -108,11 +108,16 @@ def main():
     me_res = requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/getMe").json()
     if me_res.get('ok'):
         print(f"Bot Identity Confirmed: @{me_res['result']['username']}")
+        
+    wh_info = requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/getWebhookInfo").json()
+    print(f"Webhook/Queue Status: {wh_info}")
     
     print(f"Fetching updates from offset: {offset}")
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates"
     params = {'offset': offset, 'timeout': 10}
     response = requests.get(url, params=params)
+    if response.status_code != 200:
+        print(f"Telegram API Error {response.status_code}: {response.text}")
     updates = response.json().get('result', []) if response.status_code == 200 else []
     
     print(f"Received {len(updates)} updates from Telegram.")
