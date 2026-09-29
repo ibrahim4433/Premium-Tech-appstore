@@ -105,6 +105,9 @@ def main():
     offset = get_offset()
     apps = load_apps()
     current_app = load_pending()
+    me_res = requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/getMe").json()
+    if me_res.get('ok'):
+        print(f"Bot Identity Confirmed: @{me_res['result']['username']}")
     
     print(f"Fetching updates from offset: {offset}")
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates"
