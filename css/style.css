@@ -652,7 +652,7 @@ body {
     
     /* Pull logo strictly to the corner in small screens */
     .top-header { padding: 0.5rem 0.2rem; }
-    .nav-brand { margin-right: -0.5rem; margin-left: 0; }
+    .nav-brand { margin-right:-6.5rem ; margin-left: 0; }
     :root[dir="ltr"] .nav-brand { margin-left: -0.5rem; margin-right: 0; }
 }
 
