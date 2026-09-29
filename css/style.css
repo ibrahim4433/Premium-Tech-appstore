@@ -199,7 +199,7 @@ body {
 }
 :root[dir="rtl"] .search-bar input { padding: 0.8rem 2.5rem 0.8rem 1rem; }
 .search-bar input:focus { background: var(--bg-secondary); border-color: var(--accent-color); }
-.search-icon { position: absolute; color: var(--text-secondary); left: 1rem; }
+.search-icon { position: absolute; color: var(--text-secondary); left: 1rem; z-index: 10; }
 :root[dir="rtl"] .search-icon { left: auto; right: 1rem; }
 
 /* Desktop Tabs */
@@ -673,6 +673,7 @@ body {
     height: 100%;
     display: flex;
     align-items: center;
+    z-index: 10;
 }
 :root[dir="rtl"] .filter-toggle { right: auto; left: 1rem; }
 .filter-toggle:hover, .filter-toggle.active { color: var(--accent-color); }
