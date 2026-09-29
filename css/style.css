@@ -120,13 +120,39 @@ body {
     gap: 0.75rem;
 }
 
+.logo-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-glow {
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, var(--accent-color) 0%, transparent 60%);
+    opacity: 0.5;
+    z-index: 0;
+    border-radius: 50%;
+    animation: pulseGlow 2.5s infinite alternate;
+}
+
+@keyframes pulseGlow {
+    0% { transform: scale(0.8); opacity: 0.3; }
+    100% { transform: scale(1.4); opacity: 0.9; }
+}
+
 .brand-logo {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     border: 2px solid var(--accent-color);
     box-shadow: 0 0 10px rgba(0, 168, 232, 0.4);
     object-fit: cover;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
 }
 
 .brand-text {
@@ -213,12 +239,24 @@ body {
 }
 
 @media (min-width: 768px) {
+    .top-header .nav-container {
+        max-width: 98%; /* Push to the corners on big screens */
+    }
+    .brand-logo {
+        width: 72px;
+        height: 72px;
+        border-width: 3px;
+        box-shadow: 0 0 20px rgba(0, 168, 232, 0.6);
+    }
+    .brand-text {
+        font-size: 1.8rem;
+    }
     .nav-container {
         flex-wrap: nowrap;
         gap: 1.5rem;
     }
-    .nav-brand { order: 1; margin-left: auto; /* Push others to left in RTL */ }
-    :root[dir="ltr"] .nav-brand { margin-left: 0; margin-right: auto; }
+    .nav-brand { order: 1; margin-left: auto; margin-right: -0.5rem; }
+    :root[dir="ltr"] .nav-brand { margin-left: -0.5rem; margin-right: auto; }
     
     .desktop-tabs-wrapper {
         order: 2;
