@@ -1,6 +1,6 @@
 # 📱 Premium Tech AppStore
 
-Welcome to the **Premium Tech AppStore** repository! This project is a fully automated, static web application hosted on GitHub Pages that serves as a beautiful frontend for a Telegram Channel. 
+Welcome to the **Premium Techs AppStore** repository! This project is a fully automated, static web application hosted on GitHub Pages that serves as a beautiful frontend for a Telegram Channel. 
 
 It automatically fetches apps and games posted in a private Telegram channel and displays them in a premium, glassmorphism-styled dark mode UI, allowing users to download files directly from Telegram without leaving their browser!
 
