@@ -6,7 +6,11 @@ It automatically fetches apps and games posted in a private Telegram channel and
 
 ## 🌟 Features
 - **Fully Automated Data Pipeline:** Uses GitHub Actions to sync with your Telegram channel every 6 hours automatically.
-- **Premium UI:** A stunning, modern dark-mode interface built with Vanilla CSS (Glassmorphism, CSS Variables, Responsive Design).
+- **Premium UI:** A stunning, modern interface built with Vanilla CSS (Glassmorphism, CSS Variables, Responsive Design).
+- **Bilingual Support (English & Arabic):** Full right-to-left (RTL) and left-to-right (LTR) support with an easy language toggle.
+- **Dark & Light Mode:** Built-in theme switcher to suit user preferences.
+- **Advanced Search & Filtering:** Instantly search apps, filter by categories, and sort by name, size, or date.
+- **Smart Categories:** Automatically tags and groups apps/games into intuitive categories (Games, Social, Tools, etc.) based on keywords.
 - **Zero Server Costs:** Hosted entirely for free on GitHub Pages.
 - **Smart Parsing:** Automatically reads Arabic Telegram messages, extracting App/Game titles, descriptions, versions, and icons accurately.
 - **Secure Direct Downloads:** Uses a Cloudflare Worker proxy to generate fresh download links on-the-fly, keeping your Telegram Bot Token 100% secure.
