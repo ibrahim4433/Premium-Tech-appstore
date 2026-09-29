@@ -112,10 +112,13 @@ def main():
     response = requests.get(url, params=params)
     updates = response.json().get('result', []) if response.status_code == 200 else []
     
+    print(f"Received {len(updates)} updates from Telegram.")
+    
     highest_offset = offset
     added_count = 0
     
     for update in updates:
+        # print(f"Processing update: {json.dumps(update, ensure_ascii=False)}") # Uncomment if deep debug needed
         update_id = update['update_id']
         highest_offset = max(highest_offset, update_id + 1)
         
