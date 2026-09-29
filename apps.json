@@ -1,5 +1,405 @@
 [
     {
+        "name": "Video downloader",
+        "description": "تطبيق \"Video downloader, mp4, m3u8\" هو أداة مجانية لتحميل الفيديوهات عالية الجودة من الإنترنت بسرعة وسهولة.\nيدعم تنزيل ملفات MP4 وM3u8 من مواقع متعددة مثل يوتيوب وتويتر وغيرها، مع خيارات لاختيار الدقة والصيغة.\nيتميز بواجهة بسيطة تسمح بلصق الرابط مباشرة والبدء في التحميل دون إعلانات مزعجة.\nمثالي للمستخدمين الذين يريدون حفظ الفيديوهات للعرض دون اتصال بالإنترنت، مع دعم للتحديثات المنتظمة.\n🧊 الإصدار: v1.3.10\n🏷 النسخة المعدلة وفيها :\n💎 مفتوح Premium",
+        "version": "v1.3.10",
+        "category": "Apps",
+        "tags": [
+            "#Tools"
+        ],
+        "icon_id": "AgACAgQAAxkBAANgarsFMHbjfR0VPrlaprYLbL3AM7AAAiXNMRs0eUlT--lVIHGVRXMBAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAANharsFMMCdNgnnlmmk20w6M3yOtYQAAkKAAAJVflBLCvKmkbXULwc9BA",
+        "file_name": "Video downloader @premium_techs.apk.apk",
+        "size": 67443215,
+        "id": "18790",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Zero Cleaner: clear cache",
+        "description": "تطبيق Zero Cleaner هو الحل الأمثل لتحسين أداء هاتفك الأندرويد! 🚀\n\n🧹 تنظيف سريع: يزيل الملفات المؤقتة وغير الضرورية لتحرير المساحة.\n⚡ تسريع الأداء: يغلق التطبيقات الثقيلة لتحسين سرعة الهاتف.\n🔋 توفير البطارية: يطيل عمر البطارية عبر إدارة استهلاك الطاقة.\n📦 إدارة التطبيقات: يساعدك على حذف التطبيقات غير المرغوب فيها بسهولة.\n🧊 الإصدار: 4.1.5\n🏷 النسخة المعدلة وفيها :\n❤️‍🔥 كل ميزات مدفوعة مفتوحة\n❤️‍🔥 بدون اعلانات",
+        "version": "4.1.5",
+        "category": "Apps",
+        "tags": [
+            "#Tools"
+        ],
+        "icon_id": "AgACAgQAAxkBAANdarsFMPoL17ACqJsAAcT1eThv3mtAAAK1sDEbqT4lUX4RucTuN89RAQADAgADeAADPQQ",
+        "file_id": "BQACAgIAAxkBAANearsFMKM1wGVTC1_b5jhnpmQU6KAAAhGVAAJVfkhLJQwuhSekp-A9BA",
+        "file_name": "ZERO cleaner @premium_techs.apk.apk",
+        "size": 5537480,
+        "id": "18786",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Translate On Screen",
+        "description": "تطبيق يقرأ الشاشة و يترجم المكتوب بها, و يمكن نقل النص حتى من الصور\n🧊 الإصدار: 1.174\n🏷 النسخة المدفوعة وفيها :\n💎 مفتوح Premium\n✅ ميزات ترجمة بذكاء اصطناعي شغالة",
+        "version": "1.174",
+        "category": "Apps",
+        "tags": [
+            "#Tools"
+        ],
+        "icon_id": "AgACAgQAAxkBAANaarsFMGI2mLAMwxBhHOwmVAAB7M1lAAJptTEbm2w4URW_N85w2QHLAQADAgADeQADPQQ",
+        "file_id": "BQACAgIAAxkBAANbarsFMGLmVFd3CqbQs5opIFLXxBMAAhmNAAJVfkhLvgIkKvUdhAY9BA",
+        "file_name": "Translate On Screen @premium_techs.apk.apk",
+        "size": 60732332,
+        "id": "18783",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Tellonym",
+        "description": "تطبيق Tellonym هو منصة تواصل تسمح لك باستقبال رسائل وأسئلة مجهولة أو معروفة من الآخرين، وتقرر أنت إذا ترد أو تنشرها. فكرته مبنية على الصراحة والتفاعل، مع وجود إعدادات للتحكم بالخصوصية ومنع الرسائل المزعجة.\n🧊 الإصدار: 3.142.1\n🏷 النسخة المعدلة وفيها :\n◉ النسخة المميزة مفتوحة\n◉ تمت إزالة الإعلانات\n◉ لغات متعددة",
+        "version": "3.142.1",
+        "category": "Apps",
+        "tags": [],
+        "icon_id": "AgACAgQAAxkBAANXarsFMG1VNkYQ-jspFIqZXN7LDyAAAqTIMRtwv1hRN_ZvuRXxjO0BAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAANYarsFMCTEUaonmPFTeTlIOthYFwEAAnuLAAJVfkhL2qSiO1RXhl49BA",
+        "file_name": "Tellonym @premium_techs.apk.apk",
+        "size": 64098553,
+        "id": "18780",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Grok",
+        "description": "هو تطبيق ذكاء اصطناعي مبتكر من تطوير xAI، يهدف إلى تقديم إجابات مفيدة وشاملة للأسئلة. يجمع بين فهم عميق للبشرية وقدرة على تحليل البيانات المعقدة. يمكنه الوصول إلى معلومات متنوعة، من السياق الاجتماعي إلى العلوم والتكنولوجيا. بفضل نهجه المبتكر، يوفر Grok رؤى فريدة ومساعدة في مجموعة واسعة من الموضوعات.\n🧊 الإصدار: 1.0.25\n🏷 النسخة المعدلة وفيها :\n💎 تم فتح Premium\n✅ كل الميزات شغالة\n🚨سجل عن طريق ايمايل",
+        "version": "1.0.25",
+        "category": "Apps",
+        "tags": [
+            "#AIChatbot"
+        ],
+        "icon_id": "AgACAgQAAxkBAANUarsFMLmtbEc4n77WjDe9FA6qfbkAAm_HMRsIwIlTAUV29ty5a3gBAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAANVarsFMKYByXpKoLW_OJEKfFthmOcAAhCLAAJVfkhLvmUPRiSXyUM9BA",
+        "file_name": "Grok @premium_techs.apk.apk",
+        "size": 89614000,
+        "id": "18777",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Anime Day",
+        "description": "🔴 انمي داي\nلمشاهدة افلام انمي\nتطبيق لمشاهدة مسلسلات والافلام الانمي المدبلج والمترجم عربي\n🧊 الإصدار: 3.6.1\n🏷 النسخة المعدلة وفيها :\n✅ تمت ازالة الاعلانات\n✅نزع كشف  DNS",
+        "version": "3.6.1",
+        "category": "Apps",
+        "tags": [
+            "#TV",
+            "#Watching",
+            "#Anime",
+            "#Cartoon"
+        ],
+        "icon_id": "AgACAgQAAxkBAANQarsFMPlbc_odxoErV-QMWab2mBIAAhrFMRs8smFR30pmrFe0P9QBAAMCAAN5AAM9BA",
+        "file_id": "BQACAgIAAxkBAANRarsFMArWOIWXhmjNl5fy1D8TO6gAAgqEAAJVfkhL5WRcRPfahQY9BA",
+        "file_name": "Animeday @premium_techs.apk.apk",
+        "size": 31655793,
+        "id": "18773",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Material Capsule: Dynamic UI",
+        "description": "جزيرة ديناميكية، اختصارات، تحكم بالموسيقى، والمزيد بالقرب من الكاميرا\n\nأضف لمسة حيوية على شاشتك مع تطبيق Material Capsule\n\nيضيف هذا التطبيق تصميم Material Capsule أنيقًا حول الكاميرا الأمامية - مستوحى من تصميم Material 3 المعبّر لتجربة أندرويد سلسة وعصرية.\n🧊 الإصدار: v4.5\n🏷 النسخة المعدلة وفيها :\n💎 مفتوح Premium",
+        "version": "v4.5",
+        "category": "Apps",
+        "tags": [
+            "#Tools"
+        ],
+        "icon_id": "AgACAgQAAxkBAANMarsFMAiRllfoMPJpi2lQQ1hfHlwAAhXQMRs0eUFT02mqlxDDa-8BAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAANNarsFMBnhEeTWp5_ll083caZZuesAAsiUAAJVfkBL1lMmohgAATdtPQQ",
+        "file_name": "Material Capsule: Dynamic UI @premium_techs.apk.apk",
+        "size": 27794473,
+        "id": "18768",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Arabic Designer Text on Photo",
+        "description": "أنشئ تصميمات منشورات وملصقات رائعة واكتب نصًا على الصور باستخدام الخطوط العربية\n\nنقدم لك تطبيق مصمم الجرافيك العربي المحترف! يمكنك الآن التصميم مثل مصمم الجرافيك المحترف مع إمكانية الوصول غير المحدودة إلى قوالب التصميم المعدة مسبقًا وصور PNG وخلفيات جميلة وشعارات ونصوص بالخط العربي.\n🧊 الإصدار: 126\n🏷 النسخة المعدلة وفيها :\n💎 مفتوح Premium",
+        "version": "126",
+        "category": "Apps",
+        "tags": [
+            "#Photography"
+        ],
+        "icon_id": "AgACAgQAAxkBAANJarsFMPE7vbAmxIPlAcyuqTtqEUkAAgmvMRv0ZAVTU6mQi3qftSoBAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAANKarsFMF2TG8_MNECx_FWRy95uwRkAArCBAAKvLEBLqk2xn1N61j09BA",
+        "file_name": "Arabic Designer @premium_techs.apk.apk",
+        "size": 44079172,
+        "id": "18765",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Themepack",
+        "description": "تطبيق Themepack يتيح لك تخصيص شكل هاتفك من خلال ثيمات جاهزة، أيقونات، وخلفيات أنيقة لتغيير مظهر الشاشة بالكامل بسهولة وبأسلوب جذّاب.\n🧊 الإصدار: 1.0.0.3324\n🏷 النسخة المعدلة و فيها\n💎 مفتوح Premium\n❌ بدون اعلانات",
+        "version": "1.0.0.3324",
+        "category": "Apps",
+        "tags": [
+            "#watching"
+        ],
+        "icon_id": "AgACAgQAAxkBAANGarsFMPaVqnuDkainKA-kjEFRMlgAAmXHMRtnFUFTyRtdwsBguUABAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAANHarsFMFwm4hL-1XAljv9PIsRCprYAAuZ5AAJGgjlLoTHAy1HC2i89BA",
+        "file_name": "Themepack @premium_techs.apk.apk",
+        "size": 34347456,
+        "id": "18762",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "EgyBest",
+        "description": "تطبيق إيجي بست الأصلي لمشاهدة اقوي الافلام والمسلسلات الحصرية. إستمتع بتجربة رائعة لمشاهدة اقوي الأفلام و المسلسلات مجانا علي تطبيقنا.\n🧊 الإصدار: v10\n🏷 النسخة المعدلة و فيها\n❌ بدون اعلانات",
+        "version": "v10",
+        "category": "Apps",
+        "tags": [
+            "#watching"
+        ],
+        "icon_id": "AgACAgQAAxkBAANDarsFMM16P1rWftOCjxbvygRinw4AAtLKMRtnFTlTnXuQa540Zk0BAAMCAANtAAM9BA",
+        "file_id": "BQACAgIAAxkBAANEarsFMEs1xS9WYhVxNjHv-HkgMvYAAvSGAAJGgjFLFjte37SQkpo9BA",
+        "file_name": "EgyBest @premium_techs.apk.apk",
+        "size": 43965830,
+        "id": "18756",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "LOKLOK 2025",
+        "description": "منصة ترفيهية لمشاهدة الأفلام والمسلسلات الآسيوية المترجمة بجودة عالية. يتميز بواجهة سهلة الاستخدام ومكتبة واسعة تضم أكثر من 90% من الأعمال الشهيرة. يوفر خيارات ترجمة متعددة وإمكانية تحميل المحتوى للمشاهدة بدون إنترنت. مثالي لعشاق الدراما والسينما الآسيوية بتجربة مشاهدة مريحة وممتعة.\n🧊 الإصدار: 1.1.0\n🏷 النسخة المعدلة وفيها :\n💎 مفتوح Vip\n✅ جودة 1080 مفتوحة\n⚠️ تسجيل دخول ضروري لتفعيل ميزات\n📥 تحميل شغال\n🤫الاصدار الي في جوجل",
+        "version": "1.1.0",
+        "category": "Apps",
+        "tags": [
+            "#Watching"
+        ],
+        "icon_id": "AgACAgQAAxkBAANAarsFMGzpUVWj2y-7YxranYAVWeYAAs_KMRtnFTlTMyZRxUIskqUBAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAANBarsFMJP28wSfVElD9vIBKHr60ykAAtiGAAJGgjFLmAT8xDqkWQo9BA",
+        "file_name": "Loklok 2025 @premium_techs.apk.apk",
+        "size": 72325396,
+        "id": "18750",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Yalla Shoot",
+        "description": "من أفضل التطبيقات العربية لمتابعة نتائج المباريات ومواعيدها, يلا شووت في ثوبه الجديد أصبح يُنافس التطبيقات العالمية, يأتي Yalla Shoot بنسخة عربية بشكل كامل يُمكنك متابعة نتائج ومواعيد مباريات فريقك المفضل.\n🧊 الإصدار: v4.10.2\n🏷 النسخة المعدلة وفيها :\n❌ بدون اعلانات",
+        "version": "v4.10.2",
+        "category": "Apps",
+        "tags": [],
+        "icon_id": "AgACAgQAAxkBAAM9arsFMAtFB7YaLj_-coOAAx6qpNwAAsjKMRtnFTlTCjKAsjmgYNsBAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAAM-arsFMDhkMpBkumyO7yDTpAbkQFkAAraGAAJGgjFLhfMAAcXnv30PPQQ",
+        "file_name": "Yalla Shoot @premium_techs.apk.apk",
+        "size": 57463045,
+        "id": "18745",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Shahid",
+        "description": "تطبيق Shahid VIP هو منصة بث عربية تقدم مجموعة واسعة من المسلسلات والأفلام العربية والعالمية. يوفر محتوى حصريًا بجودة عالية مع خيارات مشاهدة بدون إعلانات. يدعم الترجمة والتحميل للمشاهدة دون اتصال، ويتوفر على أجهزة متعددة. مثالي لمحبي الدراما والترفيه العربي بتجربة مريحة ومميزة.\n🧊 الإصدار: v7.104.1\n🏷 النسخة المعدلة وفيها :\n⚙️  تم التخلص من جميع الإعلانات في التطبيق!\n✔️  تم تخطي إعلانات الفيديو عند المشاهدة\n⚡️ تم فتح صيغة المشاهدة القصوى Full HD\n🏪  تم فتح المشاهدة المستمرة على جميع القنوات",
+        "version": "v7.104.1",
+        "category": "Apps",
+        "tags": [],
+        "icon_id": "AgACAgQAAxkBAAM6arsFMHaPPOqhOwbiP6qP6ZbCkLoAAgnIMRsYEChTnB8J2OxBk7kBAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAAM7arsFMM-0MFgwZJqz-keTky7SNwcAArB_AALgSzBLWYMUWt9aUzU9BA",
+        "file_name": "Shahid @premium_techs.apk.apk",
+        "size": 27122971,
+        "id": "18742",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "sportzfy",
+        "description": "سبورتزفي، وجهتك الأمثل لبث مباريات كرة القدم والكريكيت مباشرةً! سواء كنت من عشاق الرياضة أو من محبي الإثارة، يوفر لك سبورتزفي كل ما تحتاجه من أحداث مباشرة. في سبورتزفي، نلتزم بتقديم بث عالي الجودة ومتواصل لمباريات كرة القدم والكريكيت. من الأهداف والسداسيات المثيرة إلى النهايات المثيرة، يضمن لك تطبيقنا ألا تفوت أي لحظة من رياضتك المفضلة.\n🧊 الإصدار: v9.0\n🏷 النسخة المعدلة و فيها\n❌ بدون اعلانات",
+        "version": "v9.0",
+        "category": "Apps",
+        "tags": [
+            "#watching"
+        ],
+        "icon_id": "AgACAgQAAxkBAAM3arsFMFAAAWRtoQPkvgQllnQqrPAoAAKUxzEbGBAoU12zkFxrNL4IAQADAgADeAADPQQ",
+        "file_id": "BQACAgIAAxkBAAM4arsFMBReaFpPea3TRUu5D7qU8LEAAs2DAALgSyhL7PzZuv35WLk9BA",
+        "file_name": "sportzfy 2 @premium_techs.apk.apk",
+        "size": 17199511,
+        "id": "18738",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Zerde Live",
+        "description": "زردة لايف (الأخضر) المتربع على عرش تطبيقات مشاهدة المباريات سنة 2005. تطبيق Zarda Live يعتبر افضل تطبيق بث مباشر لعام 2025 لمشاهدة القنوات التلفزيونية المشفرة والمفتوحة ومتابعة المباريات والدوريات العالمية.\n🧊 الإصدار: v1.6\n🏷 النسخة المعدلة و فيها\n❌ بدون اعلانات\n☑️ بدون حاجة لمشغل خارجي\n☑️ سيرفرات VlP",
+        "version": "v1.6",
+        "category": "Apps",
+        "tags": [
+            "#watching"
+        ],
+        "icon_id": "AgACAgQAAxkBAAM0arsFMDURYrzBN8OmBRy-yIDhcrgAAo_HMRsYEChTDx9ggGB_lqABAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAAM1arsFMC_WcWKWzJAlAzeiQF20dCkAAqSDAALgSyhLo-czUSN1fFE9BA",
+        "file_name": "Zerde Live @premium_techs.apk.apk",
+        "size": 13022992,
+        "id": "18735",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Mx Player",
+        "description": "أفضل مشغل موسيقى وفيديو بكل الصيغ لنظام Android\n🧊 الإصدار: v2.1.0\n🏷 النسخة المعدلة و فيها\n🗂 لا وجود للاعلانات\n🔤لغات متعددة متاحة\n✅ كل شي مفتوح",
+        "version": "v2.1.0",
+        "category": "Apps",
+        "tags": [
+            "#watching"
+        ],
+        "icon_id": "AgACAgQAAxkBAAMxarsFMMyEHsNkutkpCkk1cbryJcQAAojNMRtanCFT-aym6PFE8kkBAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAAMyarsFMBJXUIXIXtVx0rr_Rp9UCHsAAlyNAALgSyBLoAc-v0KjU8A9BA",
+        "file_name": "MX Player @premium_techs.apk.apk",
+        "size": 44987629,
+        "id": "18728",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Wecima",
+        "description": "مشاهدة الافلام و المسلسلات المترجمة للعربي و المدبلجة 🍿🔥\n\n• تطبيق طبق الاصل على ايجيبست و ايجيواتش في الواجهة حيث يعمل بسلاسة و يدعم الترجمة مدمجة للعربي مع خاصية التحميل للحلقات و كذلك الاضافة للقائمة !\n\n• كل الحلقات الخاصة بالمسلسلات الجديدة تعرض في وقتها و كذلك الافلام الحصرية و الحديثة 🔥\n\nرغم ان التطبيق يحما نفس واجهة بعض التطبيقات لكن المحتوى قد يختلف في وجود افلام لا توجد في التطبيقات الاخرى و العكس صحيح\n🧊 الإصدار: v15.1.0\n🏷 النسخة المعدلة وفيها :\n💎 مفتوح Premium\n❌ وبدون اعلانات",
+        "version": "v15.1.0",
+        "category": "Apps",
+        "tags": [
+            "#watching"
+        ],
+        "icon_id": "AgACAgQAAxkBAAMrarsFMHvs-jFLq6OOhH8B-AKSjj4AAvTNMRtanBlT_gyyhuZHgW8BAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAAMsarsFMPnZMBabZWhJT9eHV8e3QyMAAkyEAAJU3RlL86weRTVRERM9BA",
+        "file_name": "Wecima @premium_techs.apk.apk",
+        "size": 43381131,
+        "id": "18717",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "CamScanner",
+        "description": "تطبيق CamScanner هو أفضل تطبيق ماسح ضوئي يحول هاتفك إلى ماسح ضوئي لملفات PDF. تحويل الصور إلى pdf بنقرة بسيطة!\nيساعدك CamScanner على إجراء مسح ضوئي وتخزين ومزامنة والتعاون في محتويات مختلفة.\n\n🧊 الإصدار: v7.3.1.2509240000\n🏷 النسخة المعدلة وفيها :\n💎 مفتوح Premium\n❌ وبدون اعلانات",
+        "version": "v7.3.1.2509240000",
+        "category": "Apps",
+        "tags": [
+            "#Tools"
+        ],
+        "icon_id": "AgACAgQAAxkBAAMoarsFMOrMnkyFitXk-14ni6CceiUAAujNMRtanBlTHMHC4zEPRpoBAAMCAAN4AAM9BA",
+        "file_id": "BQACAgUAAxkBAAMparsFMICQdnJOQR0k6fMx4P_k-McAAiIaAAKzpxlXpK-3PbHw7Nw9BA",
+        "file_name": "CamScanner @premium_techs.apk",
+        "size": 191695366,
+        "id": "18714",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "DramaWorld",
+        "description": "تطبيق DramaWorld هو منصة لمشاهدة المسلسلات والأفلام (خصوصًا الكورية والآسيوية أحيانًا) مترجمة أونلاين بجودة مختلفة.\nيتيح لك:\n🧊 الإصدار: v4.2 Pro Max\n🏷 النسخة المعدلة وفيها :\n💎 مفتوح Premium\n✅ وبدون اعلانات\n✅ ومفتوح كل شي",
+        "version": "v4.2 Pro Max",
+        "category": "Apps",
+        "tags": [
+            "#Tools"
+        ],
+        "icon_id": "AgACAgQAAxkBAAMkarsFMCnTJm4TGCpfAwU4pSIT9fYAAlbNMRtanBlTyg9GibZROIEBAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAAMlarsFMJSoMOrYDYRVGrSu6EwDJMsAAi19AAJU3RlLMsDs3j0hwPI9BA",
+        "file_name": "DramaWorld @premium_techs.apk.apk",
+        "size": 16951229,
+        "id": "18709",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Anime Ray",
+        "description": "أنمي راي هو تطبيقك الأمثل لمتابعة كل جديد في عالم الأنمي! احصل على إشعارات فورية بأحدث أخبار الأنمي وتفاعل مع مجتمعنا عبر التعليقات. اكتشف مواسم الأنمي المفضلة لديك وشارك آراءك مع محبي الأنمي في كل مكان.\n🧊 الإصدار: 5.0.0\n🏷 النسخة المعدلة وفيها :\n❌ بدون اعلانات",
+        "version": "5.0.0",
+        "category": "Apps",
+        "tags": [
+            "#Learning"
+        ],
+        "icon_id": "AgACAgQAAxkBAAMearsFMJypSf6MKUM9M1fUuKh3iTwAAmjJMRtanBFT_jfcCEx_K5QBAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAAMfarsFMP8W_g6TfNww8frUrcjmtIQAAjZ8AAJU3RlLlXHhhSmSTpc9BA",
+        "file_name": "Anime Ray @premium_techs.apk.apk",
+        "size": 35111796,
+        "id": "18703",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Talkpal - Al Language Learning",
+        "description": "تطبيق لتعلم اللغات بالذكاء الاصطناعي مُدعّم بتقنية GPT. يُمكنك الدردشة حول عدد غير محدود من المواضيع الشيقة، سواءً بالكتابة أو التحدث، مع استقبال رسائل بصوت واقعي.\n🧊 الإصدار: v2.4.2\n🏷 النسخة المعدلة وفيها :\n💎 مفتوح Premium\nولكن ثبث تطبيق  تفتحه تحدث تطبيق  بملف ثاني",
+        "version": "v2.4.2",
+        "category": "Apps",
+        "tags": [
+            "#Learning"
+        ],
+        "icon_id": "AgACAgQAAxkBAAMaarsFMLysU63Mp3obrIGLcFN37RQAAljJMRtanBFTRfTnYdXHrRwBAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAAMbarsFMJhr1zVdyWYSmbQZha5-aqYAAp57AAJU3RlLwDAtpz-cNAABPQQ",
+        "file_name": "Talkpal @premium_techs.apk.apk",
+        "size": 82552522,
+        "id": "18699",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Viu",
+        "description": "برنامج Viu مشهور في عرض المحتوى الترفيهي عبر الإنترنت مثل الدراما والبرامج التلفزيونية والأفلام من دول الشرق الأوسط وآسيا.\n🎬 يوفر Viu مجموعة واسعة من العروض\nوالمسلسلات بجودة عالية وبعضها مترجم إلى\nلغات متعددة مما يجعلها وجهة مثالية لمحبي\nالدراما الآسيوية والعربية. 📺\n🧊 الإصدار: 2.21.0\n🏷 النسخة المعدلة وفيها :\n❌ بدون اعلانات\n✅ تم تفعيل HD\n📥 تقدر تنزل 7 حلقات و اكثر",
+        "version": "2.21.0",
+        "category": "Apps",
+        "tags": [
+            "#Watching"
+        ],
+        "icon_id": "AgACAgQAAxkBAAMXarsFMNRc8U6uX7k3HpjAKAp4xNYAAlLJMRtanBFTEoUHrEc4Me0BAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAAMYarsFMMn2D0QCavbOw0KFsAU0b3oAAoF7AAJU3RlLrR10vqvMTOs9BA",
+        "file_name": "Viu @premium_techs.apk.apk",
+        "size": 30195295,
+        "id": "18695",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Hotspot Shield",
+        "description": "يعد Hotspot Shield أسرع VPN للبث والألعاب والوصول غير المحدود إلى الإنترنت الآمن!  سواء كنت في المنزل أو أثناء التنقل، يمكنك البقاء آمنًا عبر الإنترنت من خلال أمان الإنترنت فائق السرعة والآمن والخاص.  بنقرة واحدة، يمكنك الاتصال بشبكة VPN الخاصة بنا، وإخفاء عنوان IP الخاص بك، وتغيير موقعك، وإلغاء حظر مواقع الويب بأمان، وتشفير حركة المرور على الإنترنت، والوصول إلى أي موقع أو تطبيق دون قيود.  باستخدام Hotspot Shield VPN، يمكنك الآن التصفح والبث واللعب مع الحفاظ على الخصوصية والأمان عبر الإنترنت حتى على شبكة WiFi العامة.\n🧊 الإصدار: 11.9.0\n🏷 النسخة المعدلة وفيها :\n💎 مفتوح Premium ✅\n👈 اختار wireguard protocol",
+        "version": "11.9.0",
+        "category": "Apps",
+        "tags": [
+            "#Vpn"
+        ],
+        "icon_id": "AgACAgQAAxkBAAMUarsFMBqs7FJvBO9PioHhPyUXoDkAAkTJMRtanBFTT416sY5knXcBAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAAMVarsFMJCP-LBK-Zr6BNarjREJxKAAAhGHAAJU3RFLN1DfLJNtd3E9BA",
+        "file_name": "Hotspot Shield VPN @premium_techs.apk.apk",
+        "size": 103382181,
+        "id": "18692",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "MovieBox",
+        "description": "استمتع بأحدث الأفلام والبرامج التلفزيونية والموسيقى.\nاكتشف الدراما الآسيوية المجانية (الكورية والصينية والهندية والتايلاندية واليابانية وما إلى ذلك)، وأفلام هوليوود الناجحة، والأنمي، والبرامج التلفزيونية والموسيقى على MovieBox-Movies, TV Shows & Music.\n🧊 الإصدار: v3.0.09.0926.03\n🏷 النسخة المعدلة وفيها :\n🔤احذف قديم و ثبث الجديد\n❌ تم ازالة اعلانات\n☑️ نسخة مشاهدة و تحميل\n👍 النسخة المميزة مفتوحة\n😎 مفتوح Full hd وmu",
+        "version": "v3.0.09.0926.03",
+        "category": "Apps",
+        "tags": [],
+        "icon_id": "AgACAgQAAxkBAAMRarsFMBbKNvxpkMIKF8F4MLY1fLIAAkLJMRtanBFT6FwUqBUXe0ABAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAAMSarsFMH_tA7R3AYEd12ILEMDe_ccAAvKGAAJU3RFL-u_nnvi86cA9BA",
+        "file_name": "MovieBox @premium_techs.apk.apk",
+        "size": 69024098,
+        "id": "18688",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "AniLab",
+        "description": "هو محور أنيمي مجاني في نهاية المطاف ، حيث يمكنك مشاهدة وتنزيل أنيمي مجاني تمامًا وغير محدود تمامًا. Anilab هي وجهتك النهائية لأنيمي ومانجا! اكتشف واستكشاف وتغمر نفسك في العالم الآسر للرسوم المتحركة اليابانية والروايات الرسومية بسهولة.\n🧊 الإصدار: v1.1.2\n🏷 النسخة المعدلة وفيها :\n❌ بدون اعلانات",
+        "version": "v1.1.2",
+        "category": "Apps",
+        "tags": [
+            "#Watching"
+        ],
+        "icon_id": "AgACAgQAAxkBAAMNarsFMAKQ0LGY0EU2Iehvv2NXEcMAAiTOMRvTHxlTTeDxo_6l760BAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAAMOarsFMLEo2vf_G-3VcL6LPrABjnYAAkWGAAIiQhFLeKLMbkdtDc89BA",
+        "file_name": "AniLab @premium_techs.apk.apk",
+        "size": 17752469,
+        "id": "18684",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Roya TV",
+        "description": "أفضل المسلسلات والأفلام الوثائقية والعروض العربية والمحتوى - على جميع الأجهزة!\n\nللمزيد من الخيارات و المزيد من الترفيه إشترك في ٌ Roya TV Plus وشاهد برامج ترفيهية إضافية وعروض أصلية وأفلام وثائقية ومسرحيات ومسلسلات حصرية!\n🧊 الإصدار: 7.2.47\n🏷 النسخة المعدلة وفيها :\n💎 اصدار كامل مفتوح ⭕️\n📥 اخر تحديث\n📹 افلام Plus شغالة\n\nانقر نقرتين على منشور و شوف سحر\n\nملاحظة يجب تسجيل الدخول بحساب لكي يعمل معك محتوى PLUS",
+        "version": "7.2.47",
+        "category": "Apps",
+        "tags": [
+            "#watching"
+        ],
+        "icon_id": "AgACAgQAAxkBAAMHarsE93cWzr9q0RCcYQsjDEe00eEAAsTLMRteWPFSHrHMNeq7gXUBAAMCAAN4AAM9BA",
+        "file_id": "BQACAgIAAxkBAAMIarsE92Z6jMxl0HgR-ajJKyCUJqoAAp-BAAJ--vlKxzImIZC8-RM9BA",
+        "file_name": "Roya TV @premium_techs.apk.apk",
+        "size": 44852398,
+        "id": "18678",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "الأسطورة TV",
+        "description": "تحديث جديد : تحسين كبير في التطبيق والمشغل وسرعة عالية بتشغيل القنوات افضل من الاصدارات السابقة واختلاف ملحوظ\n\n⛽ مجموعة ضخمة من قنوات البث المباشر الرياضية والباقات الترفيهية والقنوات العربية والعالمية والافلام والمسلسلات .\n\n✅ مميزات التطبيق :\n📺 مجموعة ضخمة من الافلام الاجنبية المترجمة من عام 1920 حتى عصرنا الحالي\n📺 يحتوي على مجموعة ضخمة من قنوات البث المباشر العربية والاجنبية .\n📺 12 سيرفر يمكنك اختيار ما يناسبك\n📺 سيرفر البث الرئيسي يشمل الكثير من القنوات الرياضية والقنوات الترفيهية .\n📺 قسم للافلام الاجنبية وقسم للافلام العربية\n📺 اقسام للمسلسلات العربية والاجنبية والتركية والهندية والآسيوية\n📺 أقسام اخرى عديدة اكتشفها بنفسك\n\n🧊 الإصدار: 5.5\n🏷 النسخة المعدلة وفيها :\n❌ بدون اعلانات",
+        "version": "5.5",
+        "category": "Apps",
+        "tags": [
+            "#Wa"
+        ],
+        "icon_id": "AgACAgQAAxkBAAMDarsE9wj0qzZCAr-G7YJpGnUtEMsAApXIMRtCxOBSJXMAAVTeM3C_AQADAgADeAADPQQ",
+        "file_id": "BQACAgIAAxkBAAMEarsE99UWs2bVTa95eIKseAQHugQAAl58AAJ--vlK7yO1X3kJUo89BA",
+        "file_name": "الاسطوره @premium_techs.apk.apk",
+        "size": 3034128,
+        "id": "18674",
+        "chat_id": "-1001423595432"
+    },
+    {
         "name": "MNR TUNNEL PLUS",
         "description": "استمتع بتجربة إنترنت أسرع وأكثر أمانًا مع MNR TUNNEL PLUS، الحل الأمثل لحماية هويتك الرقمية وتأمين اتصالك. صُمم تطبيقنا لتوفير وصول فائق السرعة مع تشفير متقدم للحفاظ على أمان بياناتك.\n🧊 الإصدار: v2.8\n🏷 النسخة المعدلة و فيها\n🕛وقت غير محدود",
         "version": "v2.8",
