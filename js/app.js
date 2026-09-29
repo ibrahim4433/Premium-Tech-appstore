@@ -8,7 +8,7 @@ const WORKER_URL = "https://appstore-proxy.4445622.workers.dev"; // The worker U
 // Icons use FontAwesome class names (e.g., 'fa-rocket', 'fa-fire', 'fa-gamepad').
 const STORE_BANNERS = [
     {
-        title: { ar: "قناة Premium Tech", en: "Premium Tech Channel" },
+        title: { ar: "قناة Premium Techs", en: "Premium Techs Channel" },
         subtitle: { ar: "أفضل التطبيقات والألعاب من تليجرام مباشرة", en: "The best premium apps & games directly from Telegram" },
         image: "assets/banner1.jpg", 
         background: "linear-gradient(45deg, #024773, #11a6d4)",
@@ -176,6 +176,9 @@ function setLanguage(lang) {
     if (btnReqText) btnReqText.textContent = lang === 'ar' ? 'اطلب تطبيق/لعبة' : 'Request App/Game';
 
     // Update Filter labels
+    const btnFilterText = document.getElementById('btn-filter-text');
+    if (btnFilterText) btnFilterText.textContent = lang === 'ar' ? 'تصفية وترتيب' : 'Filter & Sort';
+
     ['label-sort', 'opt-sort-new', 'opt-sort-old', 'opt-sort-asc', 'opt-sort-desc', 'opt-size-asc', 'opt-size-desc',
      'label-size', 'opt-size-all', 'opt-size-small', 'opt-size-large', 'label-category', 'opt-cat-all'].forEach(id => {
          const el = document.getElementById(id);
@@ -352,6 +355,55 @@ function renderBanners() {
         div.innerHTML = html;
         bannersSection.appendChild(div);
     });
+    
+    // Setup Auto Scroll (Smooth marquee)
+    if (window.bannerScrollInterval) clearInterval(window.bannerScrollInterval);
+    
+    if (STORE_BANNERS.length > 1) {
+        bannersSection.style.scrollSnapType = 'none'; // Disable snapping for smooth scroll
+        
+        // Duplicate banners to allow seamless infinite scrolling visually
+        STORE_BANNERS.forEach(banner => {
+            const div = document.createElement('div');
+            div.className = 'banner';
+            let html = '';
+            if (banner.image) {
+                html += `<img src="${banner.image}" class="banner-img" alt="Banner">`;
+                html += `<div class="banner-overlay"></div>`;
+            } else {
+                div.style.background = banner.background;
+                if (banner.icon) {
+                    html += `<i class="fa-solid ${banner.icon} bg-icon"></i>`;
+                }
+            }
+            html += `<div class="banner-content">
+                <h2>${banner.title[currentLanguage]}</h2>
+                <p>${banner.subtitle[currentLanguage]}</p>
+            </div>`;
+            div.innerHTML = html;
+            bannersSection.appendChild(div);
+        });
+
+        const isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+        window.bannerScrollInterval = setInterval(() => {
+            if (!bannersSection || bannersSection.style.display === 'none') return;
+            if (bannersSection.matches(':hover') || bannersSection.matches(':active')) return;
+            
+            const maxScroll = bannersSection.scrollWidth - bannersSection.clientWidth;
+            
+            if (isRtl) {
+                bannersSection.scrollBy({ left: -1 });
+                if (Math.abs(bannersSection.scrollLeft) >= maxScroll - 5) {
+                    bannersSection.scrollLeft = 0;
+                }
+            } else {
+                bannersSection.scrollBy({ left: 1 });
+                if (bannersSection.scrollLeft >= maxScroll - 5) {
+                    bannersSection.scrollLeft = 0;
+                }
+            }
+        }, 25); // ~40fps for 1px movement (smooth)
+    }
 }
 
 function getTagInfo(tag) {
@@ -598,9 +650,6 @@ function openAppDetails(app) {
         joinBtn.className = 'download-btn btn-large'; // Match the exact rectangle style
         joinBtn.target = '_blank';
         joinBtn.rel = 'noopener noreferrer';
-        joinBtn.style.background = 'var(--bg-secondary)'; // Use slightly different background to distinguish it
-        joinBtn.style.border = '1px solid var(--accent-color)';
-        joinBtn.style.color = 'var(--text-primary)';
         joinBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> ${currentLanguage === 'ar' ? 'انضمام للقناة' : 'Join Channel'}`;
         
         modalActions.style.display = 'flex';

@@ -27,14 +27,48 @@
     <header class="top-header">
         <div class="nav-container">
             <a href="https://t.me/+ij7-LS669ahhMDFk" target="_blank" rel="noopener noreferrer" class="nav-brand" style="text-decoration: none;">
-                <img src="assets/logo.jpg" alt="Premium Techs" class="brand-logo" onerror="this.src='https://ui-avatars.com/api/?name=PT&background=00a8e8&color=fff&rounded=true'">
-                <span class="brand-text">Premium Tech</span>
+                <img src="assets/logo.jpg" alt="Premium Tech" class="brand-logo" onerror="this.src='https://ui-avatars.com/api/?name=PT&background=00a8e8&color=fff&rounded=true'">
+                <span class="brand-text">Premium Techs</span>
             </a>
 
             <div class="search-container">
                 <div class="search-bar">
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
                     <input type="text" id="search-input" placeholder="البحث عن تطبيقات وألعاب...">
+                </div>
+                
+                <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                    <button id="filter-toggle" style="flex: 1; padding: 0.6rem; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-primary); cursor: pointer; font-weight: bold; font-size: 0.9rem;">
+                        <i class="fa-solid fa-filter"></i> <span id="btn-filter-text">تصفية وترتيب</span>
+                    </button>
+                </div>
+                
+                <div id="filter-panel" class="filter-panel" style="display: none;">
+                    <div class="filter-group">
+                        <label id="label-sort">ترتيب حسب</label>
+                        <select id="sort-select">
+                            <option value="new" id="opt-sort-new">الأحدث</option>
+                            <option value="old" id="opt-sort-old">الأقدم</option>
+                            <option value="name_asc" id="opt-sort-asc">الاسم (أ-ي)</option>
+                            <option value="name_desc" id="opt-sort-desc">الاسم (ي-أ)</option>
+                            <option value="size_asc" id="opt-size-asc">الحجم (الأصغر)</option>
+                            <option value="size_desc" id="opt-size-desc">الحجم (الأكبر)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label id="label-size">حجم الملف</label>
+                        <select id="size-select">
+                            <option value="all" id="opt-size-all">الكل</option>
+                            <option value="small" id="opt-size-small">أصغر من 20MB (مباشر)</option>
+                            <option value="large" id="opt-size-large">أكبر من 20MB (تليجرام)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label id="label-category">التصنيف</label>
+                        <select id="category-select">
+                            <option value="all" id="opt-cat-all">الكل</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 

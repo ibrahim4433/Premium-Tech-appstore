@@ -54,4 +54,4 @@ The Python script is designed to parse messages in this specific format. Post th
 *The APK/ZIP file itself.*
 
 ---
-*Created with ❤️ by Premium Tech*
+*Created with ❤️ by IA TEAM*
