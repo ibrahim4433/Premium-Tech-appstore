@@ -114,7 +114,12 @@ def main():
     
     print(f"Fetching updates from offset: {offset}")
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates"
-    params = {'offset': offset, 'timeout': 10}
+    import json
+    params = {
+        'offset': offset, 
+        'timeout': 10,
+        'allowed_updates': json.dumps(['message', 'channel_post', 'edited_channel_post'])
+    }
     response = requests.get(url, params=params)
     if response.status_code != 200:
         print(f"Telegram API Error {response.status_code}: {response.text}")
