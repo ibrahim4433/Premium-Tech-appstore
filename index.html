@@ -15,6 +15,16 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#024773">
     <link rel="apple-touch-icon" href="assets/logo.jpg">
+    <!-- PWA Install Early Listener -->
+    <script>
+        window.deferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            window.deferredPrompt = e;
+            const btn = document.getElementById('pwa-install-btn');
+            if (btn) btn.style.display = 'flex';
+        });
+    </script>
 </head>
 <body>
     <!-- Sci-Fi Geometric Background -->
