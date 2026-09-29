@@ -86,7 +86,7 @@ const strings = {
         search: "البحث عن تطبيقات وألعاب...",
         loading: "جاري التحميل...",
         empty: "لم يتم العثور على نتائج.",
-        download: "تثبيت",
+        download: "تنزيل",
         about: "حول هذا التطبيق",
         categoryApp: "تطبيق",
         categoryGame: "لعبة",
@@ -105,7 +105,7 @@ const strings = {
         search: "Search for apps & games...",
         loading: "Loading...",
         empty: "No results found.",
-        download: "Install",
+        download: "Download",
         about: "About this app",
         categoryApp: "App",
         categoryGame: "Game",
@@ -369,7 +369,17 @@ function renderApps() {
             ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="card-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'card-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
             : `<div class="card-icon fallback"><i class="fa-brands fa-android"></i></div>`;
 
-        const categoryText = app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp;
+        let descWords = '';
+        if (app.description) {
+            const words = app.description.trim().split(/\s+/);
+            if (words.length > 0 && words[0] !== '') {
+                descWords = words.slice(0, 4).join(' ');
+                if (words.length > 4) {
+                    descWords += '...';
+                }
+            }
+        }
+        const categoryText = descWords || (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
         
         const isLarge = app.size > 19.5 * 1024 * 1024; // Telegram Bot API limit is 20MB
         
@@ -385,18 +395,36 @@ function renderApps() {
             : `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
         
         const btnIcon = isLarge ? 'fa-paper-plane' : 'fa-download';
-        const btnText = isLarge ? (currentLanguage === 'ar' ? 'تليجرام' : 'Telegram') : strings[currentLanguage].download;
-
-        card.innerHTML = `
-            ${imgHTML}
-            <div class="card-info">
-                <div class="card-title">${app.name}</div>
-                <div class="card-category">${categoryText}</div>
+        const btnText = strings[currentLanguage].download;
+        
+        let actionsHtml = '';
+        if (isLarge) {
+            const joinText = currentLanguage === 'ar' ? 'انضمام' : 'Join';
+            actionsHtml = `
+            <div style="display: flex; gap: 0.5rem; margin: 0.75rem 1rem; margin-top: auto;">
+                <a href="${downloadLink}" class="card-install-btn" style="flex: 1; margin: 0; padding: 0.5rem;" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+                    <i class="fa-solid ${btnIcon}"></i> ${btnText}
+                </a>
+                <a href="https://t.me/+ij7-LS669ahhMDFk" class="card-install-btn" style="flex: 1; margin: 0; padding: 0.5rem; background: var(--nav-bg); color: var(--text-primary); border: 1px solid var(--border-color);" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+                    <i class="fa-solid fa-user-plus"></i> ${joinText}
+                </a>
             </div>
-            <!-- Prevent modal open when clicking download -->
+            `;
+        } else {
+            actionsHtml = `
             <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
                 <i class="fa-solid ${btnIcon}"></i> ${btnText}
             </a>
+            `;
+        }
+
+        card.innerHTML = `
+            ${imgHTML}
+            <div class="card-info" style="${isLarge ? 'padding-bottom: 0;' : ''}">
+                <div class="card-title">${app.name}</div>
+                <div class="card-category" style="opacity: 0.8; font-size: 0.8rem; line-height: 1.4;">${categoryText}</div>
+            </div>
+            ${actionsHtml}
         `;
         appsGrid.appendChild(card);
     });
@@ -410,12 +438,30 @@ function formatBytes(bytes) {
 
 function openAppDetails(app) {
     document.getElementById('modal-title').textContent = app.name;
-    document.getElementById('modal-category').textContent = app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp;
+    
+    let descWords = '';
+    if (app.description) {
+        const words = app.description.trim().split(/\s+/);
+        if (words.length > 0 && words[0] !== '') {
+            descWords = words.slice(0, 4).join(' ');
+            if (words.length > 4) {
+                descWords += '...';
+            }
+        }
+    }
+    const categoryText = descWords || (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
+    
+    document.getElementById('modal-category').textContent = categoryText;
     document.getElementById('modal-size').textContent = formatBytes(app.size);
     document.getElementById('modal-description').textContent = app.description;
     
     const isLarge = app.size > 19.5 * 1024 * 1024;
     const downloadBtn = document.getElementById('modal-download');
+    const modalActions = document.querySelector('.modal-actions');
+    
+    // Remove existing join button if it exists from previous click
+    const existingJoinBtn = document.getElementById('modal-join-btn');
+    if (existingJoinBtn) existingJoinBtn.remove();
     
     if (isLarge) {
         let tgLink = `https://t.me/+ij7-LS669ahhMDFk`; // Fallback to invite link if chat_id is unknown
@@ -425,10 +471,32 @@ function openAppDetails(app) {
         }
         
         downloadBtn.href = tgLink;
-        downloadBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> ${currentLanguage === 'ar' ? 'تنزيل عبر تليجرام' : 'Download via Telegram'}`;
+        downloadBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span id="download-text">${strings[currentLanguage].download}</span>`;
+        
+        // Add join button
+        const joinBtn = document.createElement('a');
+        joinBtn.id = 'modal-join-btn';
+        joinBtn.href = 'https://t.me/+ij7-LS669ahhMDFk';
+        joinBtn.className = 'btn';
+        joinBtn.target = '_blank';
+        joinBtn.rel = 'noopener noreferrer';
+        joinBtn.style.background = 'var(--nav-bg)';
+        joinBtn.style.color = 'var(--text-primary)';
+        joinBtn.style.border = '1px solid var(--border-color)';
+        joinBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> ${currentLanguage === 'ar' ? 'انضمام' : 'Join'}`;
+        
+        modalActions.style.display = 'flex';
+        modalActions.style.gap = '0.5rem';
+        downloadBtn.style.flex = '1';
+        joinBtn.style.flex = '1';
+        
+        modalActions.appendChild(joinBtn);
+        
     } else {
         downloadBtn.href = `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
         downloadBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span id="download-text">${strings[currentLanguage].download}</span>`;
+        
+        downloadBtn.style.flex = '1';
     }
 
     const modalIcon = document.getElementById('modal-icon');
