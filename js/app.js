@@ -125,6 +125,7 @@ const strings = {
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initLanguage();
+    createFloatingBackground();
     renderBanners();
     fetchApps();
     setupEventListeners();
@@ -203,8 +204,23 @@ function setupEventListeners() {
         localStorage.setItem('lang', currentLanguage);
     });
 
-    document.querySelector('.close-modal').addEventListener('click', () => modal.classList.remove('active'));
-    window.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+    document.querySelector('.close-modal').addEventListener('click', () => {
+        if (modal.classList.contains('active')) {
+            modal.classList.remove('active');
+            if (history.state && history.state.modalOpen) history.back();
+        }
+    });
+    window.addEventListener('click', (e) => { 
+        if (e.target === modal && modal.classList.contains('active')) {
+            modal.classList.remove('active');
+            if (history.state && history.state.modalOpen) history.back();
+        } 
+    });
+    window.addEventListener('popstate', (e) => {
+        if (modal.classList.contains('active')) {
+            modal.classList.remove('active');
+        }
+    });
 }
 
 function switchView(viewName) {
@@ -369,22 +385,11 @@ function renderApps() {
             ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="card-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'card-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
             : `<div class="card-icon fallback"><i class="fa-brands fa-android"></i></div>`;
 
-        let descWords = '';
-        if (app.description) {
-            const words = app.description.trim().split(/\s+/);
-            if (words.length > 0 && words[0] !== '') {
-                descWords = words.slice(0, 4).join(' ');
-                if (words.length > 4) {
-                    descWords += '...';
-                }
-            }
-        }
-        const categoryText = descWords || (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
+        const versionText = app.version ? (currentLanguage === 'ar' ? `إصدار: ${app.version}` : `v${app.version}`) : (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
         
-        const isLarge = app.size > 19.5 * 1024 * 1024; // Telegram Bot API limit is 20MB
+        const isLarge = app.size > 19.5 * 1024 * 1024;
         
-        // Generate Telegram link (handle private channels starting with -100)
-        let tgLink = `https://t.me/+ij7-LS669ahhMDFk`; // Fallback to invite link if chat_id is unknown
+        let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
         if (app.chat_id && app.chat_id.startsWith('-100')) {
             const baseChatId = app.chat_id.substring(4);
             tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
@@ -396,35 +401,16 @@ function renderApps() {
         
         const btnIcon = isLarge ? 'fa-paper-plane' : 'fa-download';
         const btnText = strings[currentLanguage].download;
-        
-        let actionsHtml = '';
-        if (isLarge) {
-            const joinText = currentLanguage === 'ar' ? 'انضمام' : 'Join';
-            actionsHtml = `
-            <div style="display: flex; gap: 0.5rem; margin: 0.75rem 1rem; margin-top: auto;">
-                <a href="${downloadLink}" class="card-install-btn" style="flex: 1; margin: 0; padding: 0.5rem;" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
-                    <i class="fa-solid ${btnIcon}"></i> ${btnText}
-                </a>
-                <a href="https://t.me/+ij7-LS669ahhMDFk" class="card-install-btn" style="flex: 1; margin: 0; padding: 0.5rem; background: var(--nav-bg); color: var(--text-primary); border: 1px solid var(--border-color);" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
-                    <i class="fa-solid fa-user-plus"></i> ${joinText}
-                </a>
-            </div>
-            `;
-        } else {
-            actionsHtml = `
-            <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
-                <i class="fa-solid ${btnIcon}"></i> ${btnText}
-            </a>
-            `;
-        }
 
         card.innerHTML = `
             ${imgHTML}
-            <div class="card-info" style="${isLarge ? 'padding-bottom: 0;' : ''}">
+            <div class="card-info">
                 <div class="card-title">${app.name}</div>
-                <div class="card-category" style="opacity: 0.8; font-size: 0.8rem; line-height: 1.4;">${categoryText}</div>
+                <div class="card-category" style="opacity: 0.8; font-size: 0.8rem; line-height: 1.4; color: var(--accent-color); font-weight: bold;">${versionText}</div>
             </div>
-            ${actionsHtml}
+            <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+                <i class="fa-solid ${btnIcon}"></i> ${btnText}
+            </a>
         `;
         appsGrid.appendChild(card);
     });
@@ -437,6 +423,8 @@ function formatBytes(bytes) {
 }
 
 function openAppDetails(app) {
+    history.pushState({ modalOpen: true }, ''); // Push state for back button
+    
     document.getElementById('modal-title').textContent = app.name;
     
     let descWords = '';
@@ -453,18 +441,27 @@ function openAppDetails(app) {
     
     document.getElementById('modal-category').textContent = categoryText;
     document.getElementById('modal-size').textContent = formatBytes(app.size);
-    document.getElementById('modal-description').textContent = app.description;
     
+    // Add Note for large files
     const isLarge = app.size > 19.5 * 1024 * 1024;
+    if (isLarge) {
+        const noteText = currentLanguage === 'ar' 
+            ? 'ملاحظة: يجب الانضمام للقناة الخاصة أولاً لتتمكن من تحميل هذا الملف الكبير عبر تليجرام.' 
+            : 'Note: You must join the private channel first to download this large file via Telegram.';
+        document.getElementById('modal-description').innerHTML = `<div style="background: rgba(0, 168, 232, 0.1); border-right: 4px solid var(--accent-color); padding: 1rem; margin-bottom: 1rem; border-radius: 4px; font-weight: 600;">${noteText}</div>` + app.description.replace(/\n/g, '<br>');
+    } else {
+        document.getElementById('modal-description').innerHTML = app.description.replace(/\n/g, '<br>');
+    }
+    
     const downloadBtn = document.getElementById('modal-download');
     const modalActions = document.querySelector('.modal-actions');
     
-    // Remove existing join button if it exists from previous click
+    // Remove existing join button if it exists
     const existingJoinBtn = document.getElementById('modal-join-btn');
     if (existingJoinBtn) existingJoinBtn.remove();
     
     if (isLarge) {
-        let tgLink = `https://t.me/+ij7-LS669ahhMDFk`; // Fallback to invite link if chat_id is unknown
+        let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
         if (app.chat_id && app.chat_id.startsWith('-100')) {
             const baseChatId = app.chat_id.substring(4);
             tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
@@ -480,14 +477,14 @@ function openAppDetails(app) {
         joinBtn.className = 'btn';
         joinBtn.target = '_blank';
         joinBtn.rel = 'noopener noreferrer';
-        joinBtn.style.background = 'var(--nav-bg)';
+        joinBtn.style.background = 'var(--bg-secondary)';
         joinBtn.style.color = 'var(--text-primary)';
         joinBtn.style.border = '1px solid var(--border-color)';
-        joinBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> ${currentLanguage === 'ar' ? 'انضمام' : 'Join'}`;
+        joinBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> ${currentLanguage === 'ar' ? 'انضمام للقناة' : 'Join Channel'}`;
         
         modalActions.style.display = 'flex';
         modalActions.style.gap = '0.5rem';
-        downloadBtn.style.flex = '1';
+        downloadBtn.style.flex = '2';
         joinBtn.style.flex = '1';
         
         modalActions.appendChild(joinBtn);
@@ -508,4 +505,31 @@ function openAppDetails(app) {
     }
 
     modal.classList.add('active');
+}
+
+function createFloatingBackground() {
+    const bgContainer = document.createElement('div');
+    bgContainer.className = 'floating-background';
+    document.body.appendChild(bgContainer);
+
+    const icons = ['fa-paper-plane', 'fa-android'];
+    const numIcons = 20;
+
+    for (let i = 0; i < numIcons; i++) {
+        const icon = document.createElement('i');
+        const iconClass = icons[Math.floor(Math.random() * icons.length)];
+        icon.className = iconClass === 'fa-paper-plane' ? `fa-solid ${iconClass} floating-icon` : `fa-brands ${iconClass} floating-icon`;
+
+        const size = Math.random() * 25 + 15;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 20 + 15;
+        const delay = Math.random() * 20;
+
+        icon.style.fontSize = `${size}px`;
+        icon.style.left = `${left}vw`;
+        icon.style.animationDuration = `${duration}s`;
+        icon.style.animationDelay = `-${delay}s`;
+
+        bgContainer.appendChild(icon);
+    }
 }
