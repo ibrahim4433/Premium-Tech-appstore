@@ -616,6 +616,22 @@ body {
     color: white; padding: 1rem; border-radius: 20px;
     text-decoration: none; font-weight: 800; font-size: 1.2rem;
     box-shadow: 0 4px 15px rgba(0, 168, 232, 0.3);
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.home-actions-container {
+    display: flex;
+    gap: 0.5rem; /* Reduced gap to fit 3 buttons */
+    margin-bottom: 2rem;
+    width: 100%;
+}
+.action-btn {
+    flex: 1;
+    font-size: 0.95rem;
+    padding: 0.8rem 0.5rem;
+    text-align: center;
 }
 
 .modal-body h3 { margin-bottom: 1rem; font-size: 1.2rem; color: var(--text-primary); }
@@ -626,6 +642,13 @@ body {
     .card-title { font-size: 0.95rem; }
     .modal-header { flex-direction: column; align-items: center; text-align: center; }
     .nav-label { font-size: 0.65rem; }
+    
+    .action-btn {
+        font-size: 0.75rem; /* Smaller font on mobile */
+        padding: 0.6rem 0.3rem;
+        gap: 0.3rem;
+    }
+    .action-btn i { font-size: 0.8rem; }
 }
 
 /* Floating Background Animations */

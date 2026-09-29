@@ -809,7 +809,12 @@ if (confirmInstallBtn) {
             console.log(`User response to the install prompt: ${outcome}`);
             // We've used the prompt, and can't use it again, throw it away
             window.deferredPrompt = null;
-            installBtn.style.display = 'none';
+            if (installBtn) installBtn.style.display = 'none';
+            if (staticInstallBtn) staticInstallBtn.style.display = 'none';
+        } else {
+            alert(document.documentElement.lang === 'ar' 
+                ? "لا يمكن تثبيت التطبيق حالياً. قد يكون مثبتاً بالفعل، أو أن المتصفح لا يدعم هذه الميزة (تأكد من فتح الرابط الرسمي)." 
+                : "Cannot install app right now. It might already be installed, or your browser doesn't support it (make sure you are on the live HTTPS link).");
         }
     });
 }
