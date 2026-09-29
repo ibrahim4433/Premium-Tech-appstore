@@ -646,7 +646,13 @@ body {
 
 .search-bar input { padding: 0.8rem 3rem 0.8rem 3rem !important; }
 
+.search-container { position: relative; }
 .filter-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 12px;
@@ -655,7 +661,10 @@ body {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
-    animation: slideDown 0.3s ease-out;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    animation: slideDown 0.2s ease-out;
 }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 .filter-group { flex: 1; min-width: 140px; }
