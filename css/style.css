@@ -622,7 +622,7 @@ body {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 0.7rem; /* Reduced gap to fit 3 buttons */
+    gap: 2rem; /* Reduced gap to fit 3 buttons */
     margin-bottom: 1rem;
     width: 100%;
 }
@@ -720,7 +720,7 @@ body {
     left: 0;
     right: 0;
     z-index: 100;
-    background: var(--bg-secondary);
+    background: rgb(2 71 115 / 94%);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1rem;
