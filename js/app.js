@@ -175,6 +175,16 @@ function setLanguage(lang) {
     const btnReqText = document.getElementById('btn-request-text');
     if (btnReqText) btnReqText.textContent = lang === 'ar' ? 'اطلب تطبيق/لعبة' : 'Request App/Game';
 
+    // Update Filter labels
+    ['label-sort', 'opt-sort-new', 'opt-sort-old', 'opt-sort-asc', 'opt-sort-desc', 'opt-size-asc', 'opt-size-desc',
+     'label-size', 'opt-size-all', 'opt-size-small', 'opt-size-large', 'label-category', 'opt-cat-all'].forEach(id => {
+         const el = document.getElementById(id);
+         if (el) {
+             const key = id.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+             el.textContent = strings[lang][key];
+         }
+     });
+
     updateViewTitle();
     renderBanners();
     if (allApps.length > 0) {
@@ -191,6 +201,20 @@ function setupEventListeners() {
         } else {
             renderApps();
         }
+    });
+
+    const filterToggle = document.getElementById('filter-toggle');
+    const filterPanel = document.getElementById('filter-panel');
+    if (filterToggle && filterPanel) {
+        filterToggle.addEventListener('click', () => {
+            filterToggle.classList.toggle('active');
+            filterPanel.style.display = filterPanel.style.display === 'none' ? 'flex' : 'none';
+        });
+    }
+
+    ['sort-select', 'size-select', 'category-select'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', renderApps);
     });
 
     navItems.forEach(btn => {
@@ -287,7 +311,10 @@ async function fetchApps() {
         const response = await fetch('apps.json');
         if (!response.ok) throw new Error('Failed to load apps');
         allApps = await response.json();
-        allApps.forEach(app => { if(!app.category) app.category = 'Apps'; });
+        allApps.forEach((app, idx) => { 
+            if(!app.category) app.category = 'Apps';
+            app._index = idx; // Store original insertion order for sorting
+        });
         loading.style.display = 'none';
         renderCategories();
         renderApps();
@@ -362,6 +389,13 @@ function renderCategories() {
     if(uniqueTags.size === 0) return;
     
     const renderedNames = new Set(); // Avoid duplicate categories with different tags but same mapped name
+    
+    const categorySelect = document.getElementById('category-select');
+    let prevSelected = '';
+    if (categorySelect) {
+        prevSelected = categorySelect.value;
+        while (categorySelect.options.length > 1) categorySelect.remove(1);
+    }
 
     uniqueTags.forEach(tag => {
         const tagData = getTagInfo(tag);
@@ -393,6 +427,15 @@ function renderCategories() {
             renderApps();
         };
         categoriesGrid.appendChild(card);
+        
+        // Add to dropdown
+        if (categorySelect) {
+            const opt = document.createElement('option');
+            opt.value = label;
+            opt.text = label;
+            if (label === prevSelected) opt.selected = true;
+            categorySelect.appendChild(opt);
+        }
     });
 }
 
@@ -400,21 +443,51 @@ function renderApps() {
     appsGrid.innerHTML = '';
     
     const filteredApps = allApps.filter(app => {
-        // Handle explicit Tag filtering from Category click
-        if (currentSearch.startsWith('#')) {
-            return app.tags && app.tags.includes(currentSearch);
+        // Dropdown Category Filter
+        const selectedCat = document.getElementById('category-select') ? document.getElementById('category-select').value : 'all';
+        if (selectedCat !== 'all') {
+            let hasTag = false;
+            if (app.tags) {
+                app.tags.forEach(t => {
+                    const tagInfo = getTagInfo(t);
+                    const tagLabel = currentLanguage === 'ar' ? tagInfo.ar : tagInfo.en;
+                    if (tagLabel === selectedCat) hasTag = true;
+                });
+            }
+            if (!hasTag) return false;
+        } else if (currentSearch.startsWith('#')) {
+            // Handle explicit Tag filtering from Category click
+            if (!app.tags || !app.tags.includes(currentSearch)) return false;
         }
 
         // View Filtering
         if (activeView === 'apps' && app.category !== 'Apps') return false;
         if (activeView === 'games' && app.category !== 'Games') return false;
         
+        // Size filtering
+        const sizeFilter = document.getElementById('size-select') ? document.getElementById('size-select').value : 'all';
+        const isLarge = app.size > 19.5 * 1024 * 1024;
+        if (sizeFilter === 'small' && isLarge) return false;
+        if (sizeFilter === 'large' && !isLarge) return false;
+        
         // Text Search
-        if (currentSearch) {
+        if (currentSearch && !currentSearch.startsWith('#')) {
             const term = currentSearch.toLowerCase();
-            return app.name.toLowerCase().includes(term) || app.description.toLowerCase().includes(term);
+            return app.name.toLowerCase().includes(term) || (app.description && app.description.toLowerCase().includes(term));
         }
         return true;
+    });
+    
+    // Sort
+    const sortMethod = document.getElementById('sort-select') ? document.getElementById('sort-select').value : 'new';
+    filteredApps.sort((a, b) => {
+        if (sortMethod === 'new') return b._index - a._index; // Newest first
+        if (sortMethod === 'old') return a._index - b._index; // Oldest first
+        if (sortMethod === 'name_asc') return a.name.localeCompare(b.name);
+        if (sortMethod === 'name_desc') return b.name.localeCompare(a.name);
+        if (sortMethod === 'size_asc') return a.size - b.size;
+        if (sortMethod === 'size_desc') return b.size - a.size;
+        return 0;
     });
 
     if (filteredApps.length === 0) {
