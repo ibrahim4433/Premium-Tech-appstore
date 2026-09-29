@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ibrahim4433.github.io/Premium-Tech-appstore/sitemap.xml
