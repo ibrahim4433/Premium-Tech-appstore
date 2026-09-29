@@ -26,8 +26,12 @@
             
             // Auto-show popup on big screens if not dismissed before
             if (window.innerWidth >= 768 && !localStorage.getItem('pwa-popup-dismissed')) {
-                const modal = document.getElementById('install-modal');
-                if (modal) modal.classList.add('active');
+                setTimeout(() => {
+                    const modal = document.getElementById('install-modal');
+                    if (modal && window.deferredPrompt && !localStorage.getItem('pwa-popup-dismissed')) {
+                        modal.classList.add('active');
+                    }
+                }, 30000);
             }
         });
     </script>
@@ -139,6 +143,10 @@
                     <i class="fa-solid fa-paper-plane"></i>
                     <span id="btn-request-text">اطلب تطبيق/لعبة</span>
                 </a>
+                <button id="static-install-btn" class="download-btn btn-large" style="flex: 1; font-size: 1rem; padding: 0.8rem; background: var(--accent-color); border: none; color: white; cursor: pointer;">
+                    <i class="fa-solid fa-download"></i>
+                    <span id="static-install-text">تثبيت المتجر</span>
+                </button>
             </div>
 
             <h2 id="page-title" class="section-title">الأحدث</h2>

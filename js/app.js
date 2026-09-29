@@ -226,6 +226,9 @@ function setLanguage(lang) {
     const pwaBtnText = document.getElementById('pwa-btn-text');
     if (pwaBtnText) pwaBtnText.textContent = strings[lang].pwaInstallBtn;
     
+    const staticInstallText = document.getElementById('static-install-text');
+    if (staticInstallText) staticInstallText.textContent = strings[lang].pwaInstallBtn;
+    
     const pwaModalTitle = document.getElementById('install-modal-title');
     if (pwaModalTitle) pwaModalTitle.textContent = strings[lang].pwaModalTitle;
     
@@ -755,6 +758,7 @@ function createFloatingBackground() {
 // PWA INSTALLATION LOGIC
 // ==========================================
 const installBtn = document.getElementById('pwa-install-btn');
+const staticInstallBtn = document.getElementById('static-install-btn');
 const installModal = document.getElementById('install-modal');
 const closeInstallModalBtn = document.getElementById('close-install-modal');
 const confirmInstallBtn = document.getElementById('confirm-install-btn');
@@ -765,12 +769,23 @@ if (window.deferredPrompt && installBtn) {
     
     // Auto-show popup on big screens if not dismissed before
     if (window.innerWidth >= 768 && !localStorage.getItem('pwa-popup-dismissed')) {
-        if (installModal) installModal.classList.add('active');
+        setTimeout(() => {
+            if (installModal && window.deferredPrompt && !localStorage.getItem('pwa-popup-dismissed')) {
+                installModal.classList.add('active');
+            }
+        }, 30000);
     }
 }
 
 if (installBtn) {
     installBtn.addEventListener('click', () => {
+        // Show our custom modal
+        installModal.classList.add('active');
+    });
+}
+
+if (staticInstallBtn) {
+    staticInstallBtn.addEventListener('click', () => {
         // Show our custom modal
         installModal.classList.add('active');
     });
