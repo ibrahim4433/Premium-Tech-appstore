@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="css/style.css?v=2">
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#024773">
+    <link rel="apple-touch-icon" href="assets/logo.jpg">
 </head>
 <body>
     <!-- Sci-Fi Geometric Background -->
@@ -178,6 +182,41 @@
         </div>
     </div>
 
+    <!-- Install Floating Button -->
+    <button id="pwa-install-btn" class="pwa-floating-btn" style="display: none;" title="تثبيت المتجر">
+        <i class="fa-solid fa-download"></i>
+        <span class="pwa-btn-text" id="pwa-btn-text">تثبيت المتجر</span>
+    </button>
+
+    <!-- Install Instruction Modal -->
+    <div id="install-modal" class="modal">
+        <div class="modal-content" style="text-align: center;">
+            <button class="close-modal" id="close-install-modal"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header" style="justify-content: center; margin-bottom: 1rem;">
+                <img class="modal-app-icon" src="assets/logo.jpg" alt="Premium Tech Icon" style="margin: 0 auto; width: 80px; height: 80px;">
+            </div>
+            <h2 id="install-modal-title" style="margin-bottom: 0.5rem; color: var(--text-primary);">تثبيت المتجر</h2>
+            <p id="install-modal-desc" style="color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6;">
+                قم بتثبيت التطبيق على جهازك للوصول السريع بدون الحاجة لفتح المتصفح في كل مرة!
+            </p>
+            <button id="confirm-install-btn" class="download-btn btn-large" style="width: 100%;">
+                <i class="fa-solid fa-check"></i> <span id="confirm-install-text">موافق، تثبيت</span>
+            </button>
+        </div>
+    </div>
+
     <script src="js/app.js"></script>
+    <!-- Register Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    console.log('ServiceWorker registration successful with scope: ', reg.scope);
+                }).catch(err => {
+                    console.error('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
 </body>
 </html>
