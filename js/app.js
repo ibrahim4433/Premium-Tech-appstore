@@ -112,7 +112,11 @@ const strings = {
         optSizeSmall: "أصغر من 20MB (مباشر)",
         optSizeLarge: "أكبر من 20MB (تليجرام)",
         labelCategory: "التصنيف",
-        optCatAll: "الكل"
+        optCatAll: "الكل",
+        pwaInstallBtn: "تثبيت المتجر",
+        pwaModalTitle: "تثبيت المتجر",
+        pwaModalDesc: "قم بتثبيت التطبيق على جهازك للوصول السريع بدون الحاجة لفتح المتصفح في كل مرة!",
+        pwaConfirmBtn: "موافق، تثبيت"
     },
     en: {
         search: "Search for apps & games...",
@@ -144,7 +148,11 @@ const strings = {
         optSizeSmall: "< 20MB (Direct)",
         optSizeLarge: "> 20MB (Telegram)",
         labelCategory: "Category",
-        optCatAll: "All"
+        optCatAll: "All",
+        pwaInstallBtn: "Install Store",
+        pwaModalTitle: "Install AppStore",
+        pwaModalDesc: "Install the app on your device for quick access without needing to open the browser every time!",
+        pwaConfirmBtn: "Yes, Install"
     }
 };
 
@@ -213,6 +221,19 @@ function setLanguage(lang) {
              el.textContent = strings[lang][key];
          }
      });
+
+    // Update PWA UI
+    const pwaBtnText = document.getElementById('pwa-btn-text');
+    if (pwaBtnText) pwaBtnText.textContent = strings[lang].pwaInstallBtn;
+    
+    const pwaModalTitle = document.getElementById('install-modal-title');
+    if (pwaModalTitle) pwaModalTitle.textContent = strings[lang].pwaModalTitle;
+    
+    const pwaModalDesc = document.getElementById('install-modal-desc');
+    if (pwaModalDesc) pwaModalDesc.textContent = strings[lang].pwaModalDesc;
+    
+    const pwaConfirmText = document.getElementById('confirm-install-text');
+    if (pwaConfirmText) pwaConfirmText.textContent = strings[lang].pwaConfirmBtn;
 
     updateViewTitle();
     renderBanners();
@@ -729,3 +750,61 @@ function createFloatingBackground() {
         bgContainer.appendChild(icon);
     }
 }
+
+// ==========================================
+// PWA INSTALLATION LOGIC
+// ==========================================
+let deferredPrompt;
+const installBtn = document.getElementById('pwa-install-btn');
+const installModal = document.getElementById('install-modal');
+const closeInstallModalBtn = document.getElementById('close-install-modal');
+const confirmInstallBtn = document.getElementById('confirm-install-btn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the mini-infobar from appearing on mobile
+    e.preventDefault();
+    // Stash the event so it can be triggered later.
+    deferredPrompt = e;
+    // Update UI notify the user they can install the PWA
+    if (installBtn) {
+        installBtn.style.display = 'flex';
+    }
+});
+
+if (installBtn) {
+    installBtn.addEventListener('click', () => {
+        // Show our custom modal
+        installModal.classList.add('active');
+    });
+}
+
+if (closeInstallModalBtn) {
+    closeInstallModalBtn.addEventListener('click', () => {
+        installModal.classList.remove('active');
+    });
+}
+
+if (confirmInstallBtn) {
+    confirmInstallBtn.addEventListener('click', async () => {
+        installModal.classList.remove('active');
+        if (deferredPrompt) {
+            // Show the install prompt
+            deferredPrompt.prompt();
+            // Wait for the user to respond to the prompt
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response to the install prompt: ${outcome}`);
+            // We've used the prompt, and can't use it again, throw it away
+            deferredPrompt = null;
+            installBtn.style.display = 'none';
+        }
+    });
+}
+
+window.addEventListener('appinstalled', () => {
+    // Hide the app-provided install promotion
+    if (installBtn) installBtn.style.display = 'none';
+    installModal.classList.remove('active');
+    // Clear the deferredPrompt so it can be garbage collected
+    deferredPrompt = null;
+    console.log('PWA was installed');
+});

@@ -1,0 +1,16 @@
+{
+  "name": "Premium Techs",
+  "short_name": "Premium Techs",
+  "description": "The best premium apps & games directly from Telegram",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#024773",
+  "icons": [
+    {
+      "src": "assets/logo.jpg",
+      "sizes": "192x192 512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
