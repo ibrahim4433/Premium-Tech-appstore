@@ -99,7 +99,20 @@ const strings = {
         navApps: "التطبيقات",
         navCategories: "التصنيفات",
         bannerTitle: "اكتشف الجديد",
-        bannerDesc: "أفضل التطبيقات والألعاب المميزة"
+        bannerDesc: "أفضل التطبيقات والألعاب المميزة",
+        labelSort: "ترتيب حسب",
+        optSortNew: "الأحدث",
+        optSortOld: "الأقدم",
+        optSortAsc: "الاسم (أ-ي)",
+        optSortDesc: "الاسم (ي-أ)",
+        optSizeAsc: "الحجم (الأصغر)",
+        optSizeDesc: "الحجم (الأكبر)",
+        labelSize: "حجم الملف",
+        optSizeAll: "الكل",
+        optSizeSmall: "أصغر من 20MB (مباشر)",
+        optSizeLarge: "أكبر من 20MB (تليجرام)",
+        labelCategory: "التصنيف",
+        optCatAll: "الكل"
     },
     en: {
         search: "Search for apps & games...",
@@ -118,7 +131,20 @@ const strings = {
         navApps: "Apps",
         navCategories: "Categories",
         bannerTitle: "Discover",
-        bannerDesc: "The best premium apps & games"
+        bannerDesc: "The best premium apps & games",
+        labelSort: "Sort By",
+        optSortNew: "Newest",
+        optSortOld: "Oldest",
+        optSortAsc: "Name (A-Z)",
+        optSortDesc: "Name (Z-A)",
+        optSizeAsc: "Size (Smallest)",
+        optSizeDesc: "Size (Largest)",
+        labelSize: "File Size",
+        optSizeAll: "All",
+        optSizeSmall: "< 20MB (Direct)",
+        optSizeLarge: "> 20MB (Telegram)",
+        labelCategory: "Category",
+        optCatAll: "All"
     }
 };
 
