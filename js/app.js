@@ -169,6 +169,12 @@ function setLanguage(lang) {
     document.querySelector('.desktop-tabs [data-view="apps"]').textContent = strings[lang].navApps;
     document.querySelector('.desktop-tabs [data-view="categories"]').textContent = strings[lang].navCategories;
 
+    // Update Home Actions
+    const btnJoinText = document.getElementById('btn-join-text');
+    if (btnJoinText) btnJoinText.textContent = lang === 'ar' ? 'انضمام للقناة' : 'Join Channel';
+    const btnReqText = document.getElementById('btn-request-text');
+    if (btnReqText) btnReqText.textContent = lang === 'ar' ? 'اطلب تطبيق/لعبة' : 'Request App/Game';
+
     updateViewTitle();
     renderBanners();
     if (allApps.length > 0) {
@@ -240,6 +246,12 @@ function switchView(viewName) {
     if (currentSearch !== '') {
         currentSearch = '';
         searchInput.value = '';
+    }
+    
+    // Toggle home actions
+    const homeActions = document.getElementById('home-actions');
+    if (homeActions) {
+        homeActions.style.display = viewName === 'home' ? 'flex' : 'none';
     }
 
     // Show selected page
@@ -510,9 +522,12 @@ function openAppDetails(app) {
         const joinBtn = document.createElement('a');
         joinBtn.id = 'modal-join-btn';
         joinBtn.href = 'https://t.me/+ij7-LS669ahhMDFk';
-        joinBtn.className = 'btn btn-primary'; // Match the download button style exactly
+        joinBtn.className = 'download-btn btn-large'; // Match the exact rectangle style
         joinBtn.target = '_blank';
         joinBtn.rel = 'noopener noreferrer';
+        joinBtn.style.background = 'var(--bg-secondary)'; // Use slightly different background to distinguish it
+        joinBtn.style.border = '1px solid var(--accent-color)';
+        joinBtn.style.color = 'var(--text-primary)';
         joinBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> ${currentLanguage === 'ar' ? 'انضمام للقناة' : 'Join Channel'}`;
         
         modalActions.style.display = 'flex';
