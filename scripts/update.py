@@ -108,7 +108,7 @@ def main():
     
     print(f"Fetching updates from offset: {offset}")
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates"
-    params = {'offset': offset, 'timeout': 10, 'allowed_updates': ['channel_post', 'edited_channel_post', 'message']}
+    params = {'offset': offset, 'timeout': 10}
     response = requests.get(url, params=params)
     updates = response.json().get('result', []) if response.status_code == 200 else []
     
