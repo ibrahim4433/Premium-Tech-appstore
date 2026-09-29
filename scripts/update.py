@@ -108,7 +108,7 @@ def main():
     
     print(f"Fetching updates from offset: {offset}")
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates"
-    params = {'offset': offset, 'timeout': 10, 'allowed_updates': ['channel_post', 'edited_channel_post']}
+    params = {'offset': offset, 'timeout': 10, 'allowed_updates': ['channel_post', 'edited_channel_post', 'message']}
     response = requests.get(url, params=params)
     updates = response.json().get('result', []) if response.status_code == 200 else []
     
@@ -120,7 +120,7 @@ def main():
         highest_offset = max(highest_offset, update_id + 1)
         
         is_edit = 'edited_channel_post' in update
-        message = update.get('channel_post') or update.get('edited_channel_post')
+        message = update.get('channel_post') or update.get('edited_channel_post') or update.get('message')
         if not message:
             continue
             
@@ -161,8 +161,12 @@ def main():
                 current_app['file_id'] = message['document']['file_id']
                 current_app['file_name'] = message['document'].get('file_name', 'Download.apk')
                 current_app['size'] = message['document'].get('file_size', 0)
-                current_app['id'] = str(message['message_id'])
-                current_app['chat_id'] = str(message['chat']['id'])
+                
+                orig_id = message.get('forward_from_message_id')
+                current_app['id'] = str(orig_id) if orig_id else str(message['message_id'])
+                
+                orig_chat = message.get('forward_from_chat')
+                current_app['chat_id'] = str(orig_chat['id']) if orig_chat else str(message['chat']['id'])
                 
                 # Remove older versions of the same app (Deduplication by Name)
                 apps = [a for a in apps if a.get('name', '').strip().lower() != current_app['name'].strip().lower()]

@@ -374,7 +374,7 @@ function renderApps() {
         const isLarge = app.size > 19.5 * 1024 * 1024; // Telegram Bot API limit is 20MB
         
         // Generate Telegram link (handle private channels starting with -100)
-        let tgLink = `https://t.me/premium_techs/${app.id}`;
+        let tgLink = `https://t.me/+ij7-LS669ahhMDFk`; // Fallback to invite link if chat_id is unknown
         if (app.chat_id && app.chat_id.startsWith('-100')) {
             const baseChatId = app.chat_id.substring(4);
             tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
@@ -418,7 +418,7 @@ function openAppDetails(app) {
     const downloadBtn = document.getElementById('modal-download');
     
     if (isLarge) {
-        let tgLink = `https://t.me/premium_techs/${app.id}`;
+        let tgLink = `https://t.me/+ij7-LS669ahhMDFk`; // Fallback to invite link if chat_id is unknown
         if (app.chat_id && app.chat_id.startsWith('-100')) {
             const baseChatId = app.chat_id.substring(4);
             tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
