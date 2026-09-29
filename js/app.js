@@ -762,6 +762,11 @@ const confirmInstallBtn = document.getElementById('confirm-install-btn');
 // If the event fired before this script loaded, show the button immediately
 if (window.deferredPrompt && installBtn) {
     installBtn.style.display = 'flex';
+    
+    // Auto-show popup on big screens if not dismissed before
+    if (window.innerWidth >= 768 && !localStorage.getItem('pwa-popup-dismissed')) {
+        if (installModal) installModal.classList.add('active');
+    }
 }
 
 if (installBtn) {
@@ -774,6 +779,7 @@ if (installBtn) {
 if (closeInstallModalBtn) {
     closeInstallModalBtn.addEventListener('click', () => {
         installModal.classList.remove('active');
+        localStorage.setItem('pwa-popup-dismissed', 'true');
     });
 }
 

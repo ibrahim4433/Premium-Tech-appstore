@@ -23,6 +23,12 @@
             window.deferredPrompt = e;
             const btn = document.getElementById('pwa-install-btn');
             if (btn) btn.style.display = 'flex';
+            
+            // Auto-show popup on big screens if not dismissed before
+            if (window.innerWidth >= 768 && !localStorage.getItem('pwa-popup-dismissed')) {
+                const modal = document.getElementById('install-modal');
+                if (modal) modal.classList.add('active');
+            }
         });
     </script>
 </head>
