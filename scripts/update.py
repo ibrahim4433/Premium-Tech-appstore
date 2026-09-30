@@ -193,7 +193,10 @@ def main():
                 text = message.get('caption', message.get('text', ''))
                 if '🧩 تطبيق' in text or '🎮 لعبة' in text:
                     extracted_info = extract_text_info(text)
-                    extracted_info['icon_id'] = message['photo'][-1]['file_id']
+                    
+                    photo_array = message['photo']
+                    thumb_index = 1 if len(photo_array) > 1 else 0
+                    extracted_info['icon_id'] = photo_array[thumb_index]['file_id']
                     
                     if is_edit:
                         # Update existing app in database by name (case-insensitive)
