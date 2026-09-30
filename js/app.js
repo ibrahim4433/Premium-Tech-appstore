@@ -265,10 +265,23 @@ function setupEventListeners() {
         utilSort.addEventListener('click', () => {
             const sortModes = ['new', 'old', 'name_asc', 'name_desc'];
             const icons = ['fa-clock', 'fa-clock-rotate-left', 'fa-arrow-down-a-z', 'fa-arrow-up-z-a'];
+            const labelsAr = ['الأحدث', 'الأقدم', 'أبجدي تصاعدي', 'أبجدي تنازلي'];
+            const labelsEn = ['Newest', 'Oldest', 'A-Z', 'Z-A'];
             let idx = sortModes.indexOf(currentSortMode);
             idx = (idx + 1) % sortModes.length;
             currentSortMode = sortModes[idx];
-            utilSort.innerHTML = `<i class="fa-solid ${icons[idx]}"></i>`;
+            
+            const labels = currentLanguage === 'ar' ? labelsAr : labelsEn;
+            utilSort.innerHTML = `<i class="fa-solid ${icons[idx]}"></i> <span class="util-text">${labels[idx]}</span>`;
+            
+            // Update page title based on sorting mode
+            const pageTitle = document.getElementById('page-title');
+            if (pageTitle) {
+                pageTitle.textContent = labels[idx];
+            }
+            
+            if (currentSortMode !== 'new') utilSort.classList.add('active');
+            else utilSort.classList.remove('active');
             
             const sortSelect = document.getElementById('sort-select');
             if (sortSelect) sortSelect.value = currentSortMode;
@@ -281,9 +294,16 @@ function setupEventListeners() {
     if (utilGroup) {
         utilGroup.addEventListener('click', () => {
             const groupModes = ['none', 'category', 'alpha'];
+            const icons = ['fa-layer-group', 'fa-tags', 'fa-font'];
+            const labelsAr = ['تجميع', 'التصنيفات', 'أبجدياً'];
+            const labelsEn = ['Group', 'Categories', 'Alphabetical'];
+            
             let idx = groupModes.indexOf(currentGroupMode);
             idx = (idx + 1) % groupModes.length;
             currentGroupMode = groupModes[idx];
+            
+            const labels = currentLanguage === 'ar' ? labelsAr : labelsEn;
+            utilGroup.innerHTML = `<i class="fa-solid ${icons[idx]}"></i> <span class="util-text">${labels[idx]}</span>`;
             
             if (currentGroupMode === 'none') {
                 utilGroup.classList.remove('active');
@@ -299,10 +319,19 @@ function setupEventListeners() {
         utilView.addEventListener('click', () => {
             const viewModes = ['grid', 'list', 'single'];
             const icons = ['fa-grip', 'fa-list', 'fa-square'];
+            const labelsAr = ['شبكة', 'قائمة', 'صف واحد'];
+            const labelsEn = ['Grid', 'List', 'Single'];
+            
             let idx = viewModes.indexOf(currentViewMode);
             idx = (idx + 1) % viewModes.length;
             currentViewMode = viewModes[idx];
-            utilView.innerHTML = `<i class="fa-solid ${icons[idx]}"></i>`;
+            
+            const labels = currentLanguage === 'ar' ? labelsAr : labelsEn;
+            utilView.innerHTML = `<i class="fa-solid ${icons[idx]}"></i> <span class="util-text">${labels[idx]}</span>`;
+            
+            if (currentViewMode !== 'grid') utilView.classList.add('active');
+            else utilView.classList.remove('active');
+            
             updateGridClass();
         });
     }
@@ -409,7 +438,12 @@ function updateViewTitle(customTitle = null) {
     if (currentSearch) {
         pageTitle.textContent = strings[currentLanguage].titleSearch;
     } else if (activeView === 'home') {
-        pageTitle.textContent = strings[currentLanguage].titleHome;
+        const sortModes = ['new', 'old', 'name_asc', 'name_desc'];
+        const labelsAr = ['الأحدث', 'الأقدم', 'أبجدي تصاعدي', 'أبجدي تنازلي'];
+        const labelsEn = ['Newest', 'Oldest', 'A-Z', 'Z-A'];
+        const idx = sortModes.indexOf(currentSortMode);
+        const labels = currentLanguage === 'ar' ? labelsAr : labelsEn;
+        pageTitle.textContent = labels[idx];
     } else if (activeView === 'apps') {
         pageTitle.textContent = strings[currentLanguage].titleApps;
     } else if (activeView === 'games') {
