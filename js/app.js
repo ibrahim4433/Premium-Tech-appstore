@@ -293,10 +293,10 @@ function setupEventListeners() {
     const utilGroup = document.getElementById('util-group');
     if (utilGroup) {
         utilGroup.addEventListener('click', () => {
-            const groupModes = ['none', 'category', 'alpha'];
-            const icons = ['fa-layer-group', 'fa-tags', 'fa-font'];
-            const labelsAr = ['تجميع', 'التصنيفات', 'أبجدياً'];
-            const labelsEn = ['Group', 'Categories', 'Alphabetical'];
+            const groupModes = ['none', 'category', 'alpha', 'date'];
+            const icons = ['fa-layer-group', 'fa-tags', 'fa-font', 'fa-calendar-day'];
+            const labelsAr = ['تجميع', 'التصنيفات', 'أبجدياً', 'التاريخ'];
+            const labelsEn = ['Group', 'Categories', 'Alphabetical', 'Date'];
             
             let idx = groupModes.indexOf(currentGroupMode);
             idx = (idx + 1) % groupModes.length;
@@ -675,8 +675,11 @@ function renderApps() {
     // Sort
     const sortMethod = currentSortMode;
     filteredApps.sort((a, b) => {
-        if (sortMethod === 'new') return b._index - a._index; // Newest first
-        if (sortMethod === 'old') return a._index - b._index; // Oldest first
+        const aDate = a.date ? a.date : a._index;
+        const bDate = b.date ? b.date : b._index;
+        
+        if (sortMethod === 'new') return bDate - aDate; // Newest first
+        if (sortMethod === 'old') return aDate - bDate; // Oldest first
         if (sortMethod === 'name_asc') return a.name.localeCompare(b.name);
         if (sortMethod === 'name_desc') return b.name.localeCompare(a.name);
         if (sortMethod === 'size_asc') return a.size - b.size;
@@ -703,12 +706,20 @@ function renderApps() {
             } else if (currentGroupMode === 'alpha') {
                 groupKey = app.name.charAt(0).toUpperCase();
                 if (!groupKey.match(/[A-Zأ-ي]/)) groupKey = '#';
+            } else if (currentGroupMode === 'date') {
+                if (app.date) {
+                    const d = new Date(app.date * 1000);
+                    groupKey = `${d.getFullYear()}/${(d.getMonth()+1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')}`;
+                } else {
+                    groupKey = currentLanguage === 'ar' ? 'أقدم' : 'Older';
+                }
             }
             if (!grouped[groupKey]) grouped[groupKey] = [];
             grouped[groupKey].push(app);
         });
         
-        const sortedKeys = Object.keys(grouped).sort();
+        let sortedKeys = Object.keys(grouped).sort();
+        if (currentGroupMode === 'date') sortedKeys = sortedKeys.reverse();
         sortedKeys.forEach(key => {
             const header = document.createElement('div');
             header.className = 'group-header';
