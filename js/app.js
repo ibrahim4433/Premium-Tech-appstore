@@ -817,7 +817,24 @@ function openAppDetails(app) {
     const versionText = app.version ? (currentLanguage === 'ar' ? `إصدار: ${app.version}` : `v${app.version}`) : (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
     
     document.getElementById('modal-category').innerHTML = `<span style="color: var(--accent-color); font-weight: bold;">${versionText}</span>`;
-    document.getElementById('modal-size').textContent = formatBytes(app.size);
+    
+    const sizeLabel = currentLanguage === 'ar' ? 'الحجم: ' : 'Size: ';
+    document.getElementById('modal-size').textContent = sizeLabel + formatBytes(app.size);
+    
+    let dateString = '';
+    if (app.date) {
+        const d = new Date(app.date * 1000);
+        // Format like 2026-09-30 or 30-09-2026
+        dateString = d.toLocaleDateString(currentLanguage === 'ar' ? 'ar-EG' : 'en-GB', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    } else {
+        dateString = currentLanguage === 'ar' ? 'غير معروف' : 'Unknown';
+    }
+    const dateLabel = currentLanguage === 'ar' ? 'تاريخ النشر: ' : 'Posted: ';
+    document.getElementById('modal-date').textContent = dateLabel + dateString;
     
     // Add Note for large files at the bottom
     const isLarge = app.size > 19.5 * 1024 * 1024;
