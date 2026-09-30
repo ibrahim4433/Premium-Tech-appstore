@@ -286,7 +286,9 @@ function setupEventListeners() {
             const sortSelect = document.getElementById('sort-select');
             if (sortSelect) sortSelect.value = currentSortMode;
             
-            renderApps();
+            setTimeout(() => {
+                renderApps();
+            }, 10);
         });
     }
     
@@ -310,7 +312,9 @@ function setupEventListeners() {
             } else {
                 utilGroup.classList.add('active');
             }
-            renderApps();
+            setTimeout(() => {
+                renderApps();
+            }, 10);
         });
     }
 
@@ -332,7 +336,9 @@ function setupEventListeners() {
             if (currentViewMode !== 'grid') utilView.classList.add('active');
             else utilView.classList.remove('active');
             
-            updateGridClass();
+            setTimeout(() => {
+                updateGridClass();
+            }, 10);
         });
     }
     
