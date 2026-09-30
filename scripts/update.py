@@ -235,6 +235,8 @@ def main():
                     orig_chat = message.get('forward_from_chat')
                     current_app['chat_id'] = str(orig_chat['id']) if orig_chat else str(message['chat']['id'])
                     
+                    current_app['date'] = message.get('date', 0)
+                    
                     # Remove older versions of the same app (Deduplication by Name)
                     apps = [a for a in apps if a.get('name', '').strip().lower() != current_app['name'].strip().lower()]
                     
