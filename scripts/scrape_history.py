@@ -98,6 +98,7 @@ def scrape_from_bot_updates():
                 pending_app['file_name'] = document.get('file_name', 'Download.apk')
                 pending_app['size'] = document.get('file_size', 0)
                 pending_app['id'] = str(message.get('message_id', ''))
+                pending_app['date'] = message.get('forward_date', message.get('date', 0))
 
                 apps = [a for a in apps if a.get('name', '').strip().lower() != pending_app['name'].strip().lower()]
                 apps.insert(0, pending_app)
@@ -144,6 +145,13 @@ async def main():
                     pending_app['size'] = doc.size
                     pending_app['id'] = str(message.id)
                     pending_app['chat_id'] = str(message.chat_id)
+                    
+                    if getattr(message, 'fwd_from', None) and getattr(message.fwd_from, 'date', None):
+                        pending_app['date'] = int(message.fwd_from.date.timestamp())
+                    elif getattr(message, 'date', None):
+                        pending_app['date'] = int(message.date.timestamp())
+                    else:
+                        pending_app['date'] = 0
 
                     apps = [a for a in apps if a.get('name', '').strip().lower() != pending_app['name'].strip().lower()]
                     apps.insert(0, pending_app)
