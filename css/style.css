@@ -789,3 +789,105 @@ body {
     0% { transform: scale(0); }
     100% { transform: scale(1); }
 }
+
+/* View Utilities */
+.page-header-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.page-header-wrapper .section-title {
+    margin-bottom: 0;
+}
+.view-utilities {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0, 168, 232, 0.1);
+    padding: 0.4rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+.util-btn {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.util-btn:hover, .util-btn.active {
+    background: var(--accent-color);
+    color: white;
+}
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+    color: var(--text-secondary);
+}
+.slider-container input[type=range] {
+    width: 80px;
+    accent-color: var(--accent-color);
+}
+@media (max-width: 480px) {
+    .slider-container input[type=range] { width: 50px; }
+}
+
+/* Grid Views */
+.apps-grid.view-list {
+    display: flex;
+    flex-direction: column;
+}
+.apps-grid.view-list .app-card {
+    flex-direction: row;
+    align-items: center;
+    text-align: right;
+    padding: 0.8rem;
+    gap: 1rem;
+}
+:root[dir="ltr"] .apps-grid.view-list .app-card {
+    text-align: left;
+}
+.apps-grid.view-list .card-icon {
+    width: 60px;
+    margin-bottom: 0;
+}
+.apps-grid.view-list .card-info {
+    margin-bottom: 0;
+    flex: 1;
+}
+.apps-grid.view-list .card-install-btn {
+    width: auto;
+    padding: 0.5rem 1rem;
+}
+
+.apps-grid.view-single {
+    grid-template-columns: 1fr;
+}
+.apps-grid.view-single .app-card {
+    padding: 2rem;
+}
+.apps-grid.view-single .card-icon {
+    width: 120px;
+}
+
+/* Group Headers */
+.group-header {
+    grid-column: 1 / -1;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-top: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
