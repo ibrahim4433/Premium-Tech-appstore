@@ -12,7 +12,7 @@ from telethon.errors.rpcerrorlist import BotMethodInvalidError
 API_ID = 6372419
 API_HASH = 'f0d104a2db47caa06a9d569431345b59'
 BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
-CHANNEL_USERNAME = 'premium_techs'
+CHANNEL_USERNAME = -1001423595432
 APPS_FILE = 'apps.json'
 
 def extract_text_info(text):
@@ -108,13 +108,13 @@ def scrape_from_bot_updates():
     return apps
 
 async def main():
-    if not BOT_TOKEN:
-        print("Error: TELEGRAM_BOT_TOKEN environment variable not set.")
-        return
+    # No bot token needed for User MTProto
 
-    print("Logging into Telegram via MTProto...")
-    client = TelegramClient('bot_session', API_ID, API_HASH)
-    await client.start(bot_token=BOT_TOKEN)
+    print("Logging into Telegram via MTProto as a User...")
+    client = TelegramClient('user_session', API_ID, API_HASH)
+    
+    # We remove the bot_token parameter so it prompts the user for their phone number in the terminal
+    await client.start()
     
     print(f"Scraping history from @{CHANNEL_USERNAME}...")
     
@@ -122,7 +122,12 @@ async def main():
     pending_app = None
     
     try:
+        msg_count = 0
         async for message in client.iter_messages(CHANNEL_USERNAME, reverse=True):
+            msg_count += 1
+            if msg_count <= 5:
+                print(f"DEBUG: Found message {message.id} with media type {type(message.media)}")
+                
             if isinstance(message.media, MessageMediaPhoto) and message.text:
                 text = message.text
                 if '🧩 تطبيق' in text or '🎮 لعبة' in text:
@@ -158,8 +163,12 @@ async def main():
                     print(f"Successfully added app: {pending_app['name']} with its APK file!")
                     pending_app = None
     except BotMethodInvalidError:
+        print("DEBUG: Hit BotMethodInvalidError, falling back...")
         apps = scrape_from_bot_updates()
+    except Exception as e:
+        print(f"DEBUG: Hit generic exception: {e}")
     finally:
+        print(f"DEBUG: Processed {msg_count} total messages.")
         await client.disconnect()
 
     print(f"Total apps extracted: {len(apps)}")
