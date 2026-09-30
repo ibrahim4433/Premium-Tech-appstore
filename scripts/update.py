@@ -41,6 +41,43 @@ def save_apps(apps):
     with open(APPS_FILE, 'w', encoding='utf-8') as f:
         json.dump(apps, f, indent=4, ensure_ascii=False)
 
+def update_seo_html(apps):
+    import datetime
+    
+    # Update index.html
+    html_file = 'index.html'
+    if os.path.exists(html_file):
+        with open(html_file, 'r', encoding='utf-8') as f:
+            html_content = f.read()
+            
+        seo_html = "<!-- SEO_APPS_START -->\n"
+        for app in apps:
+            name = app.get('name', 'Unknown')
+            desc = app.get('description', '').replace('\n', ' ')
+            # Truncate description to prevent huge file size
+            desc = (desc[:150] + '...') if len(desc) > 150 else desc
+            seo_html += f"            <article><h3>{name}</h3><p>{desc}</p></article>\n"
+        seo_html += "            <!-- SEO_APPS_END -->"
+        
+        import re
+        new_html = re.sub(r'<!-- SEO_APPS_START -->.*?<!-- SEO_APPS_END -->', seo_html, html_content, flags=re.DOTALL)
+        
+        with open(html_file, 'w', encoding='utf-8') as f:
+            f.write(new_html)
+            
+    # Update sitemap.xml date
+    sitemap_file = 'sitemap.xml'
+    if os.path.exists(sitemap_file):
+        with open(sitemap_file, 'r', encoding='utf-8') as f:
+            sitemap_content = f.read()
+            
+        today = datetime.datetime.now().strftime("%Y-%m-%d")
+        import re
+        new_sitemap = re.sub(r'<lastmod>.*?</lastmod>', f'<lastmod>{today}T00:00:00+00:00</lastmod>', sitemap_content)
+        
+        with open(sitemap_file, 'w', encoding='utf-8') as f:
+            f.write(new_sitemap)
+
 def load_pending():
     if os.path.exists(PENDING_FILE):
         try:
@@ -206,6 +243,7 @@ def main():
 
     if added_count > 0:
         save_apps(apps)
+        update_seo_html(apps)
         
     save_offset(highest_offset)
     print(f"Processed {added_count} new apps.")
