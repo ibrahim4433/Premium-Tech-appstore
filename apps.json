@@ -1,5 +1,65 @@
 [
     {
+        "name": "Zero Cleaner",
+        "description": "امسح ذاكرة التخزين المؤقت للتطبيقات بسهولة! تحليل ذاكرة التخزين المؤقت للتطبيق. مسح ذاكرة التخزين المؤقت لتحرير المساحة فورا.\n🧊 الإصدار: v26.9.1\n🏷 النسخة المعدلة و فيها\n💎 مفتوح Premium",
+        "version": "v26.9.1",
+        "category": "Apps",
+        "tags": [
+            "#watching"
+        ],
+        "icon_id": "AgACAgQAAx0CVNpXqAACcvpqvQABKK49JgijprUAAdqxGUYJja_fAAJUEWsb6zPoUTRxEN31H4_eAQADAgADeAADPQQ",
+        "file_id": "BQACAgQAAx0CVNpXqAACcvtqvQABKwgqnu_t9jfYNaaEZYUKpGsAAjMhAAIjqOlRuCGulebZkRI9BA",
+        "file_name": "Zero Cleaner @premium_techs.apk",
+        "size": 5089338,
+        "id": "29435",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "AmpereFlow",
+        "description": "مراقبة دقيقة للبطارية باستخدام مقياس للوات، وفحص الحالة، وشاشة تعمل دائمًا! يحول شاشتك إلى مقياس دقيق لشحن البطارية مع قراءات الأمبير والوات.\n🧊 الإصدار: v2.2.4\n🏷 النسخة المعدلة و فيها\n💎 مفتوح Premium",
+        "version": "v2.2.4",
+        "category": "Apps",
+        "tags": [
+            "#watching"
+        ],
+        "icon_id": "AgACAgQAAx0CVNpXqAACcvdqvP7PC4Fb01K69mBfxbrLcG94mgACRhFrG-sz6FEhIJvUWPdd2QEAAwIAA3gAAz0E",
+        "file_id": "BQACAgQAAx0CVNpXqAACcvhqvP7ZQhQLdCFghuS5dXN2qgP7AAMxIQACI6jpUUVayimrIxMvPQQ",
+        "file_name": "AmpereFlow @premium_techs.apk",
+        "size": 11064091,
+        "id": "29432",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "Win 12 Launcher",
+        "description": "تطبيق يُحول واجهة هاتفك الأندرويد لتبدو مشابهة لواجهة نظام ويندوز 10، مع قائمة ابدأ وشريط المهام وواجهة بلاطات Live Tiles. يوفر تجربة تشبه سطح مكتب الكمبيوتر، مع إمكانية تخصيص الأيقونات والواجهات، مما يمنحك شعورًا بأنك تستخدم نظام ويندوز على هاتفك الذكي.\n🧊 الإصدار: v12.8\n🏷 النسخة المعدلة وفيها :\n💎 مفتوح Premuim",
+        "version": "v12.8",
+        "category": "Apps",
+        "tags": [
+            "#Launchers"
+        ],
+        "icon_id": "AgACAgQAAx0CVNpXqAACcvRqvP3stFs4HpbIROfMazbwSF_ykAACRRFrG-sz6FHShKlWJelGEQEAAwIAA3gAAz0E",
+        "file_id": "BQACAgQAAx0CVNpXqAACcvVqvP3zUZa27wABmU1405lnStNlP0cAAi4hAAIjqOlRTijaSf6uSWI9BA",
+        "file_name": "Win 12 Launcher @premium_techs.apk",
+        "size": 10909138,
+        "id": "29429",
+        "chat_id": "-1001423595432"
+    },
+    {
+        "name": "8Super",
+        "description": "هو مدير تطبيقات أمان، ينظف ذاكرة التخزين المؤقت والملفات المكررة، وجهات الاتصال، والصور. مرحباً بك في 8Super – الحل الأمثل للعناية بجهازك.\n🧊 الإصدار: v2.0.05g\n🏷 النسخة المعدلة و فيها\n💎 مفتوح Premium",
+        "version": "v2.0.05g",
+        "category": "Apps",
+        "tags": [
+            "#watching"
+        ],
+        "icon_id": "AgACAgQAAx0CVNpXqAACcvFqvP008B75xmZjx4gIJQwOXIVt3QACRBFrG-sz6FFOU1VZvQgi8AEAAwIAA3gAAz0E",
+        "file_id": "BQACAgQAAx0CVNpXqAACcvJqvP05y_fvzSq4kLX9IAABDb5DHdYAAi0hAAIjqOlRLF5HBA6S5A89BA",
+        "file_name": "8Super @premium_techs.apk",
+        "size": 43781327,
+        "id": "29426",
+        "chat_id": "-1001423595432"
+    },
+    {
         "name": "SDownloader",
         "description": "يُمكن لبرنامج SDownloader تنزيل مقاطع الفيديو والصور من أي تطبيق أو موقع تواصل اجتماعي تقريبًا. ما عليك سوى نسخ رابط الفيديو ولصقه في البرنامج.\n🧊 الإصدار: v1.3.17\n🏷 النسخة المعدلة و فيها\n💎 مفتوح Premium",
         "version": "v1.3.17",
@@ -4868,21 +4928,6 @@
         "file_name": "Stellio Player @premium_techs.apk",
         "size": 45280675,
         "id": "28352",
-        "chat_id": "-1001423595432"
-    },
-    {
-        "name": "AmpereFlow",
-        "description": "مراقبة دقيقة للبطارية باستخدام مقياس للوات، وفحص الحالة، وشاشة تعمل دائمًا! يحول شاشتك إلى مقياس دقيق لشحن البطارية مع قراءات الأمبير والوات.\n🧊 الإصدار: v2.2.2\n🏷 النسخة المعدلة و فيها\n💎 مفتوح Premium",
-        "version": "v2.2.2",
-        "category": "Apps",
-        "tags": [
-            "#watching"
-        ],
-        "icon_id": "AgACAgQAAxkBAAIa4Wq7DIyR7uLS6Rqyr4er3JnfYFw4AAK7DmsbZxpoUfSyqG5m8sq9AQADAgADeAADPQQ",
-        "file_id": "BQACAgQAAxkBAAIa4mq7DIy1ePTpFJOtRfZFvs_30RhtAALyHQACIehoUe-xX5FrPi0SPQQ",
-        "file_name": "AmpereFlow @premium_techs.apk",
-        "size": 9671407,
-        "id": "28349",
         "chat_id": "-1001423595432"
     },
     {
