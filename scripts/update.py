@@ -39,7 +39,8 @@ def load_apps():
 
 def save_apps(apps):
     with open(APPS_FILE, 'w', encoding='utf-8') as f:
-        json.dump(apps, f, indent=4, ensure_ascii=False)
+        # Minify JSON output to save space and reduce download time
+        json.dump(apps, f, ensure_ascii=False, separators=(',', ':'))
 
 def update_seo_html(apps):
     import datetime
@@ -96,6 +97,11 @@ def extract_text_info(text):
     
     # Extract tags (e.g., #games, #Social)
     app_data['tags'] = list(set(re.findall(r'#\w+', text)))
+    
+    # Language Detection (simple heuristic based on Arabic characters ratio)
+    arabic_chars = len(re.findall(r'[\u0600-\u06FF]', text))
+    total_chars = len(text.replace(' ', ''))
+    app_data['lang'] = 'ar' if (total_chars > 0 and (arabic_chars / total_chars) > 0.1) else 'en'
     
     lines = text.split('\n')
     desc_lines = []
