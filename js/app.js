@@ -35,6 +35,10 @@ let allApps = [];
 let currentLanguage = 'ar';
 let activeView = 'home';
 let currentSearch = '';
+let currentSortMode = 'new';
+let currentGroupMode = 'none';
+let currentViewMode = 'grid';
+let currentGridCols = 3;
 
 // DOM Elements
 const views = {
@@ -256,6 +260,60 @@ function setupEventListeners() {
         }
     });
 
+    const utilSort = document.getElementById('util-sort');
+    if (utilSort) {
+        utilSort.addEventListener('click', () => {
+            const sortModes = ['new', 'old', 'name_asc', 'name_desc'];
+            const icons = ['fa-clock', 'fa-clock-rotate-left', 'fa-arrow-down-a-z', 'fa-arrow-up-z-a'];
+            let idx = sortModes.indexOf(currentSortMode);
+            idx = (idx + 1) % sortModes.length;
+            currentSortMode = sortModes[idx];
+            utilSort.innerHTML = `<i class="fa-solid ${icons[idx]}"></i>`;
+            
+            const sortSelect = document.getElementById('sort-select');
+            if (sortSelect) sortSelect.value = currentSortMode;
+            
+            renderApps();
+        });
+    }
+    
+    const utilGroup = document.getElementById('util-group');
+    if (utilGroup) {
+        utilGroup.addEventListener('click', () => {
+            const groupModes = ['none', 'category', 'alpha'];
+            let idx = groupModes.indexOf(currentGroupMode);
+            idx = (idx + 1) % groupModes.length;
+            currentGroupMode = groupModes[idx];
+            
+            if (currentGroupMode === 'none') {
+                utilGroup.classList.remove('active');
+            } else {
+                utilGroup.classList.add('active');
+            }
+            renderApps();
+        });
+    }
+
+    const utilView = document.getElementById('util-view');
+    if (utilView) {
+        utilView.addEventListener('click', () => {
+            const viewModes = ['grid', 'list', 'single'];
+            const icons = ['fa-grip', 'fa-list', 'fa-square'];
+            let idx = viewModes.indexOf(currentViewMode);
+            idx = (idx + 1) % viewModes.length;
+            currentViewMode = viewModes[idx];
+            utilView.innerHTML = `<i class="fa-solid ${icons[idx]}"></i>`;
+            updateGridClass();
+        });
+    }
+    
+    const utilSlider = document.getElementById('grid-columns-slider');
+    if (utilSlider) {
+        utilSlider.addEventListener('input', (e) => {
+            currentGridCols = parseInt(e.target.value);
+            updateGridClass();
+        });
+    }
     const filterToggle = document.getElementById('filter-toggle');
     const filterPanel = document.getElementById('filter-panel');
     if (filterToggle && filterPanel) {
@@ -581,7 +639,7 @@ function renderApps() {
     });
     
     // Sort
-    const sortMethod = document.getElementById('sort-select') ? document.getElementById('sort-select').value : 'new';
+    const sortMethod = currentSortMode;
     filteredApps.sort((a, b) => {
         if (sortMethod === 'new') return b._index - a._index; // Newest first
         if (sortMethod === 'old') return a._index - b._index; // Oldest first
@@ -597,54 +655,101 @@ function renderApps() {
         return;
     }
 
-    filteredApps.forEach(app => {
-        const card = document.createElement('div');
-        card.className = 'app-card';
-        card.onclick = () => openAppDetails(app);
-
-        let imgHTML = app.icon_id 
-            ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="card-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'card-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
-            : `<div class="card-icon fallback"><i class="fa-brands fa-android"></i></div>`;
-
-        let descWords = '';
-        if (app.description) {
-            const words = app.description.trim().split(/\s+/);
-            if (words.length > 0 && words[0] !== '') {
-                descWords = words.slice(0, 4).join(' ');
-                if (words.length > 4) {
-                    descWords += '...';
+    if (currentGroupMode !== 'none') {
+        const grouped = {};
+        filteredApps.forEach(app => {
+            let groupKey = '';
+            if (currentGroupMode === 'category') {
+                let mainTagLabel = (app.category === 'Games') ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp;
+                if (app.tags && app.tags.length > 0) {
+                    const tagInfo = getTagInfo(app.tags[0]);
+                    mainTagLabel = currentLanguage === 'ar' ? tagInfo.ar : tagInfo.en;
                 }
+                groupKey = mainTagLabel;
+            } else if (currentGroupMode === 'alpha') {
+                groupKey = app.name.charAt(0).toUpperCase();
+                if (!groupKey.match(/[A-Zأ-ي]/)) groupKey = '#';
+            }
+            if (!grouped[groupKey]) grouped[groupKey] = [];
+            grouped[groupKey].push(app);
+        });
+        
+        const sortedKeys = Object.keys(grouped).sort();
+        sortedKeys.forEach(key => {
+            const header = document.createElement('div');
+            header.className = 'group-header';
+            header.textContent = key;
+            appsGrid.appendChild(header);
+            
+            grouped[key].forEach(app => {
+                appsGrid.appendChild(createAppCard(app));
+            });
+        });
+    } else {
+        filteredApps.forEach(app => {
+            appsGrid.appendChild(createAppCard(app));
+        });
+    }
+}
+
+function updateGridClass() {
+    appsGrid.className = 'apps-grid';
+    if (currentViewMode === 'list') appsGrid.classList.add('view-list');
+    else if (currentViewMode === 'single') appsGrid.classList.add('view-single');
+    else {
+        appsGrid.style.gridTemplateColumns = `repeat(${currentGridCols}, minmax(100px, 1fr))`;
+    }
+    
+    if (currentViewMode !== 'grid') appsGrid.style.gridTemplateColumns = '';
+}
+
+function createAppCard(app) {
+    const card = document.createElement('div');
+    card.className = 'app-card';
+    card.onclick = () => openAppDetails(app);
+
+    let imgHTML = app.icon_id 
+        ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="card-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'card-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
+        : `<div class="card-icon fallback"><i class="fa-brands fa-android"></i></div>`;
+
+    let descWords = '';
+    if (app.description) {
+        const words = app.description.trim().split(/\s+/);
+        if (words.length > 0 && words[0] !== '') {
+            descWords = words.slice(0, 4).join(' ');
+            if (words.length > 4) {
+                descWords += '...';
             }
         }
-        const categoryText = descWords || (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
-        
-        const isLarge = app.size > 19.5 * 1024 * 1024;
-        
-        let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
-        if (app.chat_id && app.chat_id.startsWith('-100')) {
-            const baseChatId = app.chat_id.substring(4);
-            tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
-        }
-        
-        const downloadLink = isLarge 
-            ? tgLink
-            : `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
-        
-        const btnIcon = isLarge ? 'fa-paper-plane' : 'fa-download';
-        const btnText = strings[currentLanguage].download;
+    }
+    const categoryText = descWords || (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
+    
+    const isLarge = app.size > 19.5 * 1024 * 1024;
+    
+    let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
+    if (app.chat_id && app.chat_id.startsWith('-100')) {
+        const baseChatId = app.chat_id.substring(4);
+        tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
+    }
+    
+    const downloadLink = isLarge 
+        ? tgLink
+        : `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
+    
+    const btnIcon = isLarge ? 'fa-paper-plane' : 'fa-download';
+    const btnText = strings[currentLanguage].download;
 
-        card.innerHTML = `
-            ${imgHTML}
-            <div class="card-info">
-                <div class="card-title">${app.name}</div>
-                <div class="card-category" style="opacity: 0.8; font-size: 0.8rem; line-height: 1.4;">${categoryText}</div>
-            </div>
-            <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
-                <i class="fa-solid ${btnIcon}"></i> ${btnText}
-            </a>
-        `;
-        appsGrid.appendChild(card);
-    });
+    card.innerHTML = `
+        ${imgHTML}
+        <div class="card-info">
+            <div class="card-title">${app.name}</div>
+            <div class="card-category" style="opacity: 0.8; font-size: 0.8rem; line-height: 1.4;">${categoryText}</div>
+        </div>
+        <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+            <i class="fa-solid ${btnIcon}"></i> ${btnText}
+        </a>
+    `;
+    return card;
 }
 
 function formatBytes(bytes) {
