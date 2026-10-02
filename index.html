@@ -49,9 +49,9 @@
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/Premium-Tech-appstore/manifest.json">
     <meta name="theme-color" content="#024773">
-    <link rel="apple-touch-icon" href="assets/logo.jpg">
+    <link rel="apple-touch-icon" href="/Premium-Tech-appstore/assets/logo.jpg">
     <!-- PWA Install Early Listener -->
     <script>
         window.deferredPrompt = null;
@@ -1545,7 +1545,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').then(reg => {
+                navigator.serviceWorker.register('/Premium-Tech-appstore/sw.js').then(reg => {
                     console.log('ServiceWorker registration successful with scope: ', reg.scope);
                 }).catch(err => {
                     console.error('ServiceWorker registration failed: ', err);
