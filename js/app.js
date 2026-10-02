@@ -3,32 +3,7 @@
 // ==========================================
 const WORKER_URL = "https://appstore-proxy.4445622.workers.dev"; // The worker URL from user
 
-// Add or edit your sliding banners here!
-// You can use a custom image (e.g., 'assets/banner1.jpg') or a gradient background.
-// Icons use FontAwesome class names (e.g., 'fa-rocket', 'fa-fire', 'fa-gamepad').
-const STORE_BANNERS = [
-    {
-        title: { ar: "قناة Premium Techs", en: "Premium Techs Channel" },
-        subtitle: { ar: "أفضل التطبيقات والألعاب من تليجرام مباشرة", en: "The best premium apps & games directly from Telegram" },
-        image: "assets/banner1.jpg", 
-        background: "linear-gradient(45deg, #024773, #11a6d4)",
-        icon: "fa-rocket"
-    },
-    {
-        title: { ar: "ألعاب عالم مفتوح", en: "Open World Games" },
-        subtitle: { ar: "عش المغامرة مع أفضل ألعاب الأكشن والإثارة", en: "Live the adventure with the best action games" },
-        image: "assets/banner2.jpg", 
-        background: "linear-gradient(45deg, #4b134f, #c94b4b)",
-        icon: "fa-fire"
-    },
-    {
-        title: { ar: "تطبيقات المونتاج", en: "Video Editing Apps" },
-        subtitle: { ar: "أطلق العنان لإبداعك مع أفضل برامج التصميم", en: "Unleash your creativity with the best editing apps" },
-        image: "assets/banner3.jpg", 
-        background: "linear-gradient(45deg, #134e5e, #71b280)",
-        icon: "fa-gamepad"
-    }
-];
+let storeBanners = [];
 // ==========================================
 
 let allApps = [];
@@ -182,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initLanguage();
     createFloatingBackground();
-    renderBanners();
+    fetchBanners();
     fetchApps();
     setupEventListeners();
 });
@@ -571,83 +546,150 @@ async function fetchApps() {
     }
 }
 
+async function fetchBanners() {
+    try {
+        const response = await fetch('banners.json');
+        if (!response.ok) throw new Error('Failed to load banners.json');
+        storeBanners = await response.json();
+        renderBanners();
+    } catch (error) {
+        console.error('Banners fetch error:', error);
+    }
+}
+
 function renderBanners() {
     bannersSection.innerHTML = '';
     
-    STORE_BANNERS.forEach(banner => {
+    // Setup snapping physics
+    bannersSection.style.scrollSnapType = 'x mandatory';
+    bannersSection.style.overflowX = 'auto';
+    bannersSection.style.scrollBehavior = 'smooth';
+    
+    if (window.bannerScrollInterval) clearInterval(window.bannerScrollInterval);
+    if (internalSlideTimer) clearInterval(internalSlideTimer);
+    if (autoScrollTimer) clearTimeout(autoScrollTimer);
+
+    storeBanners.forEach((bannerConfig, index) => {
         const div = document.createElement('div');
         div.className = 'banner';
+        div.dataset.index = index;
+        div.style.scrollSnapAlign = 'center';
         
-        let html = '';
-        if (banner.image) {
-            html += `<img src="${banner.image}" class="banner-img" alt="Banner">`;
-            html += `<div class="banner-overlay"></div>`;
-        } else {
-            div.style.background = banner.background;
-            if (banner.icon) {
-                html += `<i class="fa-solid ${banner.icon} bg-icon"></i>`;
+        // Handle Action Click
+        div.addEventListener('click', () => {
+            if (!bannerConfig.action) return;
+            if (bannerConfig.action.type === 'link') {
+                window.open(bannerConfig.action.target, '_blank');
+            } else if (bannerConfig.action.type === 'open_app') {
+                const targetApp = allApps.find(a => a.name.toLowerCase() === bannerConfig.action.appName.toLowerCase());
+                if (targetApp) openAppDetails(targetApp);
+                else console.warn('App not found for banner click:', bannerConfig.action.appName);
             }
+        });
+
+        // Setup internal slides
+        if (bannerConfig.slides && bannerConfig.slides.length > 0) {
+            bannerConfig.slides.forEach((slide, sIdx) => {
+                const slideDiv = document.createElement('div');
+                slideDiv.className = `banner-slide ${sIdx === 0 ? 'active' : ''}`;
+                
+                const titleStr = slide.title[currentLanguage] || slide.title.en || '';
+                const subStr = slide.subtitle[currentLanguage] || slide.subtitle.en || '';
+                
+                slideDiv.innerHTML = `
+                    <div style="background: linear-gradient(45deg, #024773, #11a6d4); width:100%; height:100%; position:absolute; z-index:-1;"></div>
+                    <img src="${slide.image}" onerror="this.style.display='none'" alt="Banner Image">
+                    <div class="banner-overlay"></div>
+                    <div class="banner-content">
+                        <h2>${titleStr}</h2>
+                        <p>${subStr}</p>
+                    </div>
+                `;
+                div.appendChild(slideDiv);
+            });
         }
         
-        html += `
-            <div class="banner-content">
-                <h2>${banner.title[currentLanguage]}</h2>
-                <p>${banner.subtitle[currentLanguage]}</p>
-            </div>
-        `;
-        
-        div.innerHTML = html;
         bannersSection.appendChild(div);
     });
     
-    // Setup Auto Scroll (Smooth marquee)
-    if (window.bannerScrollInterval) clearInterval(window.bannerScrollInterval);
-    
-    if (STORE_BANNERS.length > 1) {
-        bannersSection.style.scrollSnapType = 'none'; // Disable snapping for smooth scroll
-        
-        // Duplicate banners to allow seamless infinite scrolling visually
-        STORE_BANNERS.forEach(banner => {
-            const div = document.createElement('div');
-            div.className = 'banner';
-            let html = '';
-            if (banner.image) {
-                html += `<img src="${banner.image}" class="banner-img" alt="Banner">`;
-                html += `<div class="banner-overlay"></div>`;
-            } else {
-                div.style.background = banner.background;
-                if (banner.icon) {
-                    html += `<i class="fa-solid ${banner.icon} bg-icon"></i>`;
-                }
-            }
-            html += `<div class="banner-content">
-                <h2>${banner.title[currentLanguage]}</h2>
-                <p>${banner.subtitle[currentLanguage]}</p>
-            </div>`;
-            div.innerHTML = html;
-            bannersSection.appendChild(div);
-        });
+    setupBannerObserver();
+}
 
-        const isRtl = document.documentElement.getAttribute('dir') === 'rtl';
-        window.bannerScrollInterval = setInterval(() => {
-            if (!bannersSection || bannersSection.style.display === 'none') return;
-            if (bannersSection.matches(':hover') || bannersSection.matches(':active')) return;
-            
-            const maxScroll = bannersSection.scrollWidth - bannersSection.clientWidth;
-            
-            if (isRtl) {
-                bannersSection.scrollBy({ left: -1 });
-                if (Math.abs(bannersSection.scrollLeft) >= maxScroll - 5) {
-                    bannersSection.scrollLeft = 0;
-                }
-            } else {
-                bannersSection.scrollBy({ left: 1 });
-                if (bannersSection.scrollLeft >= maxScroll - 5) {
-                    bannersSection.scrollLeft = 0;
+let activeBannerIndex = -1;
+let internalSlideTimer = null;
+let autoScrollTimer = null;
+
+function setupBannerObserver() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Banner reached the center of the screen
+                const index = parseInt(entry.target.dataset.index);
+                if (activeBannerIndex !== index) {
+                    activeBannerIndex = index;
+                    playInternalSlides(entry.target, index);
                 }
             }
-        }, 25); // ~40fps for 1px movement (smooth)
+        });
+    }, { root: bannersSection, threshold: 0.6 }); // 60% visibility triggers the snap logic
+
+    document.querySelectorAll('.banner').forEach(b => observer.observe(b));
+    
+    // Kickstart the first banner if nothing is intersecting yet
+    setTimeout(() => {
+        if (activeBannerIndex === -1 && document.querySelector('.banner')) {
+            moveToNextBanner(0);
+        }
+    }, 500);
+}
+
+function playInternalSlides(bannerEl, index) {
+    if (internalSlideTimer) clearInterval(internalSlideTimer);
+    if (autoScrollTimer) clearTimeout(autoScrollTimer);
+    
+    const slides = bannerEl.querySelectorAll('.banner-slide');
+    let currentSlide = 0;
+    
+    // Reset slides visibility
+    slides.forEach((s, i) => {
+        if (i === 0) s.classList.add('active');
+        else s.classList.remove('active');
+    });
+
+    if (slides.length > 1) {
+        internalSlideTimer = setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide++;
+            
+            if (currentSlide >= slides.length) {
+                // All internal slides finished, move to next banner
+                clearInterval(internalSlideTimer);
+                moveToNextBanner();
+            } else {
+                slides[currentSlide].classList.add('active');
+            }
+        }, 3000); // 3 seconds per internal slide
+    } else {
+        // Single picture banner, wait 3s then slide to next banner
+        autoScrollTimer = setTimeout(() => {
+            moveToNextBanner();
+        }, 3000);
     }
+}
+
+function moveToNextBanner(forceIndex = -1) {
+    if (!bannersSection || bannersSection.style.display === 'none') {
+        autoScrollTimer = setTimeout(moveToNextBanner, 1000);
+        return;
+    }
+    const banners = document.querySelectorAll('.banner');
+    if (!banners.length) return;
+    
+    let nextIndex = forceIndex !== -1 ? forceIndex : activeBannerIndex + 1;
+    if (nextIndex >= banners.length) nextIndex = 0;
+    
+    // Smooth snap to the next banner
+    banners[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
 
 function getTagInfo(tag) {

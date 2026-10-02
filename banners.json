@@ -1,0 +1,50 @@
+[
+    {
+        "id": "telegram_campaign",
+        "action": { "type": "link", "target": "https://t.me/IA_Assistantbot" },
+        "slides": [
+            {
+                "image": "assets/banners/telegram/1.jpg",
+                "title": {"ar": "قناة Premium Techs", "en": "Premium Techs Channel"},
+                "subtitle": {"ar": "أفضل التطبيقات والألعاب من تليجرام", "en": "The best premium apps & games"}
+            },
+            {
+                "image": "assets/banners/telegram/2.jpg",
+                "title": {"ar": "تحديثات حصرية", "en": "Exclusive Updates"},
+                "subtitle": {"ar": "اكتشف الجديد كل يوم", "en": "Discover new apps daily"}
+            },
+            {
+                "image": "assets/banners/telegram/3.jpg",
+                "title": {"ar": "نسخ آمنة وموثوقة", "en": "Safe & Secure"},
+                "subtitle": {"ar": "بدون إعلانات مزعجة", "en": "Without annoying ads"}
+            }
+        ]
+    },
+    {
+        "id": "app_highlight_1",
+        "action": { "type": "open_app", "appName": "Picsart" },
+        "slides": [
+            {
+                "image": "assets/banners/highlight1/1.jpg",
+                "title": {"ar": "تطبيق الأسبوع", "en": "App of the Week"},
+                "subtitle": {"ar": "Picsart النسخة المدفوعة", "en": "Picsart Premium"}
+            },
+            {
+                "image": "assets/banners/highlight1/2.jpg",
+                "title": {"ar": "تحرير احترافي للصور", "en": "Pro Photo Editing"},
+                "subtitle": {"ar": "جميع الفلاتر مفتوحة", "en": "All filters unlocked"}
+            }
+        ]
+    },
+    {
+        "id": "app_highlight_2",
+        "action": { "type": "open_app", "appName": "Minecraft" },
+        "slides": [
+            {
+                "image": "assets/banners/highlight2/1.jpg",
+                "title": {"ar": "لعبة الأسبوع", "en": "Game of the Week"},
+                "subtitle": {"ar": "Minecraft للاندرويد", "en": "Minecraft for Android"}
+            }
+        ]
+    }
+]
