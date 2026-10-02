@@ -1,4 +1,4 @@
-const CACHE_NAME = 'premium-techs-cache-v3';
+const CACHE_NAME = 'premium-techs-cache-v4';
 const ASSETS_TO_CACHE = [
   '/Premium-Tech-appstore/',
   '/Premium-Tech-appstore/index.html',
