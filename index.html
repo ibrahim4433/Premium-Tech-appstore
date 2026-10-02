@@ -54,8 +54,10 @@
     <link rel="apple-touch-icon" href="/Premium-Tech-appstore/assets/logo.jpg">
     <!-- PWA Install Early Listener -->
     <script>
+        console.log('[PWA] Checking installation status...');
         window.deferredPrompt = null;
         window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('[PWA] beforeinstallprompt event fired! App is ready to be installed.');
             e.preventDefault();
             window.deferredPrompt = e;
             const btn = document.getElementById('pwa-install-btn');
