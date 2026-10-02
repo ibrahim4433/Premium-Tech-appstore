@@ -565,9 +565,11 @@ function renderBanners() {
     bannersSection.style.overflowX = 'auto';
     bannersSection.style.scrollBehavior = 'smooth';
     
-    if (window.bannerScrollInterval) clearInterval(window.bannerScrollInterval);
-    if (internalSlideTimer) clearInterval(internalSlideTimer);
-    if (autoScrollTimer) clearTimeout(autoScrollTimer);
+    if (window.mainScrollTimer) clearInterval(window.mainScrollTimer);
+    if (window.slideTimers) {
+        window.slideTimers.forEach(t => clearInterval(t));
+    }
+    window.slideTimers = [];
 
     storeBanners.forEach((bannerConfig, index) => {
         const div = document.createElement('div');
@@ -612,84 +614,50 @@ function renderBanners() {
         bannersSection.appendChild(div);
     });
     
-    setupBannerObserver();
+    setupRobustBanners();
 }
 
-let activeBannerIndex = -1;
-let internalSlideTimer = null;
-let autoScrollTimer = null;
+let currentBannerIndex = 0;
 
-function setupBannerObserver() {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Banner reached the center of the screen
-                const index = parseInt(entry.target.dataset.index);
-                if (activeBannerIndex !== index) {
-                    activeBannerIndex = index;
-                    playInternalSlides(entry.target, index);
-                }
-            }
-        });
-    }, { root: bannersSection, threshold: 0.6 }); // 60% visibility triggers the snap logic
-
-    document.querySelectorAll('.banner').forEach(b => observer.observe(b));
-    
-    // Kickstart the first banner if nothing is intersecting yet
-    setTimeout(() => {
-        if (activeBannerIndex === -1 && document.querySelector('.banner')) {
-            moveToNextBanner(0);
-        }
-    }, 500);
-}
-
-function playInternalSlides(bannerEl, index) {
-    if (internalSlideTimer) clearInterval(internalSlideTimer);
-    if (autoScrollTimer) clearTimeout(autoScrollTimer);
-    
-    const slides = bannerEl.querySelectorAll('.banner-slide');
-    let currentSlide = 0;
-    
-    // Reset slides visibility
-    slides.forEach((s, i) => {
-        if (i === 0) s.classList.add('active');
-        else s.classList.remove('active');
-    });
-
-    if (slides.length > 1) {
-        internalSlideTimer = setInterval(() => {
-            slides[currentSlide].classList.remove('active');
-            currentSlide++;
-            
-            if (currentSlide >= slides.length) {
-                // All internal slides finished, move to next banner
-                clearInterval(internalSlideTimer);
-                moveToNextBanner();
-            } else {
-                slides[currentSlide].classList.add('active');
-            }
-        }, 3000); // 3 seconds per internal slide
-    } else {
-        // Single picture banner, wait 3s then slide to next banner
-        autoScrollTimer = setTimeout(() => {
-            moveToNextBanner();
-        }, 3000);
-    }
-}
-
-function moveToNextBanner(forceIndex = -1) {
-    if (!bannersSection || bannersSection.style.display === 'none') {
-        autoScrollTimer = setTimeout(moveToNextBanner, 1000);
-        return;
-    }
+function setupRobustBanners() {
     const banners = document.querySelectorAll('.banner');
     if (!banners.length) return;
-    
-    let nextIndex = forceIndex !== -1 ? forceIndex : activeBannerIndex + 1;
-    if (nextIndex >= banners.length) nextIndex = 0;
-    
-    // Smooth snap to the next banner
-    banners[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+    // 1. Setup independent internal slide cycling for EVERY banner
+    banners.forEach((banner) => {
+        const slides = banner.querySelectorAll('.banner-slide');
+        if (slides.length <= 1) return;
+        
+        let currentSlide = 0;
+        // Make sure first is active
+        slides.forEach((s, i) => {
+            if (i === 0) s.classList.add('active');
+            else s.classList.remove('active');
+        });
+
+        const timer = setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 3000); // Crossfade every 3 seconds
+        
+        window.slideTimers.push(timer);
+    });
+
+    // 2. Setup a continuous auto-scroller for the main container
+    currentBannerIndex = 0;
+    window.mainScrollTimer = setInterval(() => {
+        if (!bannersSection || bannersSection.style.display === 'none') return;
+        const allBanners = document.querySelectorAll('.banner');
+        if (!allBanners.length) return;
+
+        currentBannerIndex++;
+        if (currentBannerIndex >= allBanners.length) {
+            currentBannerIndex = 0;
+        }
+
+        allBanners[currentBannerIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }, 5000); // Move to next banner every 5 seconds
 }
 
 function getTagInfo(tag) {
