@@ -325,15 +325,15 @@ body {
     min-width: 90%;
     height: 180px;
     border-radius: 20px;
-    background: linear-gradient(45deg, #024773, #11a6d4);
+    background: var(--surface-color);
     scroll-snap-align: center;
     position: relative;
     overflow: hidden;
-    display: flex;
-    align-items: flex-end;
-    padding: 1rem;
+    display: block;
+    padding: 0;
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     text-decoration: none;
+    cursor: pointer;
 }
 .banner-img {
     position: absolute;
@@ -384,6 +384,7 @@ body {
     display: flex;
     align-items: flex-end;
     padding: 1rem;
+    box-sizing: border-box;
 }
 .banner-slide.active {
     opacity: 1;

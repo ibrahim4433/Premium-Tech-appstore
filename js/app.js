@@ -597,12 +597,12 @@ function renderBanners() {
                 const subStr = slide.subtitle[currentLanguage] || slide.subtitle.en || '';
                 
                 slideDiv.innerHTML = `
-                    <div style="background: linear-gradient(45deg, #024773, #11a6d4); width:100%; height:100%; position:absolute; z-index:-1;"></div>
-                    <img src="${slide.image}" onerror="this.style.display='none'" alt="Banner Image">
-                    <div class="banner-overlay"></div>
-                    <div class="banner-content">
-                        <h2>${titleStr}</h2>
-                        <p>${subStr}</p>
+                    <div style="background: linear-gradient(45deg, #024773, #11a6d4); width:100%; height:100%; position:absolute; top:0; left:0; z-index:-2;"></div>
+                    <img src="${slide.image}" onerror="this.style.display='none'" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;" alt="Banner Image">
+                    <div class="banner-overlay" style="position:absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%); z-index:0;"></div>
+                    <div class="banner-content" style="position:relative; z-index:1; width:100%;">
+                        <h2 style="margin: 0 0 5px 0;">${titleStr}</h2>
+                        <p style="margin: 0;">${subStr}</p>
                     </div>
                 `;
                 div.appendChild(slideDiv);
