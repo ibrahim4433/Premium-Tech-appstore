@@ -120,7 +120,16 @@ const strings = {
         pwaInstallBtn: "تثبيت المتجر",
         pwaModalTitle: "تثبيت المتجر",
         pwaModalDesc: "قم بتثبيت التطبيق على جهازك للوصول السريع بدون الحاجة لفتح المتصفح في كل مرة!",
-        pwaConfirmBtn: "موافق، تثبيت"
+        pwaConfirmBtn: "موافق، تثبيت",
+        reqModalTitle: "اطلب تطبيق/لعبة",
+        reqLabelName: "اسم التطبيق/اللعبة *",
+        reqNamePh: "مثال: Minecraft",
+        reqLabelLink: "رابط جوجل بلاي (اختياري)",
+        reqLabelMods: "نوع التعديل المطلوب",
+        reqModOtherPh: "تعديل آخر... (اكتب هنا)",
+        reqLabelNotes: "ملاحظات إضافية (اختياري)",
+        reqNotesPh: "أي تفاصيل أخرى...",
+        reqBtnSubmit: "إرسال الطلب عبر تليجرام"
     },
     en: {
         search: "Search for apps & games...",
@@ -156,7 +165,16 @@ const strings = {
         pwaInstallBtn: "Install Store",
         pwaModalTitle: "Install AppStore",
         pwaModalDesc: "Install the app on your device for quick access without needing to open the browser every time!",
-        pwaConfirmBtn: "Yes, Install"
+        pwaConfirmBtn: "Yes, Install",
+        reqModalTitle: "Request App/Game",
+        reqLabelName: "App/Game Name *",
+        reqNamePh: "e.g., Minecraft",
+        reqLabelLink: "Google Play Link (Optional)",
+        reqLabelMods: "Required Modification",
+        reqModOtherPh: "Other mod... (Type here)",
+        reqLabelNotes: "Additional Notes (Optional)",
+        reqNotesPh: "Any other details...",
+        reqBtnSubmit: "Send Request via Telegram"
     }
 };
 
@@ -241,6 +259,30 @@ function setLanguage(lang) {
     
     const pwaConfirmText = document.getElementById('confirm-install-text');
     if (pwaConfirmText) pwaConfirmText.textContent = strings[lang].pwaConfirmBtn;
+
+    // Update Request Modal UI
+    const reqModalTitle = document.getElementById('req-modal-title');
+    if (reqModalTitle) reqModalTitle.textContent = strings[lang].reqModalTitle;
+    const reqLabelName = document.getElementById('req-label-name');
+    if (reqLabelName) reqLabelName.textContent = strings[lang].reqLabelName;
+    const reqNameInput = document.getElementById('req-name');
+    if (reqNameInput) reqNameInput.placeholder = strings[lang].reqNamePh;
+    const reqLabelLink = document.getElementById('req-label-link');
+    if (reqLabelLink) reqLabelLink.textContent = strings[lang].reqLabelLink;
+    const reqLabelMods = document.getElementById('req-label-mods');
+    if (reqLabelMods) reqLabelMods.textContent = strings[lang].reqLabelMods;
+    const reqModOtherInput = document.getElementById('req-mod-other');
+    if (reqModOtherInput) reqModOtherInput.placeholder = strings[lang].reqModOtherPh;
+    const reqLabelNotes = document.getElementById('req-label-notes');
+    if (reqLabelNotes) reqLabelNotes.textContent = strings[lang].reqLabelNotes;
+    const reqNotesInput = document.getElementById('req-notes');
+    if (reqNotesInput) reqNotesInput.placeholder = strings[lang].reqNotesPh;
+    const reqBtnSubmitText = document.getElementById('req-btn-submit-text');
+    if (reqBtnSubmitText) reqBtnSubmitText.textContent = strings[lang].reqBtnSubmit;
+
+    document.querySelectorAll('.cb-text').forEach(span => {
+        span.textContent = span.getAttribute(`data-${lang}`);
+    });
 
     updateViewTitle();
     renderBanners();
@@ -398,6 +440,60 @@ function setupEventListeners() {
             modal.classList.remove('active');
         }
     });
+
+    // Request Modal Logic
+    const reqModal = document.getElementById('request-modal');
+    const btnRequestLink = document.getElementById('btn-request-link');
+    const closeReqModal = document.getElementById('close-request-modal');
+    const requestForm = document.getElementById('request-form');
+
+    if (btnRequestLink) {
+        btnRequestLink.addEventListener('click', () => {
+            if (reqModal) reqModal.classList.add('active');
+        });
+    }
+
+    if (closeReqModal) {
+        closeReqModal.addEventListener('click', () => {
+            if (reqModal) reqModal.classList.remove('active');
+        });
+    }
+
+    window.addEventListener('click', (e) => {
+        if (e.target === reqModal && reqModal.classList.contains('active')) {
+            reqModal.classList.remove('active');
+        }
+    });
+
+    if (requestForm) {
+        requestForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const appName = document.getElementById('req-name').value.trim();
+            const playLink = document.getElementById('req-link').value.trim();
+            const notes = document.getElementById('req-notes').value.trim();
+            const otherMod = document.getElementById('req-mod-other').value.trim();
+            
+            // Gather checkboxes
+            const selectedMods = [];
+            document.querySelectorAll('.req-mod-cb:checked').forEach(cb => {
+                selectedMods.push(cb.value);
+            });
+            if (otherMod) selectedMods.push(otherMod);
+
+            let message = `📌 **طلب تطبيق/لعبة**\n`;
+            message += `🔹 الاسم: ${appName}\n`;
+            if (playLink) message += `🔗 الرابط: ${playLink}\n`;
+            if (selectedMods.length > 0) message += `🛠 التعديل المطلوب: ${selectedMods.join(', ')}\n`;
+            if (notes) message += `📝 ملاحظات: ${notes}\n`;
+
+            const botUrl = `https://t.me/IA_Assistantbot?text=${encodeURIComponent(message)}`;
+            window.open(botUrl, '_blank');
+            
+            // Reset and close
+            requestForm.reset();
+            reqModal.classList.remove('active');
+        });
+    }
 }
 
 function switchView(viewName) {

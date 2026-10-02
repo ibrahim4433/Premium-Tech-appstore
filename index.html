@@ -1443,10 +1443,10 @@
                     <i class="fa-solid fa-user-plus"></i>
                     <span id="btn-join-text">انضمام للقناة</span>
                 </a>
-                <a href="https://t.me/IA_Assistantbot" target="_blank" rel="noopener noreferrer" class="download-btn btn-large action-btn">
+                <button type="button" id="btn-request-link" class="download-btn btn-large action-btn">
                     <i class="fa-solid fa-paper-plane"></i>
                     <span id="btn-request-text">اطلب تطبيق/لعبة</span>
-                </a>
+                </button>
                 <button id="static-install-btn" type="button" class="download-btn btn-large action-btn">
                     <i class="fa-solid fa-download"></i>
                     <span id="static-install-text">تثبيت المتجر</span>
@@ -1542,6 +1542,45 @@
             <button id="confirm-install-btn" class="download-btn btn-large" style="width: 100%;">
                 <i class="fa-solid fa-check"></i> <span id="confirm-install-text">موافق، تثبيت</span>
             </button>
+        </div>
+    </div>
+
+    <!-- Request App Modal -->
+    <div id="request-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <button class="close-modal" id="close-request-modal"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header" style="justify-content: center; margin-bottom: 1rem;">
+                <div class="modal-icon" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 10px;"><i class="fa-solid fa-paper-plane"></i></div>
+            </div>
+            <h2 id="req-modal-title" style="margin-bottom: 1.5rem; color: var(--text-primary); text-align: center;">اطلب تطبيق/لعبة</h2>
+            <div class="modal-body">
+                <form id="request-form">
+                    <div class="form-group">
+                        <label id="req-label-name" for="req-name">اسم التطبيق/اللعبة *</label>
+                        <input type="text" id="req-name" required placeholder="مثال: Minecraft">
+                    </div>
+                    <div class="form-group">
+                        <label id="req-label-link" for="req-link">رابط جوجل بلاي (اختياري)</label>
+                        <input type="url" id="req-link" placeholder="https://play.google.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label id="req-label-mods">نوع التعديل المطلوب</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" value="بدون إعلانات / No Ads" class="req-mod-cb"> <span class="cb-text" data-en="No Ads" data-ar="بدون إعلانات">بدون إعلانات</span></label>
+                            <label><input type="checkbox" value="نسخة مدفوعة / Premium Unlocked" class="req-mod-cb"> <span class="cb-text" data-en="Premium Unlocked" data-ar="نسخة مدفوعة/مفتوحة">نسخة مدفوعة/مفتوحة</span></label>
+                            <label><input type="checkbox" value="أموال غير محدودة / Unlimited Money" class="req-mod-cb"> <span class="cb-text" data-en="Unlimited Money/Coins" data-ar="أموال/عملات غير محدودة">أموال/عملات غير محدودة</span></label>
+                        </div>
+                        <input type="text" id="req-mod-other" placeholder="تعديل آخر... (اكتب هنا)">
+                    </div>
+                    <div class="form-group">
+                        <label id="req-label-notes" for="req-notes">ملاحظات إضافية (اختياري)</label>
+                        <textarea id="req-notes" rows="3" placeholder="أي تفاصيل أخرى..."></textarea>
+                    </div>
+                    <button type="submit" class="download-btn btn-large" style="width: 100%; margin-top: 10px;" id="req-submit-btn">
+                        <i class="fa-solid fa-paper-plane"></i> <span id="req-btn-submit-text">إرسال الطلب عبر تليجرام</span>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
