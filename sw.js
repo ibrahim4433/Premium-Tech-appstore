@@ -1,11 +1,11 @@
 const CACHE_NAME = 'premium-techs-cache-v1';
 const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './css/style.css',
-  './js/app.js',
-  './manifest.json',
-  './assets/logo.jpg'
+  '/Premium-Tech-appstore/',
+  '/Premium-Tech-appstore/index.html',
+  '/Premium-Tech-appstore/css/style.css',
+  '/Premium-Tech-appstore/js/app.js',
+  '/Premium-Tech-appstore/manifest.json',
+  '/Premium-Tech-appstore/assets/logo.jpg'
 ];
 
 // Install Event: Cache essential static assets
