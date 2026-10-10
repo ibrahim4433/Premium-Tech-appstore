@@ -656,7 +656,10 @@ function setupRobustBanners() {
             currentBannerIndex = 0;
         }
 
-        allBanners[currentBannerIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        const targetBanner = allBanners[currentBannerIndex];
+        // Calculate scroll position to center the banner horizontally
+        const scrollLeft = targetBanner.offsetLeft - (bannersSection.clientWidth - targetBanner.clientWidth) / 2;
+        bannersSection.scrollTo({ left: scrollLeft, behavior: 'smooth' });
     }, 5000); // Move to next banner every 5 seconds
 }
 
