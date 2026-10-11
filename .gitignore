@@ -1,1 +1,11 @@
 /logs_98729421192
+
+# Sensitive Telegram session files (DO NOT COMMIT)
+*.session
+*.session-journal
+.env
+
+# Python cache & temporary files
+__pycache__/
+*.py[cod]
+*$py.class
