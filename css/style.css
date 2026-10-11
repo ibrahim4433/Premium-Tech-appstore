@@ -34,6 +34,38 @@
     box-sizing: border-box;
 }
 
+/* Instant Touch & Tap Latency Elimination */
+button, a, input, select, textarea,
+.nav-item, .desktop-tab, .app-card, .category-card, 
+.util-btn, .action-btn, .card-install-btn, .close-modal, .icon-btn, .download-btn {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Instant Tactile Micro-Feedback on Press/Tap (0ms) */
+.nav-item:active i {
+    transform: scale(0.82) !important;
+}
+.desktop-tab:active {
+    opacity: 0.7;
+    transform: scale(0.96);
+}
+.icon-btn:active,
+.util-btn:active,
+.action-btn:active,
+.card-install-btn:active,
+.download-btn:active,
+.close-modal:active {
+    transform: scale(0.95) !important;
+    filter: brightness(1.15);
+}
+.category-card:active {
+    transform: scale(0.96) !important;
+}
+.app-card:active {
+    transform: scale(0.98);
+}
+
 body {
     background: linear-gradient(135deg, #011b33 0%, #024773 50%, #00a8e8 100%);
     background-attachment: fixed;
@@ -425,7 +457,7 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     padding: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 .app-card:hover {
     transform: translateY(-5px);
@@ -502,7 +534,7 @@ body {
     gap: 0.75rem;
     border: 1px solid var(--border-color);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
     text-align: center;
@@ -510,7 +542,7 @@ body {
 .category-card i {
     font-size: 2.2rem;
     color: var(--accent-color);
-    transition: transform 0.3s;
+    transition: transform 0.18s ease;
 }
 .category-card span {
     font-size: 0.9rem;
@@ -559,12 +591,12 @@ body {
     gap: 0.3rem;
     font-family: inherit;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: color 0.15s ease, transform 0.15s ease;
     width: 25%;
 }
 .nav-item i {
     font-size: 1.4rem;
-    transition: transform 0.2s;
+    transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1);
 }
 .nav-label {
     font-size: 0.75rem;
@@ -605,9 +637,9 @@ body {
     position: relative;
     overflow-y: auto;
     box-shadow: 0 0 40px rgba(0, 168, 232, 0.3);
-    animation: modalPop 0.3s ease-out;
+    animation: modalPop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
-@keyframes modalPop { 0% { transform: scale(0.9) translateY(20px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
+@keyframes modalPop { 0% { transform: scale(0.95) translateY(12px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
 
 .close-modal {
     position: absolute;
@@ -851,7 +883,7 @@ body {
     padding: 0 1rem;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
     display: flex;
     align-items: center;
     justify-content: center;
