@@ -1,22 +1,22 @@
 {
   "name": "Premium Techs",
   "short_name": "Premium Techs",
-  "id": "/Premium-Tech-appstore/",
-  "start_url": "/Premium-Tech-appstore/",
-  "scope": "/Premium-Tech-appstore/",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
   "description": "The best premium apps & games directly from Telegram",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#024773",
   "icons": [
     {
-      "src": "/Premium-Tech-appstore/assets/logo-192.png",
+      "src": "assets/logo-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/Premium-Tech-appstore/assets/logo-512.png",
+      "src": "assets/logo-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
