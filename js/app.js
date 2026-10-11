@@ -268,13 +268,17 @@ function setLanguage(lang) {
 }
 
 function setupEventListeners() {
+    let searchDebounceTimer = null;
     searchInput.addEventListener('input', (e) => {
-        currentSearch = e.target.value.trim().toLowerCase();
-        if (activeView === 'categories') {
-            renderCategories();
-        } else {
-            renderApps();
-        }
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => {
+            currentSearch = e.target.value.trim().toLowerCase();
+            if (activeView === 'categories') {
+                renderCategories();
+            } else {
+                renderApps();
+            }
+        }, 150);
     });
 
     const utilSort = document.getElementById('util-sort');
@@ -303,9 +307,7 @@ function setupEventListeners() {
             const sortSelect = document.getElementById('sort-select');
             if (sortSelect) sortSelect.value = currentSortMode;
             
-            setTimeout(() => {
-                renderApps();
-            }, 10);
+            renderApps();
         });
     }
     
@@ -329,9 +331,7 @@ function setupEventListeners() {
             } else {
                 utilGroup.classList.add('active');
             }
-            setTimeout(() => {
-                renderApps();
-            }, 10);
+            renderApps();
         });
     }
 
@@ -353,9 +353,7 @@ function setupEventListeners() {
             if (currentViewMode !== 'grid') utilView.classList.add('active');
             else utilView.classList.remove('active');
             
-            setTimeout(() => {
-                updateGridClass();
-            }, 10);
+            updateGridClass();
         });
     }
     
@@ -472,6 +470,7 @@ function setupEventListeners() {
 }
 
 function switchView(viewName) {
+    if (activeView === viewName && currentSearch === '') return;
     activeView = viewName;
     
     // Update active nav button
@@ -536,6 +535,12 @@ async function fetchApps() {
         allApps.forEach((app, idx) => { 
             if(!app.category) app.category = 'Apps';
             app._index = idx; // Store original insertion order for sorting
+            if (app.description) {
+                const words = app.description.trim().split(/\s+/);
+                app._descShort = words.length > 4 ? words.slice(0, 4).join(' ') + '...' : words.slice(0, 4).join(' ');
+            } else {
+                app._descShort = '';
+            }
         });
         loading.style.display = 'none';
         renderCategories();
@@ -748,20 +753,31 @@ function renderCategories() {
     });
 }
 
+let currentFilteredApps = [];
+let currentlyRenderedCount = 0;
+const BATCH_SIZE = 36;
+let gridObserver = null;
+
 function renderApps() {
     appsGrid.innerHTML = '';
+    if (gridObserver) {
+        gridObserver.disconnect();
+        gridObserver = null;
+    }
     
+    const selectedCat = document.getElementById('category-select') ? document.getElementById('category-select').value : 'all';
+    const sizeFilter = document.getElementById('size-select') ? document.getElementById('size-select').value : 'all';
+
     const filteredApps = allApps.filter(app => {
         // Dropdown Category Filter
-        const selectedCat = document.getElementById('category-select') ? document.getElementById('category-select').value : 'all';
         if (selectedCat !== 'all') {
             let hasTag = false;
             if (app.tags) {
-                app.tags.forEach(t => {
-                    const tagInfo = getTagInfo(t);
+                for (let i = 0; i < app.tags.length; i++) {
+                    const tagInfo = getTagInfo(app.tags[i]);
                     const tagLabel = currentLanguage === 'ar' ? tagInfo.ar : tagInfo.en;
-                    if (tagLabel === selectedCat) hasTag = true;
-                });
+                    if (tagLabel === selectedCat) { hasTag = true; break; }
+                }
             }
             if (!hasTag) return false;
         } else if (currentSearch.startsWith('#')) {
@@ -774,7 +790,6 @@ function renderApps() {
         if (activeView === 'games' && app.category !== 'Games') return false;
         
         // Size filtering
-        const sizeFilter = document.getElementById('size-select') ? document.getElementById('size-select').value : 'all';
         const isLarge = app.size > 19.5 * 1024 * 1024;
         if (sizeFilter === 'small' && isLarge) return false;
         if (sizeFilter === 'large' && !isLarge) return false;
@@ -801,6 +816,9 @@ function renderApps() {
         if (sortMethod === 'size_desc') return b.size - a.size;
         return 0;
     });
+
+    currentFilteredApps = filteredApps;
+    currentlyRenderedCount = 0;
 
     if (filteredApps.length === 0) {
         appsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 3rem;">${strings[currentLanguage].empty}</div>`;
@@ -835,20 +853,54 @@ function renderApps() {
         
         let sortedKeys = Object.keys(grouped).sort();
         if (currentGroupMode === 'date') sortedKeys = sortedKeys.reverse();
+        
+        const fragment = document.createDocumentFragment();
         sortedKeys.forEach(key => {
             const header = document.createElement('div');
             header.className = 'group-header';
             header.textContent = key;
-            appsGrid.appendChild(header);
+            fragment.appendChild(header);
             
             grouped[key].forEach(app => {
-                appsGrid.appendChild(createAppCard(app));
+                fragment.appendChild(createAppCard(app));
             });
         });
+        appsGrid.appendChild(fragment);
     } else {
-        filteredApps.forEach(app => {
-            appsGrid.appendChild(createAppCard(app));
-        });
+        renderNextBatch();
+    }
+}
+
+function renderNextBatch() {
+    if (currentlyRenderedCount >= currentFilteredApps.length) return;
+    
+    const fragment = document.createDocumentFragment();
+    const nextLimit = Math.min(currentlyRenderedCount + BATCH_SIZE, currentFilteredApps.length);
+    
+    for (let i = currentlyRenderedCount; i < nextLimit; i++) {
+        fragment.appendChild(createAppCard(currentFilteredApps[i]));
+    }
+    currentlyRenderedCount = nextLimit;
+    
+    const oldSentinel = document.getElementById('grid-sentinel');
+    if (oldSentinel) oldSentinel.remove();
+    
+    appsGrid.appendChild(fragment);
+    
+    if (currentlyRenderedCount < currentFilteredApps.length) {
+        const sentinel = document.createElement('div');
+        sentinel.id = 'grid-sentinel';
+        sentinel.style.cssText = 'grid-column: 1 / -1; height: 30px; width: 100%; pointer-events: none;';
+        appsGrid.appendChild(sentinel);
+        
+        if (!gridObserver) {
+            gridObserver = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    renderNextBatch();
+                }
+            }, { rootMargin: '600px 0px' });
+        }
+        gridObserver.observe(sentinel);
     }
 }
 
@@ -868,21 +920,11 @@ function createAppCard(app) {
     card.className = 'app-card';
     card.onclick = () => openAppDetails(app);
 
-    let imgHTML = app.icon_id 
+    const imgHTML = app.icon_id 
         ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="card-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'card-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
         : `<div class="card-icon fallback"><i class="fa-brands fa-android"></i></div>`;
 
-    let descWords = '';
-    if (app.description) {
-        const words = app.description.trim().split(/\s+/);
-        if (words.length > 0 && words[0] !== '') {
-            descWords = words.slice(0, 4).join(' ');
-            if (words.length > 4) {
-                descWords += '...';
-            }
-        }
-    }
-    const categoryText = descWords || (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
+    const categoryText = app._descShort || (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
     
     const isLarge = app.size > 19.5 * 1024 * 1024;
     
