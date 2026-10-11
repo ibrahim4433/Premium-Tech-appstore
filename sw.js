@@ -1,12 +1,12 @@
-const CACHE_NAME = 'premium-techs-cache-v5';
+const CACHE_NAME = 'premium-techs-cache-v6';
 const ASSETS_TO_CACHE = [
-  '/Premium-Tech-appstore/',
-  '/Premium-Tech-appstore/index.html',
-  '/Premium-Tech-appstore/css/style.css',
-  '/Premium-Tech-appstore/js/app.js',
-  '/Premium-Tech-appstore/manifest.json',
-  '/Premium-Tech-appstore/assets/logo-192.png',
-  '/Premium-Tech-appstore/assets/logo-512.png'
+  './',
+  './index.html',
+  './css/style.css',
+  './js/app.js',
+  './manifest.json',
+  './assets/logo-192.png',
+  './assets/logo-512.png'
 ];
 
 // Install Event: Cache essential static assets
