@@ -34,6 +34,20 @@ const pageTitle = document.getElementById('page-title');
 const bannersSection = document.getElementById('banners-section');
 const modal = document.getElementById('app-modal');
 
+// Modern UI DOM Elements
+const homeShelves = document.getElementById('home-shelves');
+const searchClearBtn = document.getElementById('search-clear');
+const categoryChipsBar = document.getElementById('category-chips-bar');
+const favoritesModal = document.getElementById('favorites-modal');
+const closeFavoritesModalBtn = document.getElementById('close-favorites-modal');
+const btnFavorites = document.getElementById('btn-favorites');
+const favoritesBadge = document.getElementById('favorites-badge');
+const toastContainer = document.getElementById('toast-container');
+const modalFavBtn = document.getElementById('modal-fav-btn');
+const modalShareBtn = document.getElementById('modal-share-btn');
+let currentModalApp = null;
+const STORAGE_KEY_FAVS = 'pts_favorites';
+
 // Data Definitions
 const TAG_MAP = {
     '#games': { ar: 'ألعاب', en: 'Games', icon: 'fa-gamepad' },
@@ -104,7 +118,19 @@ const strings = {
         reqModOtherPh: "تعديل آخر... (اكتب هنا)",
         reqLabelNotes: "ملاحظات إضافية (اختياري)",
         reqNotesPh: "أي تفاصيل أخرى...",
-        reqBtnSubmit: "إرسال الطلب عبر تليجرام"
+        reqBtnSubmit: "إرسال الطلب عبر تليجرام",
+        favAdded: "تمت الإضافة إلى المفضلة ❤️",
+        favRemoved: "تم الحذف من المفضلة",
+        favModalTitle: "تطبيقاتي المفضلة",
+        favEmptyTitle: "لا توجد تطبيقات محفوظة بعد",
+        favEmptyDesc: "اضغط على أيقونة القلب على أي تطبيق للوصول السريع إليه في أي وقت.",
+        shareSuccess: "تم نسخ رابط التطبيق بنجاح! 📋",
+        shelfTrending: "الأكثر تميزاً ورواجاً",
+        shelfGames: "أفضل الألعاب المميزة",
+        shelfAI: "تطبيقات الذكاء الاصطناعي",
+        shelfDirect: "تنزيل مباشر بدون تليجرام",
+        seeAll: "عرض الكل",
+        directBadge: "⚡ مباشر"
     },
     en: {
         search: "Search for apps & games...",
@@ -149,7 +175,19 @@ const strings = {
         reqModOtherPh: "Other mod... (Type here)",
         reqLabelNotes: "Additional Notes (Optional)",
         reqNotesPh: "Any other details...",
-        reqBtnSubmit: "Send Request via Telegram"
+        reqBtnSubmit: "Send Request via Telegram",
+        favAdded: "Added to favorites ❤️",
+        favRemoved: "Removed from favorites",
+        favModalTitle: "My Saved Apps",
+        favEmptyTitle: "No saved apps yet",
+        favEmptyDesc: "Tap the heart icon on any app to save it for quick access anytime.",
+        shareSuccess: "App link copied to clipboard! 📋",
+        shelfTrending: "Featured & Trending",
+        shelfGames: "Top Games",
+        shelfAI: "AI Tools",
+        shelfDirect: "Direct Download (<20MB)",
+        seeAll: "See All",
+        directBadge: "⚡ Direct"
     }
 };
 
@@ -259,17 +297,398 @@ function setLanguage(lang) {
         span.textContent = span.getAttribute(`data-${lang}`);
     });
 
+    // Update Favorites Modal Text
+    const favModalTitle = document.getElementById('fav-modal-title');
+    if (favModalTitle) favModalTitle.textContent = strings[lang].favModalTitle;
+    const favEmptyTitle = document.getElementById('fav-empty-title');
+    if (favEmptyTitle) favEmptyTitle.textContent = strings[lang].favEmptyTitle;
+    const favEmptyDesc = document.getElementById('fav-empty-desc');
+    if (favEmptyDesc) favEmptyDesc.textContent = strings[lang].favEmptyDesc;
+
+    // Update Shelves Headers
+    const sFeatured = document.getElementById('shelf-featured-title');
+    if (sFeatured) sFeatured.textContent = strings[lang].shelfTrending;
+    const sGames = document.getElementById('shelf-games-title');
+    if (sGames) sGames.textContent = strings[lang].shelfGames;
+    const sAi = document.getElementById('shelf-ai-title');
+    if (sAi) sAi.textContent = strings[lang].shelfAI;
+    const sDirect = document.getElementById('shelf-direct-title');
+    if (sDirect) sDirect.textContent = strings[lang].shelfDirect;
+    document.querySelectorAll('.see-all-text').forEach(el => {
+        el.textContent = strings[lang].seeAll;
+    });
+
+    // Update Category Chips
+    if (categoryChipsBar) {
+        const chipLabels = {
+            'all': { ar: 'الكل', en: 'All' },
+            '#games': { ar: 'ألعاب', en: 'Games' },
+            '#IA': { ar: 'ذكاء اصطناعي', en: 'AI Tools' },
+            '#watching': { ar: 'مشاهدة وميديا', en: 'Media' },
+            '#vpn': { ar: 'VPN وحماية', en: 'VPN' },
+            '#Tools': { ar: 'أدوات', en: 'Tools' },
+            '#editing': { ar: 'مونتاج وتصميم', en: 'Editing' },
+            'direct': { ar: 'تنزيل مباشر', en: 'Direct' },
+            '#Social': { ar: 'تواصل', en: 'Social' }
+        };
+        categoryChipsBar.querySelectorAll('.chip').forEach(chip => {
+            const key = chip.getAttribute('data-chip');
+            const span = chip.querySelector('.chip-text');
+            if (span && chipLabels[key]) {
+                span.textContent = chipLabels[key][lang];
+            }
+        });
+    }
+
     updateViewTitle();
     renderBanners();
     if (allApps.length > 0) {
+        renderShelves();
         renderCategories();
         renderApps();
     }
 }
 
+// ==========================================
+// TOAST NOTIFICATIONS
+// ==========================================
+function showToast(message, icon = 'fa-check', type = 'info') {
+    if (!toastContainer) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `<i class="fa-solid ${icon} toast-icon ${type}"></i><span>${message}</span>`;
+    toastContainer.appendChild(toast);
+    
+    requestAnimationFrame(() => {
+        toast.classList.add('show');
+    });
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 250);
+    }, 2600);
+}
+
+// ==========================================
+// FAVORITES SYSTEM (localStorage)
+// ==========================================
+function getFavorites() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY_FAVS);
+        return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveFavorites(favs) {
+    try {
+        localStorage.setItem(STORAGE_KEY_FAVS, JSON.stringify(favs));
+    } catch (e) {
+        console.error('Failed to save favorites:', e);
+    }
+}
+
+function isFavorite(appName) {
+    const favs = getFavorites();
+    return favs.includes(appName);
+}
+
+function toggleFavorite(app, event) {
+    if (!app) return;
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
+    const favs = getFavorites();
+    const idx = favs.indexOf(app.name);
+    let added = false;
+    if (idx > -1) {
+        favs.splice(idx, 1);
+        added = false;
+        showToast(strings[currentLanguage].favRemoved, 'fa-heart-crack', 'info');
+    } else {
+        favs.push(app.name);
+        added = true;
+        showToast(strings[currentLanguage].favAdded, 'fa-heart', 'heart');
+    }
+    saveFavorites(favs);
+    updateFavoritesBadge();
+    
+    // Update card buttons on page matching this app name
+    document.querySelectorAll(`[data-app-fav="${encodeURIComponent(app.name)}"]`).forEach(btn => {
+        if (added) {
+            btn.classList.add('active');
+            btn.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+        } else {
+            btn.classList.remove('active');
+            btn.innerHTML = `<i class="fa-regular fa-heart"></i>`;
+        }
+    });
+    
+    // Update modal fav button if open
+    if (currentModalApp && currentModalApp.name === app.name) {
+        updateModalFavBtn(currentModalApp);
+    }
+    
+    // Update favorites modal list if open
+    if (favoritesModal && favoritesModal.classList.contains('active')) {
+        renderFavoritesList();
+    }
+}
+
+function updateFavoritesBadge() {
+    if (!favoritesBadge) return;
+    const favs = getFavorites();
+    const count = favs.length;
+    if (count > 0) {
+        favoritesBadge.textContent = count > 99 ? '99+' : count;
+        favoritesBadge.style.display = 'block';
+    } else {
+        favoritesBadge.style.display = 'none';
+    }
+}
+
+function updateModalFavBtn(app) {
+    if (!modalFavBtn) return;
+    const fav = isFavorite(app.name);
+    if (fav) {
+        modalFavBtn.classList.add('active');
+        modalFavBtn.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+        modalFavBtn.title = currentLanguage === 'ar' ? 'إزالة من المفضلة' : 'Remove from Favorites';
+    } else {
+        modalFavBtn.classList.remove('active');
+        modalFavBtn.innerHTML = `<i class="fa-regular fa-heart"></i>`;
+        modalFavBtn.title = currentLanguage === 'ar' ? 'حفظ في المفضلة' : 'Save to Favorites';
+    }
+}
+
+function openFavoritesModal() {
+    if (!favoritesModal) return;
+    renderFavoritesList();
+    favoritesModal.classList.add('active');
+}
+
+function closeFavoritesModal() {
+    if (favoritesModal) {
+        favoritesModal.classList.remove('active');
+    }
+}
+
+function renderFavoritesList() {
+    const listEl = document.getElementById('favorites-list');
+    const emptyEl = document.getElementById('favorites-empty');
+    const countEl = document.getElementById('fav-modal-count');
+    if (!listEl || !emptyEl) return;
+    
+    const favNames = getFavorites();
+    const favApps = allApps.filter(a => favNames.includes(a.name));
+    
+    if (countEl) {
+        countEl.textContent = currentLanguage === 'ar' 
+            ? `${favApps.length} تطبيق محفوظ` 
+            : `${favApps.length} saved apps`;
+    }
+    
+    if (favApps.length === 0) {
+        listEl.innerHTML = '';
+        emptyEl.style.display = 'block';
+        return;
+    }
+    
+    emptyEl.style.display = 'none';
+    listEl.innerHTML = '';
+    
+    favApps.forEach(app => {
+        const item = document.createElement('div');
+        item.className = 'fav-item-card';
+        item.onclick = () => {
+            closeFavoritesModal();
+            openAppDetails(app);
+        };
+        
+        const imgHTML = app.icon_id 
+            ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="fav-item-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'fav-item-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
+            : `<div class="fav-item-icon fallback"><i class="fa-brands fa-android"></i></div>`;
+            
+        const cat = app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp;
+        
+        item.innerHTML = `
+            ${imgHTML}
+            <div class="fav-item-info">
+                <div class="fav-item-title">${app.name}</div>
+                <div class="fav-item-category">${cat} • ${formatBytes(app.size)}</div>
+            </div>
+            <button class="fav-remove-btn" title="حذف" aria-label="حذف">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        `;
+        
+        item.querySelector('.fav-remove-btn').onclick = (e) => {
+            e.stopPropagation();
+            toggleFavorite(app, e);
+        };
+        
+        listEl.appendChild(item);
+    });
+}
+
+// ==========================================
+// CURATED HOME SHELVES
+// ==========================================
+function renderShelves() {
+    if (!homeShelves || allApps.length === 0) return;
+    
+    // 1. Featured / Trending: Top 10 apps
+    const featuredGrid = document.getElementById('shelf-featured-grid');
+    if (featuredGrid) {
+        featuredGrid.innerHTML = '';
+        const featured = allApps.slice(0, 10);
+        featured.forEach(app => featuredGrid.appendChild(createShelfCard(app)));
+    }
+    
+    // 2. Top Games
+    const gamesGrid = document.getElementById('shelf-games-grid');
+    if (gamesGrid) {
+        gamesGrid.innerHTML = '';
+        const games = allApps.filter(a => a.category === 'Games' || (a.tags && a.tags.some(t => t.toLowerCase().includes('game')))).slice(0, 10);
+        games.forEach(app => gamesGrid.appendChild(createShelfCard(app)));
+    }
+    
+    // 3. AI Tools
+    const aiGrid = document.getElementById('shelf-ai-grid');
+    if (aiGrid) {
+        aiGrid.innerHTML = '';
+        const aiApps = allApps.filter(a => {
+            if (a.tags && a.tags.some(t => t.toLowerCase() === '#ia' || t.toLowerCase() === '#ai')) return true;
+            const text = (a.name + ' ' + (a.description || '')).toLowerCase();
+            return text.includes('ذكاء اصطناعي') || text.includes('deepseek') || text.includes('chatgpt') || text.includes('gpt') || text.includes(' ai ');
+        }).slice(0, 10);
+        aiApps.forEach(app => aiGrid.appendChild(createShelfCard(app)));
+    }
+    
+    // 4. Direct Download: <= 19.5MB
+    const directGrid = document.getElementById('shelf-direct-grid');
+    if (directGrid) {
+        directGrid.innerHTML = '';
+        const directApps = allApps.filter(a => a.size > 0 && a.size <= 19.5 * 1024 * 1024).slice(0, 10);
+        directApps.forEach(app => directGrid.appendChild(createShelfCard(app)));
+    }
+}
+
+function createShelfCard(app) {
+    const card = document.createElement('div');
+    card.className = 'shelf-card';
+    card.onclick = () => openAppDetails(app);
+
+    const isLarge = app.size > 19.5 * 1024 * 1024;
+    const badgeHTML = !isLarge ? `<span class="shelf-card-badge"><i class="fa-solid fa-bolt"></i> مباشر</span>` : '';
+    
+    const imgHTML = app.icon_id 
+        ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="shelf-card-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'shelf-card-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
+        : `<div class="shelf-card-icon fallback"><i class="fa-brands fa-android"></i></div>`;
+
+    card.innerHTML = `
+        ${badgeHTML}
+        ${imgHTML}
+        <div class="shelf-card-title">${app.name}</div>
+        <div class="shelf-card-meta">
+            <span>${formatBytes(app.size)}</span>
+        </div>
+    `;
+    return card;
+}
+
+// ==========================================
+// CATEGORY CHIPS & SHELF EVENTS
+// ==========================================
+function setupCategoryChips() {
+    if (!categoryChipsBar) return;
+    categoryChipsBar.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            categoryChipsBar.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            
+            const chipType = chip.getAttribute('data-chip');
+            const sizeSelect = document.getElementById('size-select');
+            const categorySelect = document.getElementById('category-select');
+            
+            if (chipType === 'all') {
+                if (sizeSelect) sizeSelect.value = 'all';
+                if (categorySelect) categorySelect.value = 'all';
+                currentSearch = '';
+                searchInput.value = '';
+                if (searchClearBtn) searchClearBtn.classList.remove('visible');
+                if (activeView !== 'home') switchView('home');
+                else renderApps();
+            } else if (chipType === 'direct') {
+                if (sizeSelect) sizeSelect.value = 'small';
+                if (categorySelect) categorySelect.value = 'all';
+                currentSearch = '';
+                searchInput.value = '';
+                if (searchClearBtn) searchClearBtn.classList.remove('visible');
+                if (activeView !== 'home') switchView('home');
+                else renderApps();
+            } else if (chipType === '#games') {
+                if (sizeSelect) sizeSelect.value = 'all';
+                if (categorySelect) categorySelect.value = 'all';
+                currentSearch = '';
+                searchInput.value = '';
+                if (searchClearBtn) searchClearBtn.classList.remove('visible');
+                switchView('games');
+            } else {
+                if (sizeSelect) sizeSelect.value = 'all';
+                if (categorySelect) categorySelect.value = 'all';
+                currentSearch = chipType.toLowerCase();
+                searchInput.value = chipType;
+                if (searchClearBtn) searchClearBtn.classList.add('visible');
+                if (activeView !== 'home') switchView('home');
+                else renderApps();
+            }
+            
+            const top = appsGrid.getBoundingClientRect().top + window.pageYOffset - 70;
+            window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+        });
+    });
+}
+
+function setupShelvesEvents() {
+    document.querySelectorAll('.shelf-see-all').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const shelfType = btn.getAttribute('data-shelf');
+            const sizeSelect = document.getElementById('size-select');
+            
+            if (shelfType === 'featured') {
+                currentSortMode = 'new';
+                const utilSort = document.getElementById('util-sort');
+                if (utilSort) utilSort.classList.remove('active');
+                renderApps();
+            } else if (shelfType === 'games') {
+                switchView('games');
+            } else if (shelfType === 'ai') {
+                currentSearch = '#ia';
+                searchInput.value = '#IA';
+                if (searchClearBtn) searchClearBtn.classList.add('visible');
+                renderApps();
+            } else if (shelfType === 'direct') {
+                if (sizeSelect) sizeSelect.value = 'small';
+                renderApps();
+            }
+            
+            const top = appsGrid.getBoundingClientRect().top + window.pageYOffset - 70;
+            window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+        });
+    });
+}
+
 function setupEventListeners() {
     let searchDebounceTimer = null;
     searchInput.addEventListener('input', (e) => {
+        if (e.target.value.trim().length > 0) {
+            if (searchClearBtn) searchClearBtn.classList.add('visible');
+        } else {
+            if (searchClearBtn) searchClearBtn.classList.remove('visible');
+        }
         clearTimeout(searchDebounceTimer);
         searchDebounceTimer = setTimeout(() => {
             currentSearch = e.target.value.trim().toLowerCase();
@@ -280,6 +699,69 @@ function setupEventListeners() {
             }
         }, 150);
     });
+
+    if (searchClearBtn) {
+        searchClearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchClearBtn.classList.remove('visible');
+            currentSearch = '';
+            if (categoryChipsBar) {
+                categoryChipsBar.querySelectorAll('.chip').forEach(c => {
+                    if (c.getAttribute('data-chip') === 'all') c.classList.add('active');
+                    else c.classList.remove('active');
+                });
+            }
+            if (activeView === 'categories') {
+                renderCategories();
+            } else {
+                renderApps();
+            }
+            searchInput.focus();
+        });
+    }
+
+    setupCategoryChips();
+    setupShelvesEvents();
+
+    if (btnFavorites) {
+        btnFavorites.addEventListener('click', openFavoritesModal);
+    }
+    if (closeFavoritesModalBtn) {
+        closeFavoritesModalBtn.addEventListener('click', closeFavoritesModal);
+    }
+    window.addEventListener('click', (e) => {
+        if (e.target === favoritesModal && favoritesModal.classList.contains('active')) {
+            closeFavoritesModal();
+        }
+    });
+
+    if (modalFavBtn) {
+        modalFavBtn.onclick = () => {
+            if (currentModalApp) {
+                toggleFavorite(currentModalApp);
+            }
+        };
+    }
+
+    if (modalShareBtn) {
+        modalShareBtn.onclick = () => {
+            if (!currentModalApp) return;
+            const shareUrl = `${window.location.origin}${window.location.pathname}?app=${encodeURIComponent(currentModalApp.name)}`;
+            if (navigator.share) {
+                navigator.share({
+                    title: currentModalApp.name,
+                    text: `${currentModalApp.name} - متجر Premium Techs`,
+                    url: shareUrl
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    showToast(strings[currentLanguage].shareSuccess, 'fa-copy', 'success');
+                }).catch(() => {
+                    showToast(shareUrl, 'fa-link', 'info');
+                });
+            }
+        };
+    }
 
     const utilSort = document.getElementById('util-sort');
     if (utilSort) {
@@ -486,6 +968,7 @@ function switchView(viewName) {
     if (currentSearch !== '') {
         currentSearch = '';
         searchInput.value = '';
+        if (searchClearBtn) searchClearBtn.classList.remove('visible');
     }
     
     // Toggle home actions
@@ -497,6 +980,7 @@ function switchView(viewName) {
     // Show selected page
     if (viewName === 'categories') {
         bannersSection.style.display = 'none';
+        if (homeShelves) homeShelves.style.display = 'none';
         views.categories.classList.add('active');
     } else {
         bannersSection.style.display = viewName === 'home' ? 'flex' : 'none';
@@ -543,8 +1027,20 @@ async function fetchApps() {
             }
         });
         loading.style.display = 'none';
+        renderShelves();
+        updateFavoritesBadge();
         renderCategories();
         renderApps();
+
+        // Deep-linking support (?app=Name)
+        const urlParams = new URLSearchParams(window.location.search);
+        const deepApp = urlParams.get('app');
+        if (deepApp) {
+            const target = allApps.find(a => a.name.toLowerCase() === deepApp.trim().toLowerCase());
+            if (target) {
+                setTimeout(() => openAppDetails(target), 300);
+            }
+        }
     } catch (error) {
         console.error(error);
         document.getElementById('loading-text').textContent = 'Error loading store data.';
@@ -768,6 +1264,12 @@ function renderApps() {
     const selectedCat = document.getElementById('category-select') ? document.getElementById('category-select').value : 'all';
     const sizeFilter = document.getElementById('size-select') ? document.getElementById('size-select').value : 'all';
 
+    // Toggle Home Shelves (only in default unfiltered Home view)
+    if (homeShelves) {
+        const isDefaultHome = activeView === 'home' && !currentSearch && selectedCat === 'all' && sizeFilter === 'all';
+        homeShelves.style.display = isDefaultHome ? 'flex' : 'none';
+    }
+
     const filteredApps = allApps.filter(app => {
         // Dropdown Category Filter
         if (selectedCat !== 'all') {
@@ -920,6 +1422,13 @@ function createAppCard(app) {
     card.className = 'app-card';
     card.onclick = () => openAppDetails(app);
 
+    const isFav = isFavorite(app.name);
+    const favBtnHTML = `
+        <button class="card-fav-btn ${isFav ? 'active' : ''}" data-app-fav="${encodeURIComponent(app.name)}" title="المفضلة" aria-label="المفضلة" onclick="toggleFavorite(allApps[${app._index}], event)">
+            <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+        </button>
+    `;
+
     const imgHTML = app.icon_id 
         ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="card-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'card-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
         : `<div class="card-icon fallback"><i class="fa-brands fa-android"></i></div>`;
@@ -927,6 +1436,9 @@ function createAppCard(app) {
     const categoryText = app._descShort || (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
     
     const isLarge = app.size > 19.5 * 1024 * 1024;
+    const directBadgeHTML = !isLarge 
+        ? `<span class="card-tag-badge tag-direct"><i class="fa-solid fa-bolt"></i> ${strings[currentLanguage].directBadge}</span>`
+        : '';
     
     let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
     if (app.chat_id && app.chat_id.startsWith('-100')) {
@@ -942,10 +1454,14 @@ function createAppCard(app) {
     const btnText = strings[currentLanguage].download;
 
     card.innerHTML = `
+        ${favBtnHTML}
         ${imgHTML}
         <div class="card-info">
             <div class="card-title">${app.name}</div>
-            <div class="card-category" style="opacity: 0.8; font-size: 0.8rem; line-height: 1.4;">${categoryText}</div>
+            <div class="card-category" style="opacity: 0.8; font-size: 0.8rem; line-height: 1.4;">
+                ${categoryText}
+                ${directBadgeHTML}
+            </div>
         </div>
         <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
             <i class="fa-solid ${btnIcon}"></i> ${btnText}
@@ -962,6 +1478,8 @@ function formatBytes(bytes) {
 
 function openAppDetails(app) {
     history.pushState({ modalOpen: true }, ''); // Push state for back button
+    currentModalApp = app;
+    updateModalFavBtn(app);
     
     document.getElementById('modal-title').textContent = app.name;
     
@@ -975,7 +1493,6 @@ function openAppDetails(app) {
     let dateString = '';
     if (app.date) {
         const d = new Date(app.date * 1000);
-        // Format like 2026-09-30 or 30-09-2026
         dateString = d.toLocaleDateString(currentLanguage === 'ar' ? 'ar-EG' : 'en-GB', {
             year: 'numeric',
             month: 'long',
@@ -987,6 +1504,40 @@ function openAppDetails(app) {
     const dateLabel = currentLanguage === 'ar' ? 'تاريخ النشر: ' : 'Posted: ';
     document.getElementById('modal-date').textContent = dateLabel + dateString;
     
+    // Modal Badges
+    const modalBadges = document.getElementById('modal-badges');
+    if (modalBadges) {
+        modalBadges.innerHTML = '';
+        const isLarge = app.size > 19.5 * 1024 * 1024;
+        
+        // Direct / Telegram badge
+        const directBadge = document.createElement('span');
+        directBadge.className = 'modal-badge';
+        if (!isLarge) {
+            directBadge.style.cssText = 'background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);';
+            directBadge.innerHTML = `<i class="fa-solid fa-bolt"></i> ${strings[currentLanguage].directBadge}`;
+        } else {
+            directBadge.style.cssText = 'background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3);';
+            directBadge.innerHTML = `<i class="fa-brands fa-telegram"></i> Telegram`;
+        }
+        modalBadges.appendChild(directBadge);
+
+        // Size badge
+        const sizeBadge = document.createElement('span');
+        sizeBadge.className = 'modal-badge';
+        sizeBadge.style.cssText = 'background: rgba(255, 255, 255, 0.08); color: var(--text-secondary); border: 1px solid var(--border-color);';
+        sizeBadge.innerHTML = `<i class="fa-solid fa-hard-drive"></i> ${formatBytes(app.size)}`;
+        modalBadges.appendChild(sizeBadge);
+
+        // Category badge
+        const catBadge = document.createElement('span');
+        catBadge.className = 'modal-badge';
+        catBadge.style.cssText = 'background: rgba(255, 255, 255, 0.08); color: var(--text-secondary); border: 1px solid var(--border-color);';
+        const catName = app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp;
+        catBadge.innerHTML = `<i class="fa-solid ${app.category === 'Games' ? 'fa-gamepad' : 'fa-cubes'}"></i> ${catName}`;
+        modalBadges.appendChild(catBadge);
+    }
+
     // Add Note for large files at the bottom
     const isLarge = app.size > 19.5 * 1024 * 1024;
     let descriptionHtml = app.description.replace(/\n/g, '<br>');
@@ -1021,7 +1572,7 @@ function openAppDetails(app) {
         const joinBtn = document.createElement('a');
         joinBtn.id = 'modal-join-btn';
         joinBtn.href = 'https://t.me/+ij7-LS669ahhMDFk';
-        joinBtn.className = 'download-btn btn-large'; // Match the exact rectangle style
+        joinBtn.className = 'download-btn btn-large';
         joinBtn.target = '_blank';
         joinBtn.rel = 'noopener noreferrer';
         joinBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> ${currentLanguage === 'ar' ? 'انضمام للقناة' : 'Join Channel'}`;
@@ -1031,7 +1582,11 @@ function openAppDetails(app) {
         downloadBtn.style.flex = '2';
         joinBtn.style.flex = '1';
         
-        modalActions.appendChild(joinBtn);
+        if (modalFavBtn) {
+            modalActions.insertBefore(joinBtn, modalFavBtn);
+        } else {
+            modalActions.appendChild(joinBtn);
+        }
         
     } else {
         downloadBtn.href = `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
