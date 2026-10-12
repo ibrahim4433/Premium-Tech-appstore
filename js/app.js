@@ -1429,27 +1429,72 @@ function openFavoritesModal() {
 function closeFavoritesModal() {
     const favModal = document.getElementById('favorites-modal');
     if (favModal) favModal.classList.remove('active');
+    const clearBtn = document.getElementById('clear-all-favs');
+    if (clearBtn && clearBtn.classList.contains('confirming')) {
+        clearTimeout(clearConfirmTimer);
+        clearBtn.classList.remove('confirming');
+        const normalText = (strings[currentLanguage] && strings[currentLanguage].clearAll) 
+            ? strings[currentLanguage].clearAll 
+            : (currentLanguage === 'ar' ? 'مسح الكل' : 'Clear All');
+        clearBtn.innerHTML = `<i class="fa-solid fa-trash-can"></i> <span id="clear-favs-text">${normalText}</span>`;
+    }
 }
 
-function clearAllFavorites() {
+let clearConfirmTimer = null;
+
+function clearAllFavorites(e = null) {
+    if (e && e.stopPropagation) e.stopPropagation();
     const favs = getFavorites();
-    if (favs.length === 0) return;
-    if (confirm(strings[currentLanguage].clearConfirm)) {
+    if (!favs || favs.length === 0) return;
+
+    const btn = document.getElementById('clear-all-favs');
+    if (!btn) return;
+
+    // Second click: execute clear
+    if (btn.classList.contains('confirming')) {
+        clearTimeout(clearConfirmTimer);
+        btn.classList.remove('confirming');
+
         saveFavorites([]);
         updateFavoritesBadge();
         renderFavoritesList();
+
         // Update all rendered cards
-        document.querySelectorAll('.card-fav-btn').forEach(btn => {
-            btn.classList.remove('active');
-            const icon = btn.querySelector('i');
+        document.querySelectorAll('.card-fav-btn').forEach(cardBtn => {
+            cardBtn.classList.remove('active');
+            const icon = cardBtn.querySelector('i');
             if (icon) icon.className = 'fa-regular fa-heart';
         });
+
         if (window.currentModalApp) {
             updateModalFavBtn(false);
         }
-        showToast(strings[currentLanguage].allFavsCleared, 'info', 'fa-trash-can');
+
+        const clearedMsg = (strings[currentLanguage] && strings[currentLanguage].allFavsCleared) 
+            ? strings[currentLanguage].allFavsCleared 
+            : (currentLanguage === 'ar' ? 'تم مسح قائمة المفضلة بنجاح' : 'Favorites cleared successfully');
+        showToast(clearedMsg, 'info', 'fa-trash-can');
+        return;
     }
+
+    // First click: prompt for confirmation directly on button
+    btn.classList.add('confirming');
+    const confirmText = currentLanguage === 'ar' ? 'تأكيد المسح؟' : 'Confirm Clear?';
+    btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>${confirmText}</span>`;
+
+    clearTimeout(clearConfirmTimer);
+    clearConfirmTimer = setTimeout(() => {
+        if (btn && btn.classList.contains('confirming')) {
+            btn.classList.remove('confirming');
+            const normalText = (strings[currentLanguage] && strings[currentLanguage].clearAll) 
+                ? strings[currentLanguage].clearAll 
+                : (currentLanguage === 'ar' ? 'مسح الكل' : 'Clear All');
+            btn.innerHTML = `<i class="fa-solid fa-trash-can"></i> <span id="clear-favs-text">${normalText}</span>`;
+        }
+    }, 4000);
 }
+
+window.clearAllFavorites = clearAllFavorites;
 
 function renderFavoritesList() {
     const listEl = document.getElementById('favorites-list');
@@ -1462,7 +1507,10 @@ function renderFavoritesList() {
     const clearBtn = document.getElementById('clear-all-favs');
 
     if (favIds.length === 0) {
-        if (clearBtn) clearBtn.style.display = 'none';
+        if (clearBtn) {
+            clearBtn.style.display = 'none';
+            clearBtn.classList.remove('confirming');
+        }
         listEl.innerHTML = `
             <div class="fav-empty-state">
                 <i class="fa-solid fa-heart-crack fav-empty-icon"></i>
