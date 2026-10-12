@@ -39,13 +39,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="css/style.css?v=9" as="style">
-    <link rel="preload" href="js/app.js?v=9" as="script">
+    <link rel="preload" href="css/style.css?v=11" as="style">
+    <link rel="preload" href="js/app.js?v=11" as="script">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" as="style">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=9">
+    <link rel="stylesheet" href="css/style.css?v=11">
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- PWA Manifest -->
@@ -1639,17 +1639,24 @@
     <!-- Favorites Modal -->
     <div id="favorites-modal" class="modal">
         <div class="modal-content favorites-modal-content">
-            <button class="close-modal" id="close-fav-modal"><i class="fa-solid fa-xmark"></i></button>
-            
-            <div class="modal-header fav-modal-header">
-                <div class="fav-header-icon"><i class="fa-solid fa-heart"></i></div>
-                <div class="fav-header-info">
-                    <h2 id="favorites-title">المفضلة</h2>
-                    <p id="favorites-subtitle" class="fav-subtitle">التطبيقات المحفوظة (<span id="fav-count">0</span>)</p>
+            <div class="fav-modal-header">
+                <div class="fav-header-start">
+                    <div class="fav-icon-circle">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <div class="fav-header-info">
+                        <h2 id="favorites-title">المفضلة</h2>
+                        <p id="favorites-subtitle" class="fav-subtitle">التطبيقات المحفوظة (<span id="fav-count">0</span>)</p>
+                    </div>
                 </div>
-                <button id="clear-all-favs" class="clear-favs-btn" type="button" title="مسح الكل">
-                    <i class="fa-solid fa-trash-can"></i> <span id="clear-favs-text">مسح الكل</span>
-                </button>
+                <div class="fav-header-actions">
+                    <button id="clear-all-favs" class="clear-favs-btn" type="button" title="مسح الكل">
+                        <i class="fa-solid fa-trash-can"></i> <span id="clear-favs-text">مسح الكل</span>
+                    </button>
+                    <button id="close-fav-modal" class="fav-close-btn" type="button" title="إغلاق" aria-label="Close">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
             </div>
             
             <div id="favorites-list" class="favorites-list">
@@ -1722,7 +1729,7 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <script src="js/app.js?v=9"></script>
+    <script src="js/app.js?v=11"></script>
     <!-- Register Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {

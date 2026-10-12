@@ -643,10 +643,29 @@ function switchView(viewName) {
         homeActions.style.display = viewName === 'home' ? 'flex' : 'none';
     }
 
+    // Toggle category chips bar according to active view:
+    // in navhome : all top chips must be shown (as it is currently)
+    // in navgames : all top chips must hide
+    // in navapps : all top chips must be shown except "ألعاب"
+    // in navCategories : all top chips must hide
+    const chipsWrapper = document.querySelector('.chips-wrapper');
+    if (chipsWrapper) {
+        if (viewName === 'games' || viewName === 'categories') {
+            chipsWrapper.style.display = 'none';
+        } else {
+            chipsWrapper.style.display = 'flex';
+            if (activeCategoryChipId === 'games' && viewName === 'apps') {
+                activeCategoryChipId = 'all';
+            }
+            renderCategoryChips();
+        }
+    }
+
     // Show selected page
     if (viewName === 'categories') {
         bannersSection.style.display = 'none';
         views.categories.classList.add('active');
+        renderCategories();
     } else {
         bannersSection.style.display = viewName === 'home' ? 'flex' : 'none';
         views.apps.classList.add('active');
@@ -1440,7 +1459,10 @@ function renderFavoritesList() {
     const favIds = getFavorites();
     updateFavoritesBadge();
 
+    const clearBtn = document.getElementById('clear-all-favs');
+
     if (favIds.length === 0) {
+        if (clearBtn) clearBtn.style.display = 'none';
         listEl.innerHTML = `
             <div class="fav-empty-state">
                 <i class="fa-solid fa-heart-crack fav-empty-icon"></i>
@@ -1453,6 +1475,8 @@ function renderFavoritesList() {
         `;
         return;
     }
+
+    if (clearBtn) clearBtn.style.display = 'inline-flex';
 
     const fragment = document.createDocumentFragment();
     favIds.forEach(id => {
@@ -1492,11 +1516,19 @@ function renderFavoritesList() {
                 <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" style="width:auto;padding:0.4rem 0.8rem;font-size:0.8rem;" onclick="event.stopPropagation();">
                     <i class="fa-solid ${isLarge ? 'fa-paper-plane' : 'fa-download'}"></i>
                 </a>
-                <button class="fav-del-btn" title="${currentLanguage === 'ar' ? 'حذف من المفضلة' : 'Remove'}" onclick="event.stopPropagation(); toggleFavorite(allApps.find(a => String(a.id) === '${app.id}'));">
+                <button class="fav-del-btn" title="${currentLanguage === 'ar' ? 'حذف من المفضلة' : 'Remove'}">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
         `;
+
+        const delBtn = card.querySelector('.fav-del-btn');
+        if (delBtn) {
+            delBtn.onclick = (e) => {
+                e.stopPropagation();
+                toggleFavorite(app);
+            };
+        }
 
         card.onclick = () => {
             closeFavoritesModal();
@@ -1598,10 +1630,27 @@ function appMatchesCategory(app, catId) {
 
 function renderCategoryChips() {
     const container = document.getElementById('category-chips-bar');
+    const wrapper = document.querySelector('.chips-wrapper');
     if (!container) return;
+
+    if (activeView === 'games' || activeView === 'categories') {
+        if (wrapper) wrapper.style.display = 'none';
+        return;
+    } else {
+        if (wrapper) wrapper.style.display = 'flex';
+    }
+
     container.innerHTML = '';
 
-    TOP_CHIPS.forEach(chip => {
+    // In 'apps' view, exclude 'games' chip
+    const visibleChips = TOP_CHIPS.filter(chip => {
+        if (activeView === 'apps' && chip.id === 'games') {
+            return false;
+        }
+        return true;
+    });
+
+    visibleChips.forEach(chip => {
         const btn = document.createElement('button');
         btn.className = `cat-chip ${chip.id === activeCategoryChipId ? 'active' : ''}`;
         btn.dataset.chipId = chip.id;
