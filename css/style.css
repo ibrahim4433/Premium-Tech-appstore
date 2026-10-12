@@ -1547,9 +1547,17 @@ html[lang="ar"] .chips-btn-left {
 .clear-all-favs-btn:active {
     transform: scale(0.96);
 }
-.clear-favs-btn i,
-.clear-all-favs-btn i {
-    font-size: 0.85rem;
+.clear-favs-btn.confirming,
+.clear-all-favs-btn.confirming {
+    background: #ff1744 !important;
+    border-color: #ff1744 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 16px rgba(255, 23, 68, 0.6) !important;
+    animation: pulseWarn 0.8s infinite alternate !important;
+}
+@keyframes pulseWarn {
+    0% { transform: scale(1); box-shadow: 0 0 8px rgba(255, 23, 68, 0.4); }
+    100% { transform: scale(1.05); box-shadow: 0 0 20px rgba(255, 23, 68, 0.8); }
 }
 #favorites-modal .close-modal,
 #favorites-modal .fav-close-btn,
