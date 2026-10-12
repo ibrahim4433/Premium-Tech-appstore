@@ -104,7 +104,29 @@ const strings = {
         reqModOtherPh: "تعديل آخر... (اكتب هنا)",
         reqLabelNotes: "ملاحظات إضافية (اختياري)",
         reqNotesPh: "أي تفاصيل أخرى...",
-        reqBtnSubmit: "إرسال الطلب عبر تليجرام"
+        reqBtnSubmit: "إرسال الطلب عبر تليجرام",
+        favorites: "المفضلة",
+        favoritesSubtitle: "التطبيقات المحفوظة",
+        emptyFavorites: "قائمتك المفضلة فارغة حالياً",
+        emptyFavDesc: "اضغط على أيقونة القلب ❤️ على أي تطبيق لحفظه هنا والوصول إليه بسرعة!",
+        browseApps: "استكشاف التطبيقات",
+        clearAll: "مسح الكل",
+        clearConfirm: "هل أنت متأكد من مسح جميع التطبيقات من المفضلة؟",
+        addedToFav: "تمت الإضافة للمفضلة ❤️",
+        removedFromFav: "تمت الإزالة من المفضلة",
+        allFavsCleared: "تم مسح قائمة المفضلة بنجاح",
+        shareText: "مشاركة",
+        favBtnText: "المفضلة",
+        favSavedText: "في المفضلة",
+        linkCopied: "تم نسخ رابط التطبيق بنجاح! 📋",
+        shareTitle: "مشاركة تطبيق",
+        badgeDirect: "تنزيل مباشر ⚡",
+        badgeTelegram: "عبر تليجرام ✈️",
+        badgeSize: "الحجم: ",
+        badgeTypeApp: "تطبيق بريميوم",
+        badgeTypeGame: "لعبة معدلة",
+        chipAll: "الكل",
+        searchClearTitle: "مسح البحث"
     },
     en: {
         search: "Search for apps & games...",
@@ -149,7 +171,29 @@ const strings = {
         reqModOtherPh: "Other mod... (Type here)",
         reqLabelNotes: "Additional Notes (Optional)",
         reqNotesPh: "Any other details...",
-        reqBtnSubmit: "Send Request via Telegram"
+        reqBtnSubmit: "Send Request via Telegram",
+        favorites: "Favorites",
+        favoritesSubtitle: "Saved Apps",
+        emptyFavorites: "Your favorites list is currently empty",
+        emptyFavDesc: "Tap the heart icon ❤️ on any app to save it here for instant access!",
+        browseApps: "Explore Apps",
+        clearAll: "Clear All",
+        clearConfirm: "Are you sure you want to clear all favorite apps?",
+        addedToFav: "Added to favorites ❤️",
+        removedFromFav: "Removed from favorites",
+        allFavsCleared: "Favorites cleared successfully",
+        shareText: "Share",
+        favBtnText: "Favorite",
+        favSavedText: "Favorited",
+        linkCopied: "App link copied to clipboard! 📋",
+        shareTitle: "Share App",
+        badgeDirect: "Direct Download ⚡",
+        badgeTelegram: "Via Telegram ✈️",
+        badgeSize: "Size: ",
+        badgeTypeApp: "Premium App",
+        badgeTypeGame: "Modded Game",
+        chipAll: "All",
+        searchClearTitle: "Clear Search"
     }
 };
 
@@ -255,6 +299,26 @@ function setLanguage(lang) {
     const reqBtnSubmitText = document.getElementById('req-btn-submit-text');
     if (reqBtnSubmitText) reqBtnSubmitText.textContent = strings[lang].reqBtnSubmit;
 
+    // Update Favorites & Modals UI
+    const favToggle = document.getElementById('favorites-toggle');
+    if (favToggle) favToggle.title = strings[lang].favorites;
+    const favTitle = document.getElementById('favorites-title');
+    if (favTitle) favTitle.textContent = strings[lang].favorites;
+    const favModalTitle = document.getElementById('fav-modal-title');
+    if (favModalTitle) favModalTitle.textContent = strings[lang].favorites;
+    const clearFavsText = document.getElementById('clear-favs-text');
+    if (clearFavsText) clearFavsText.textContent = strings[lang].clearAll;
+    const searchClear = document.getElementById('search-clear');
+    if (searchClear) searchClear.title = strings[lang].searchClearTitle;
+    const modalShareText = document.getElementById('modal-share-text');
+    if (modalShareText) modalShareText.textContent = strings[lang].shareText;
+
+    updateFavoritesBadge();
+    renderCategoryChips();
+    if (window.currentModalApp) {
+        updateModalFavBtn(isFavorite(window.currentModalApp.id || window.currentModalApp.name));
+    }
+
     document.querySelectorAll('.cb-text').forEach(span => {
         span.textContent = span.getAttribute(`data-${lang}`);
     });
@@ -269,10 +333,18 @@ function setLanguage(lang) {
 
 function setupEventListeners() {
     let searchDebounceTimer = null;
+    const searchClear = document.getElementById('search-clear');
+
     searchInput.addEventListener('input', (e) => {
+        if (searchClear) {
+            searchClear.style.display = e.target.value.trim().length > 0 ? 'flex' : 'none';
+        }
         clearTimeout(searchDebounceTimer);
         searchDebounceTimer = setTimeout(() => {
             currentSearch = e.target.value.trim().toLowerCase();
+            if (currentSearch) {
+                setActiveCategoryChip('all');
+            }
             if (activeView === 'categories') {
                 renderCategories();
             } else {
@@ -280,6 +352,66 @@ function setupEventListeners() {
             }
         }, 150);
     });
+
+    if (searchClear) {
+        searchClear.addEventListener('click', () => {
+            searchInput.value = '';
+            searchClear.style.display = 'none';
+            currentSearch = '';
+            setActiveCategoryChip('all');
+            const catSelect = document.getElementById('category-select');
+            if (catSelect) catSelect.value = 'all';
+            if (activeView === 'categories') {
+                renderCategories();
+            } else {
+                renderApps();
+            }
+            searchInput.focus();
+        });
+    }
+
+    // Favorites Toggle (Header)
+    const favToggle = document.getElementById('favorites-toggle');
+    if (favToggle) {
+        favToggle.addEventListener('click', () => {
+            openFavoritesModal();
+        });
+    }
+
+    // Close Favorites Modal
+    const closeFavModal = document.getElementById('close-fav-modal');
+    if (closeFavModal) {
+        closeFavModal.addEventListener('click', () => {
+            closeFavoritesModal();
+        });
+    }
+
+    // Clear All Favorites
+    const clearAllFavsBtn = document.getElementById('clear-all-favs');
+    if (clearAllFavsBtn) {
+        clearAllFavsBtn.addEventListener('click', () => {
+            clearAllFavorites();
+        });
+    }
+
+    // Modal Action Buttons (Favorites & Smart Share)
+    const modalFavBtn = document.getElementById('modal-fav-btn');
+    if (modalFavBtn) {
+        modalFavBtn.addEventListener('click', () => {
+            if (window.currentModalApp) {
+                toggleFavorite(window.currentModalApp);
+            }
+        });
+    }
+
+    const modalShareBtn = document.getElementById('modal-share-btn');
+    if (modalShareBtn) {
+        modalShareBtn.addEventListener('click', () => {
+            if (window.currentModalApp) {
+                handleShareApp(window.currentModalApp);
+            }
+        });
+    }
 
     const utilSort = document.getElementById('util-sort');
     if (utilSort) {
@@ -399,18 +531,32 @@ function setupEventListeners() {
     document.querySelector('.close-modal').addEventListener('click', () => {
         if (modal.classList.contains('active')) {
             modal.classList.remove('active');
+            window.currentModalApp = null;
+            cleanAppQueryParam();
             if (history.state && history.state.modalOpen) history.back();
         }
     });
     window.addEventListener('click', (e) => { 
         if (e.target === modal && modal.classList.contains('active')) {
             modal.classList.remove('active');
+            window.currentModalApp = null;
+            cleanAppQueryParam();
             if (history.state && history.state.modalOpen) history.back();
         } 
+        const favModal = document.getElementById('favorites-modal');
+        if (favModal && e.target === favModal && favModal.classList.contains('active')) {
+            closeFavoritesModal();
+        }
     });
     window.addEventListener('popstate', (e) => {
         if (modal.classList.contains('active')) {
             modal.classList.remove('active');
+            window.currentModalApp = null;
+            cleanAppQueryParam();
+        }
+        const favModal = document.getElementById('favorites-modal');
+        if (favModal && favModal.classList.contains('active')) {
+            closeFavoritesModal();
         }
     });
 
@@ -467,6 +613,9 @@ function setupEventListeners() {
             reqModal.classList.remove('active');
         });
     }
+
+    // Initialize chips drag and desktop scroll arrows
+    initChipsDragAndScroll();
 }
 
 function switchView(viewName) {
@@ -543,8 +692,11 @@ async function fetchApps() {
             }
         });
         loading.style.display = 'none';
+        renderCategoryChips();
+        updateFavoritesBadge();
         renderCategories();
         renderApps();
+        checkDeepLink();
     } catch (error) {
         console.error(error);
         document.getElementById('loading-text').textContent = 'Error loading store data.';
@@ -683,7 +835,7 @@ function getTagInfo(tag) {
     else if (lower.includes('social') || lower.includes('chat') || lower.includes('wa') || lower.includes('insta') || lower.includes('tiktok') || lower.includes('comunication') || lower.includes('telegram')) { icon = 'fa-users'; ar = 'تواصل اجتماعي'; en = 'Social'; }
     else if (lower.includes('ai') || lower.includes('bot') || lower.includes('ia') || lower.includes('chatgpt')) { icon = 'fa-robot'; ar = 'ذكاء اصطناعي'; en = 'AI'; }
     else if (lower.includes('book') || lower.includes('pdf') || lower.includes('read') || lower.includes('dictionary') || lower.includes('notes')) { icon = 'fa-book'; ar = 'كتب وملاحظات'; en = 'Books & Notes'; }
-    else if (lower.includes('islam') || lower.includes('quran') || lower.includes('دين') || lower.includes('قران') || lower.includes('اذكار') || lower.includes('أسلامي')) { icon = 'fa-mosque'; ar = 'إسلاميات'; en = 'Islamic'; }
+    else if (lower.includes('islam') || lower.includes('quran') || lower.includes('دين') || lower.includes('قران') || lower.includes('اذكار') || lower.includes('أسلامي') || lower.includes('religion')) { icon = 'fa-mosque'; ar = 'إسلاميات'; en = 'Islamic'; }
     else if (lower.includes('sport') || lower.includes('football')) { icon = 'fa-futbol'; ar = 'رياضة'; en = 'Sports'; }
     else if (lower.includes('photo') || lower.includes('image') || lower.includes('art') || lower.includes('design') || lower.includes('wallpaper')) { icon = 'fa-image'; ar = 'صور وتصميم'; en = 'Photos & Art'; }
     else if (lower.includes('health') || lower.includes('fit') || lower.includes('work') || lower.includes('medical')) { icon = 'fa-heart-pulse'; ar = 'صحة'; en = 'Health'; }
@@ -780,9 +932,22 @@ function renderApps() {
                 }
             }
             if (!hasTag) return false;
+        } else if (activeCategoryChipId && activeCategoryChipId !== 'all') {
+            // Header Category Chip Filter
+            if (!appMatchesCategory(app, activeCategoryChipId)) return false;
         } else if (currentSearch.startsWith('#')) {
             // Handle explicit Tag filtering from Category click
-            if (!app.tags || !app.tags.includes(currentSearch)) return false;
+            const targetTag = currentSearch.toLowerCase();
+            const tagInfo = getTagInfo(currentSearch);
+            let hasTag = false;
+            if (app.tags) {
+                for (let i = 0; i < app.tags.length; i++) {
+                    if (app.tags[i].toLowerCase() === targetTag) { hasTag = true; break; }
+                    const tInfo = getTagInfo(app.tags[i]);
+                    if (tInfo.ar === tagInfo.ar) { hasTag = true; break; }
+                }
+            }
+            if (!hasTag) return false;
         }
 
         // View Filtering
@@ -920,6 +1085,11 @@ function createAppCard(app) {
     card.className = 'app-card';
     card.onclick = () => openAppDetails(app);
 
+    const isFav = isFavorite(app.id || app.name);
+    const favTitle = isFav 
+        ? (currentLanguage === 'ar' ? 'إزالة من المفضلة' : 'Remove from Favorites')
+        : (currentLanguage === 'ar' ? 'إضافة للمفضلة' : 'Add to Favorites');
+
     const imgHTML = app.icon_id 
         ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="card-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'card-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
         : `<div class="card-icon fallback"><i class="fa-brands fa-android"></i></div>`;
@@ -942,6 +1112,9 @@ function createAppCard(app) {
     const btnText = strings[currentLanguage].download;
 
     card.innerHTML = `
+        <button class="card-fav-btn ${isFav ? 'active' : ''}" data-id="${app.id || app.name}" title="${favTitle}" aria-label="Favorite">
+            <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+        </button>
         ${imgHTML}
         <div class="card-info">
             <div class="card-title">${app.name}</div>
@@ -951,6 +1124,15 @@ function createAppCard(app) {
             <i class="fa-solid ${btnIcon}"></i> ${btnText}
         </a>
     `;
+
+    const favBtn = card.querySelector('.card-fav-btn');
+    if (favBtn) {
+        favBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleFavorite(app, favBtn);
+        });
+    }
+
     return card;
 }
 
@@ -960,22 +1142,43 @@ function formatBytes(bytes) {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${['B', 'KB', 'MB', 'GB'][i]}`;
 }
 
-function openAppDetails(app) {
-    history.pushState({ modalOpen: true }, ''); // Push state for back button
+function openAppDetails(app, pushUrl = true) {
+    window.currentModalApp = app;
+    if (pushUrl) {
+        const url = new URL(window.location);
+        url.searchParams.set('app', app.name);
+        history.pushState({ modalOpen: true, appName: app.name }, '', url.toString());
+    }
     
     document.getElementById('modal-title').textContent = app.name;
     
+    // Status Badges
+    const badgesContainer = document.getElementById('modal-badges');
+    if (badgesContainer) {
+        const isLarge = app.size > 19.5 * 1024 * 1024;
+        const sizeBadge = `<span class="status-badge badge-size"><i class="fa-solid fa-hard-drive"></i> ${formatBytes(app.size)}</span>`;
+        const directBadge = isLarge 
+            ? `<span class="status-badge badge-telegram"><i class="fa-brands fa-telegram"></i> ${strings[currentLanguage].badgeTelegram}</span>`
+            : `<span class="status-badge badge-direct"><i class="fa-solid fa-bolt"></i> ${strings[currentLanguage].badgeDirect}</span>`;
+        const typeBadge = `<span class="status-badge badge-type"><i class="fa-solid ${app.category === 'Games' ? 'fa-gamepad' : 'fa-mobile-screen'}"></i> ${app.category === 'Games' ? strings[currentLanguage].badgeTypeGame : strings[currentLanguage].badgeTypeApp}</span>`;
+        const versionBadge = app.version 
+            ? `<span class="status-badge badge-version"><i class="fa-solid fa-code-branch"></i> ${app.version.startsWith('v') ? app.version : 'v' + app.version}</span>`
+            : '';
+        badgesContainer.innerHTML = `${sizeBadge}${directBadge}${typeBadge}${versionBadge}`;
+    }
+
     const versionText = app.version ? (currentLanguage === 'ar' ? `إصدار: ${app.version}` : `v${app.version}`) : (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
     
-    document.getElementById('modal-category').innerHTML = `<span style="color: var(--accent-color); font-weight: bold;">${versionText}</span>`;
+    const catEl = document.getElementById('modal-category');
+    if (catEl) catEl.innerHTML = `<span style="color: var(--accent-color); font-weight: bold;">${versionText}</span>`;
     
-    const sizeLabel = currentLanguage === 'ar' ? 'الحجم: ' : 'Size: ';
-    document.getElementById('modal-size').textContent = sizeLabel + formatBytes(app.size);
+    const sizeLabel = strings[currentLanguage].badgeSize;
+    const sizeEl = document.getElementById('modal-size');
+    if (sizeEl) sizeEl.textContent = sizeLabel + formatBytes(app.size);
     
     let dateString = '';
     if (app.date) {
         const d = new Date(app.date * 1000);
-        // Format like 2026-09-30 or 30-09-2026
         dateString = d.toLocaleDateString(currentLanguage === 'ar' ? 'ar-EG' : 'en-GB', {
             year: 'numeric',
             month: 'long',
@@ -985,7 +1188,8 @@ function openAppDetails(app) {
         dateString = currentLanguage === 'ar' ? 'غير معروف' : 'Unknown';
     }
     const dateLabel = currentLanguage === 'ar' ? 'تاريخ النشر: ' : 'Posted: ';
-    document.getElementById('modal-date').textContent = dateLabel + dateString;
+    const dateEl = document.getElementById('modal-date');
+    if (dateEl) dateEl.textContent = dateLabel + dateString;
     
     // Add Note for large files at the bottom
     const isLarge = app.size > 19.5 * 1024 * 1024;
@@ -1001,7 +1205,7 @@ function openAppDetails(app) {
     document.getElementById('modal-description').innerHTML = descriptionHtml;
     
     const downloadBtn = document.getElementById('modal-download');
-    const modalActions = document.querySelector('.modal-actions');
+    const downloadGroup = document.querySelector('.modal-download-group') || document.querySelector('.modal-actions');
     
     // Remove existing join button if it exists
     const existingJoinBtn = document.getElementById('modal-join-btn');
@@ -1021,24 +1225,28 @@ function openAppDetails(app) {
         const joinBtn = document.createElement('a');
         joinBtn.id = 'modal-join-btn';
         joinBtn.href = 'https://t.me/+ij7-LS669ahhMDFk';
-        joinBtn.className = 'download-btn btn-large'; // Match the exact rectangle style
+        joinBtn.className = 'download-btn btn-large';
         joinBtn.target = '_blank';
         joinBtn.rel = 'noopener noreferrer';
         joinBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> ${currentLanguage === 'ar' ? 'انضمام للقناة' : 'Join Channel'}`;
         
-        modalActions.style.display = 'flex';
-        modalActions.style.gap = '0.5rem';
+        downloadGroup.style.display = 'flex';
+        downloadGroup.style.gap = '0.5rem';
         downloadBtn.style.flex = '2';
         joinBtn.style.flex = '1';
         
-        modalActions.appendChild(joinBtn);
-        
+        downloadGroup.appendChild(joinBtn);
     } else {
         downloadBtn.href = `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
         downloadBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span id="download-text">${strings[currentLanguage].download}</span>`;
-        
         downloadBtn.style.flex = '1';
     }
+
+    // Modal Tools: Favorite & Share Buttons
+    updateModalFavBtn(isFavorite(app.id || app.name));
+    
+    const shareTextEl = document.getElementById('modal-share-text');
+    if (shareTextEl) shareTextEl.textContent = strings[currentLanguage].shareText;
 
     const modalIcon = document.getElementById('modal-icon');
     if (app.icon_id) {
@@ -1049,6 +1257,555 @@ function openAppDetails(app) {
     }
 
     modal.classList.add('active');
+}
+
+// ==========================================
+// TOAST NOTIFICATIONS
+// ==========================================
+function showToast(message, type = 'info', icon = 'fa-info-circle') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast-message toast-${type}`;
+    toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+        if (toast.parentNode) toast.remove();
+    }, 3000);
+}
+
+// ==========================================
+// FAVORITES SYSTEM (localStorage)
+// ==========================================
+function getFavorites() {
+    try {
+        const raw = localStorage.getItem('pt_favorites');
+        return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveFavorites(favs) {
+    try {
+        localStorage.setItem('pt_favorites', JSON.stringify(favs));
+    } catch (e) {
+        console.error('Failed to save favorites to localStorage:', e);
+    }
+}
+
+function isFavorite(appId) {
+    if (!appId) return false;
+    const favs = getFavorites();
+    return favs.includes(String(appId));
+}
+
+function toggleFavorite(app, targetBtn = null) {
+    if (!app) return;
+    const appId = String(app.id || app.name);
+    let favs = getFavorites();
+    const index = favs.indexOf(appId);
+    let isAdded = false;
+
+    if (index > -1) {
+        favs.splice(index, 1);
+        isAdded = false;
+    } else {
+        favs.push(appId);
+        isAdded = true;
+    }
+
+    saveFavorites(favs);
+    updateFavoritesBadge();
+
+    // Trigger pop animation on badge
+    const badge = document.getElementById('fav-badge');
+    if (badge) {
+        badge.classList.remove('pop');
+        void badge.offsetWidth;
+        badge.classList.add('pop');
+    }
+
+    // Update all card buttons for this app
+    document.querySelectorAll(`.card-fav-btn[data-id="${appId}"]`).forEach(btn => {
+        btn.classList.toggle('active', isAdded);
+        btn.title = isAdded 
+            ? (currentLanguage === 'ar' ? 'إزالة من المفضلة' : 'Remove from Favorites')
+            : (currentLanguage === 'ar' ? 'إضافة للمفضلة' : 'Add to Favorites');
+        const icon = btn.querySelector('i');
+        if (icon) {
+            icon.className = isAdded ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+        }
+        if (isAdded) {
+            btn.classList.remove('pop');
+            void btn.offsetWidth;
+            btn.classList.add('pop');
+        }
+    });
+
+    // Update modal favorite button if open
+    if (window.currentModalApp && String(window.currentModalApp.id || window.currentModalApp.name) === appId) {
+        updateModalFavBtn(isAdded);
+    }
+
+    // Show toast alert
+    showToast(
+        isAdded ? strings[currentLanguage].addedToFav : strings[currentLanguage].removedFromFav,
+        isAdded ? 'fav' : 'info',
+        isAdded ? 'fa-heart' : 'fa-heart-crack'
+    );
+
+    // If favorites modal is active, re-render list
+    const favModal = document.getElementById('favorites-modal');
+    if (favModal && favModal.classList.contains('active')) {
+        renderFavoritesList();
+    }
+}
+
+function updateFavoritesBadge() {
+    const favs = getFavorites();
+    const count = favs.length;
+    const badge = document.getElementById('fav-badge');
+    if (badge) {
+        badge.textContent = count;
+    }
+    const favBtn = document.getElementById('favorites-toggle');
+    if (favBtn) {
+        if (count > 0) favBtn.classList.add('has-favs');
+        else favBtn.classList.remove('has-favs');
+    }
+    const favCountEl = document.getElementById('fav-count');
+    if (favCountEl) favCountEl.textContent = count;
+    const favSubtitleEl = document.getElementById('favorites-subtitle');
+    if (favSubtitleEl) {
+        favSubtitleEl.textContent = `${strings[currentLanguage].favoritesSubtitle} (${count})`;
+    }
+}
+
+function updateModalFavBtn(isFav) {
+    const modalFavBtn = document.getElementById('modal-fav-btn');
+    if (!modalFavBtn) return;
+    const icon = modalFavBtn.querySelector('i');
+    const text = document.getElementById('modal-fav-text');
+    if (isFav) {
+        modalFavBtn.classList.add('active');
+        if (icon) icon.className = 'fa-solid fa-heart';
+        if (text) text.textContent = strings[currentLanguage].favSavedText;
+        modalFavBtn.title = currentLanguage === 'ar' ? 'إزالة من المفضلة' : 'Remove from Favorites';
+    } else {
+        modalFavBtn.classList.remove('active');
+        if (icon) icon.className = 'fa-regular fa-heart';
+        if (text) text.textContent = strings[currentLanguage].favBtnText;
+        modalFavBtn.title = currentLanguage === 'ar' ? 'إضافة للمفضلة' : 'Add to Favorites';
+    }
+}
+
+function openFavoritesModal() {
+    const favModal = document.getElementById('favorites-modal');
+    if (!favModal) return;
+    renderFavoritesList();
+    favModal.classList.add('active');
+}
+
+function closeFavoritesModal() {
+    const favModal = document.getElementById('favorites-modal');
+    if (favModal) favModal.classList.remove('active');
+}
+
+function clearAllFavorites() {
+    const favs = getFavorites();
+    if (favs.length === 0) return;
+    if (confirm(strings[currentLanguage].clearConfirm)) {
+        saveFavorites([]);
+        updateFavoritesBadge();
+        renderFavoritesList();
+        // Update all rendered cards
+        document.querySelectorAll('.card-fav-btn').forEach(btn => {
+            btn.classList.remove('active');
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = 'fa-regular fa-heart';
+        });
+        if (window.currentModalApp) {
+            updateModalFavBtn(false);
+        }
+        showToast(strings[currentLanguage].allFavsCleared, 'info', 'fa-trash-can');
+    }
+}
+
+function renderFavoritesList() {
+    const listEl = document.getElementById('favorites-list');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+
+    const favIds = getFavorites();
+    updateFavoritesBadge();
+
+    if (favIds.length === 0) {
+        listEl.innerHTML = `
+            <div class="fav-empty-state">
+                <i class="fa-solid fa-heart-crack fav-empty-icon"></i>
+                <h3>${strings[currentLanguage].emptyFavorites}</h3>
+                <p>${strings[currentLanguage].emptyFavDesc}</p>
+                <button class="fav-empty-btn" onclick="closeFavoritesModal();">
+                    <i class="fa-solid fa-compass"></i> ${strings[currentLanguage].browseApps}
+                </button>
+            </div>
+        `;
+        return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    favIds.forEach(id => {
+        const app = allApps.find(a => String(a.id) === String(id) || a.name === id);
+        if (!app) return;
+
+        const isLarge = app.size > 19.5 * 1024 * 1024;
+        let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
+        if (app.chat_id && app.chat_id.startsWith('-100')) {
+            const baseChatId = app.chat_id.substring(4);
+            tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
+        }
+        const downloadLink = isLarge 
+            ? tgLink 
+            : `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
+
+        const card = document.createElement('div');
+        card.className = 'fav-item-card';
+
+        const imgHTML = app.icon_id 
+            ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="fav-item-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'fav-item-icon fallback\\' style=\\'display:flex;align-items:center;justify-content:center;color:var(--accent-color);\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
+            : `<div class="fav-item-icon fallback" style="display:flex;align-items:center;justify-content:center;color:var(--accent-color);"><i class="fa-brands fa-android"></i></div>`;
+
+        const badgeType = `<span class="status-badge badge-type" style="padding:0.15rem 0.5rem;font-size:0.72rem;"><i class="fa-solid ${app.category === 'Games' ? 'fa-gamepad' : 'fa-mobile-screen'}"></i> ${app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp}</span>`;
+        const badgeSize = `<span class="status-badge badge-size" style="padding:0.15rem 0.5rem;font-size:0.72rem;"><i class="fa-solid fa-hard-drive"></i> ${formatBytes(app.size)}</span>`;
+
+        card.innerHTML = `
+            ${imgHTML}
+            <div class="fav-item-info">
+                <div class="fav-item-title">${app.name}</div>
+                <div class="fav-item-meta">
+                    ${badgeType}
+                    ${badgeSize}
+                </div>
+            </div>
+            <div class="fav-item-actions">
+                <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" style="width:auto;padding:0.4rem 0.8rem;font-size:0.8rem;" onclick="event.stopPropagation();">
+                    <i class="fa-solid ${isLarge ? 'fa-paper-plane' : 'fa-download'}"></i>
+                </a>
+                <button class="fav-del-btn" title="${currentLanguage === 'ar' ? 'حذف من المفضلة' : 'Remove'}" onclick="event.stopPropagation(); toggleFavorite(allApps.find(a => String(a.id) === '${app.id}'));">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+        `;
+
+        card.onclick = () => {
+            closeFavoritesModal();
+            openAppDetails(app);
+        };
+
+        fragment.appendChild(card);
+    });
+
+    listEl.appendChild(fragment);
+}
+
+// ==========================================
+// CATEGORY CHIPS BAR
+// ==========================================
+const TOP_CHIPS = [
+    { id: 'all', ar: 'الكل', en: 'All', icon: 'fa-shapes' },
+    { id: 'games', ar: 'ألعاب', en: 'Games', icon: 'fa-gamepad' },
+    { id: 'watching', ar: 'مشاهدة وميديا', en: 'Media', icon: 'fa-play' },
+    { id: 'tools', ar: 'أدوات', en: 'Tools', icon: 'fa-wrench' },
+    { id: 'editing', ar: 'مونتاج وتصميم', en: 'Editing', icon: 'fa-wand-magic-sparkles' },
+    { id: 'vpn', ar: 'VPN وكاسر', en: 'VPN & Proxy', icon: 'fa-shield-halved' },
+    { id: 'ai', ar: 'ذكاء اصطناعي', en: 'AI', icon: 'fa-robot' },
+    { id: 'islamic', ar: 'إسلاميات', en: 'Islamic', icon: 'fa-mosque' },
+    { id: 'social', ar: 'تواصل اجتماعي', en: 'Social', icon: 'fa-users' },
+    { id: 'music', ar: 'موسيقى وصوتيات', en: 'Music', icon: 'fa-music' },
+    { id: 'browsers', ar: 'متصفحات', en: 'Browsers', icon: 'fa-globe' },
+    { id: 'education', ar: 'تعليم', en: 'Education', icon: 'fa-graduation-cap' },
+    { id: 'books', ar: 'كتب ومستندات', en: 'Books', icon: 'fa-book' },
+    { id: 'wallpapers', ar: 'خلفيات وثيمات', en: 'Wallpapers', icon: 'fa-palette' },
+    { id: 'camera', ar: 'كاميرا وفلاتر', en: 'Camera', icon: 'fa-camera' }
+];
+
+let activeCategoryChipId = 'all';
+
+function appMatchesCategory(app, catId) {
+    if (!catId || catId === 'all') return true;
+
+    const tags = Array.isArray(app.tags) ? app.tags.map(t => String(t).toLowerCase()) : [];
+    const name = (app.name || '').toLowerCase();
+    const desc = (app.description || '').toLowerCase();
+    const category = app.category || '';
+
+    const hasAnyTag = (keywords) => {
+        return tags.some(tag => keywords.some(kw => tag.includes(kw)));
+    };
+
+    switch (catId) {
+        case 'islamic':
+            return hasAnyTag(['islam', 'quran', 'دين', 'ديني', 'قران', 'اذكار', 'أسلامي', 'religion']) ||
+                   name.includes('مصحف') || name.includes('قرآن') || name.includes('قران') ||
+                   name.includes('أذكار') || name.includes('اذكار') || name.includes('صلات') ||
+                   name.includes('prayer') || name.includes('quran') || name.includes('islam') ||
+                   name.includes('tarteel') || name.includes('khatmah') || name.includes('muslim');
+
+        case 'games':
+            return category === 'Games' || hasAnyTag(['game', 'gta', 'psp', 'racer']);
+
+        case 'watching':
+            return hasAnyTag(['watch', 'tv', 'movie', 'anime', 'player', 'media', 'iptv', 'cartoon', 'romance']);
+
+        case 'tools':
+            return hasAnyTag(['tool', 'manager', 'scanner', 'launcher', 'utility', 'ادوات', 'battery', 'controls', 'cleaner', 'recover']);
+
+        case 'editing':
+            return hasAnyTag(['edit', 'photoeditor', 'photography', 'photosgenerator', 'remove_bckground', 'videocaptions', 'design']);
+
+        case 'vpn':
+            return hasAnyTag(['vpn', 'secur', 'firewall', 'freeinternet', 'udp', 'proxy']);
+
+        case 'ai':
+            return hasAnyTag(['ai', 'bot', 'ia', 'chatgpt']);
+
+        case 'social':
+            return hasAnyTag(['social', 'chat', 'wa', 'insta', 'tiktok', 'comunication', 'telegram', 'calling']);
+
+        case 'music':
+            return hasAnyTag(['music', 'audio', 'podcast', 'radio', 'spotify', 'listen', 'karoke', 'mp3', 'ringtone', 'tuner']);
+
+        case 'browsers':
+            return hasAnyTag(['browser', 'web']);
+
+        case 'education':
+            return hasAnyTag(['educat', 'learn', 'lesson', 'quiz', 'programming', 'translation']);
+
+        case 'books':
+            return hasAnyTag(['book', 'pdf', 'read', 'dictionary', 'notes', 'thesaurus', 'ebook']);
+
+        case 'wallpapers':
+            return hasAnyTag(['wallpaper', 'thim', 'theme']);
+
+        case 'camera':
+            return hasAnyTag(['camera', 'photo']);
+
+        default:
+            return hasAnyTag([catId.toLowerCase()]);
+    }
+}
+
+function renderCategoryChips() {
+    const container = document.getElementById('category-chips-bar');
+    if (!container) return;
+    container.innerHTML = '';
+
+    TOP_CHIPS.forEach(chip => {
+        const btn = document.createElement('button');
+        btn.className = `cat-chip ${chip.id === activeCategoryChipId ? 'active' : ''}`;
+        btn.dataset.chipId = chip.id;
+        btn.innerHTML = `<i class="fa-solid ${chip.icon}"></i> <span>${chip[currentLanguage]}</span>`;
+
+        btn.addEventListener('click', () => {
+            selectCategoryChip(chip.id, chip[currentLanguage], btn);
+        });
+
+        container.appendChild(btn);
+    });
+}
+
+function selectCategoryChip(chipId, chipLabel, chipBtn = null) {
+    // If the user clicks the currently active non-'all' chip, toggle back to 'all'
+    if (activeCategoryChipId === chipId && chipId !== 'all') {
+        chipId = 'all';
+        chipLabel = currentLanguage === 'ar' ? 'الكل' : 'All';
+    }
+
+    activeCategoryChipId = chipId;
+
+    document.querySelectorAll('.cat-chip').forEach(b => {
+        b.classList.toggle('active', b.dataset.chipId === chipId);
+    });
+
+    if (chipBtn && chipId !== 'all') {
+        chipBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+
+    if (activeView === 'categories') {
+        switchView('home');
+    }
+
+    currentSearch = '';
+    searchInput.value = '';
+    const searchClear = document.getElementById('search-clear');
+    if (searchClear) searchClear.style.display = 'none';
+
+    const catSelect = document.getElementById('category-select');
+    if (catSelect) catSelect.value = 'all';
+
+    if (chipId === 'all') {
+        updateViewTitle();
+    } else {
+        updateViewTitle(chipLabel);
+    }
+    renderApps();
+}
+
+function setActiveCategoryChip(chipId) {
+    activeCategoryChipId = chipId;
+    document.querySelectorAll('.cat-chip').forEach(b => {
+        b.classList.toggle('active', b.dataset.chipId === chipId);
+    });
+}
+
+function initChipsDragAndScroll() {
+    const container = document.getElementById('category-chips-bar');
+    const btnLeft = document.getElementById('chips-btn-left');
+    const btnRight = document.getElementById('chips-btn-right');
+    if (!container) return;
+
+    if (btnLeft) {
+        btnLeft.addEventListener('click', () => {
+            container.scrollBy({ left: -260, behavior: 'smooth' });
+        });
+    }
+
+    if (btnRight) {
+        btnRight.addEventListener('click', () => {
+            container.scrollBy({ left: 260, behavior: 'smooth' });
+        });
+    }
+
+    // Desktop mouse wheel support (shift/delta conversion)
+    container.addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && Math.abs(e.deltaY) > 0) {
+            e.preventDefault();
+            container.scrollLeft += e.deltaY;
+        }
+    }, { passive: false });
+
+    // Hold click and drag to scroll (mouse grab & move)
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let hasDragged = false;
+
+    container.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return; // Only primary mouse button
+        isDown = true;
+        hasDragged = false;
+        container.classList.add('is-dragging');
+        startX = e.pageX - container.offsetLeft;
+        scrollLeft = container.scrollLeft;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        const x = e.pageX - container.offsetLeft;
+        const walk = x - startX;
+        if (Math.abs(walk) > 5) {
+            hasDragged = true;
+        }
+        container.scrollLeft = scrollLeft - walk;
+    });
+
+    const endDrag = () => {
+        if (!isDown) return;
+        isDown = false;
+        container.classList.remove('is-dragging');
+        if (hasDragged) {
+            // Suppress the click event that follows mouseup if dragged
+            const suppressClick = (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                window.removeEventListener('click', suppressClick, true);
+            };
+            window.addEventListener('click', suppressClick, true);
+        }
+    };
+
+    window.addEventListener('mouseup', endDrag);
+}
+
+// ==========================================
+// SMART SHARE & DEEP LINKING
+// ==========================================
+function handleShareApp(app) {
+    if (!app) return;
+    const shareUrl = `${window.location.origin}${window.location.pathname}?app=${encodeURIComponent(app.name)}`;
+    const shareTitle = `${app.name} | Premium Techs`;
+    const shareText = currentLanguage === 'ar'
+        ? `تحميل ${app.name} بريميوم مجاناً من متجر Premium Techs:`
+        : `Download ${app.name} Premium for free from Premium Techs Store:`;
+
+    if (navigator.share) {
+        navigator.share({
+            title: shareTitle,
+            text: shareText,
+            url: shareUrl
+        }).catch(err => {
+            if (err.name !== 'AbortError') {
+                copyShareUrl(shareUrl);
+            }
+        });
+    } else {
+        copyShareUrl(shareUrl);
+    }
+}
+
+function copyShareUrl(url) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+            showToast(strings[currentLanguage].linkCopied, 'success', 'fa-copy');
+        }).catch(() => {
+            fallbackCopy(url);
+        });
+    } else {
+        fallbackCopy(url);
+    }
+}
+
+function fallbackCopy(url) {
+    const tempInput = document.createElement('input');
+    tempInput.value = url;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    try {
+        document.execCommand('copy');
+        showToast(strings[currentLanguage].linkCopied, 'success', 'fa-copy');
+    } catch (e) {
+        prompt(currentLanguage === 'ar' ? 'انسخ الرابط:' : 'Copy Link:', url);
+    }
+    document.body.removeChild(tempInput);
+}
+
+function checkDeepLink() {
+    const params = new URLSearchParams(window.location.search);
+    const appParam = params.get('app');
+    if (!appParam || allApps.length === 0) return;
+
+    const query = decodeURIComponent(appParam).trim().toLowerCase();
+    const target = allApps.find(a => 
+        a.name.toLowerCase() === query ||
+        a.name.toLowerCase().replace(/\s+/g, '') === query.replace(/\s+/g, '') ||
+        String(a.id) === query
+    );
+
+    if (target) {
+        setTimeout(() => {
+            openAppDetails(target, false);
+        }, 150);
+    }
+}
+
+function cleanAppQueryParam() {
+    const url = new URL(window.location);
+    if (url.searchParams.has('app')) {
+        url.searchParams.delete('app');
+        const cleanUrl = url.pathname + (url.search ? url.search : '') + url.hash;
+        history.replaceState({}, '', cleanUrl);
+    }
 }
 
 function createFloatingBackground() {

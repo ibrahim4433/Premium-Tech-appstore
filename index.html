@@ -39,13 +39,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="css/style.css?v=3" as="style">
-    <link rel="preload" href="js/app.js" as="script">
+    <link rel="preload" href="css/style.css?v=9" as="style">
+    <link rel="preload" href="js/app.js?v=9" as="script">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" as="style">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="stylesheet" href="css/style.css?v=9">
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- PWA Manifest -->
@@ -1449,6 +1449,9 @@
                 <div class="search-bar">
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
                     <input type="text" id="search-input" placeholder="البحث عن تطبيقات وألعاب...">
+                    <button id="search-clear" class="search-clear-btn" aria-label="مسح البحث" title="مسح" style="display: none;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                     <button id="filter-toggle" class="filter-toggle" aria-label="Toggle Filters">
                         <i class="fa-solid fa-sliders"></i>
                     </button>
@@ -1484,6 +1487,10 @@
             </div>
 
             <div class="nav-actions">
+                <button id="favorites-toggle" class="icon-btn favorites-btn" title="المفضلة" aria-label="Favorites">
+                    <i class="fa-solid fa-heart"></i>
+                    <span id="fav-badge" class="fav-badge">0</span>
+                </button>
                 <button id="theme-toggle" class="icon-btn" title="تغيير المظهر">
                     <i class="fa-solid fa-sun"></i>
                 </button>
@@ -1501,6 +1508,19 @@
                     <button class="desktop-tab" data-view="categories">التصنيفات</button>
                 </div>
             </div>
+        </div>
+
+        <!-- Category Chips Bar -->
+        <div class="chips-wrapper">
+            <button id="chips-btn-left" class="chips-scroll-btn chips-btn-left" aria-label="Scroll Left" title="Scroll Left">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div id="category-chips-bar" class="category-chips-bar">
+                <!-- Dynamically populated category chips -->
+            </div>
+            <button id="chips-btn-right" class="chips-scroll-btn chips-btn-right" aria-label="Scroll Right" title="Scroll Right">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
         </div>
     </header>
 
@@ -1586,21 +1606,54 @@
                 <img id="modal-icon" class="modal-app-icon" src="" alt="App Icon">
                 <div class="modal-title-group">
                     <h2 id="modal-title">App Title</h2>
-                    <p id="modal-category" class="app-category">Apps</p>
-                    <p id="modal-size" class="app-size">0 MB</p>
+                    <div id="modal-badges" class="modal-badges"></div>
+                    <p id="modal-category" class="app-category" style="display: none;">Apps</p>
+                    <p id="modal-size" class="app-size" style="display: none;">0 MB</p>
                     <p id="modal-date" class="app-date" style="margin-top: 5px; color: var(--text-secondary); font-size: 0.85rem;"></p>
                 </div>
             </div>
             
             <div class="modal-actions">
-                <a id="modal-download" href="#" class="download-btn btn-large" target="_blank" rel="noopener noreferrer">
-                    <i class="fa-solid fa-download"></i> <span id="download-text">تثبيت</span>
-                </a>
+                <div class="modal-download-group">
+                    <a id="modal-download" href="#" class="download-btn btn-large" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-solid fa-download"></i> <span id="download-text">تثبيت</span>
+                    </a>
+                </div>
+                <div class="modal-tools-group">
+                    <button id="modal-fav-btn" class="modal-tool-btn fav-tool-btn" type="button" title="إضافة للمفضلة">
+                        <i class="fa-regular fa-heart"></i> <span id="modal-fav-text">المفضلة</span>
+                    </button>
+                    <button id="modal-share-btn" class="modal-tool-btn share-tool-btn" type="button" title="مشاركة التطبيق">
+                        <i class="fa-solid fa-share-nodes"></i> <span id="modal-share-text">مشاركة</span>
+                    </button>
+                </div>
             </div>
 
             <div class="modal-body">
                 <h3 id="about-title">حول هذا التطبيق</h3>
                 <p id="modal-description" class="app-description"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Favorites Modal -->
+    <div id="favorites-modal" class="modal">
+        <div class="modal-content favorites-modal-content">
+            <button class="close-modal" id="close-fav-modal"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div class="modal-header fav-modal-header">
+                <div class="fav-header-icon"><i class="fa-solid fa-heart"></i></div>
+                <div class="fav-header-info">
+                    <h2 id="favorites-title">المفضلة</h2>
+                    <p id="favorites-subtitle" class="fav-subtitle">التطبيقات المحفوظة (<span id="fav-count">0</span>)</p>
+                </div>
+                <button id="clear-all-favs" class="clear-favs-btn" type="button" title="مسح الكل">
+                    <i class="fa-solid fa-trash-can"></i> <span id="clear-favs-text">مسح الكل</span>
+                </button>
+            </div>
+            
+            <div id="favorites-list" class="favorites-list">
+                <!-- Favorites items injected dynamically -->
             </div>
         </div>
     </div>
@@ -1666,8 +1719,10 @@
             </div>
         </div>
     </div>
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
 
-    <script src="js/app.js"></script>
+    <script src="js/app.js?v=9"></script>
     <!-- Register Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {
