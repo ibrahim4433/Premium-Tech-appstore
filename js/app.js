@@ -1298,6 +1298,14 @@ function openAppDetails(app, pushUrl = true) {
     const galleryTitleText = document.getElementById('gallery-title-text');
     if (galleryTitleText) galleryTitleText.textContent = strings[currentLanguage].galleryTitle;
 
+function getScreenshotUrl(photoRef) {
+    if (!photoRef) return '';
+    if (photoRef.startsWith('assets/') || photoRef.startsWith('/') || photoRef.startsWith('http://') || photoRef.startsWith('https://')) {
+        return photoRef;
+    }
+    return `${WORKER_URL}/?id=${photoRef}&action=image`;
+}
+
     if (app.screenshots && Array.isArray(app.screenshots) && app.screenshots.length > 0) {
         if (galleryTrack) {
             galleryTrack.innerHTML = '';
@@ -1311,7 +1319,7 @@ function openAppDetails(app, pushUrl = true) {
                 const img = document.createElement('img');
                 img.className = 'gallery-img';
                 img.loading = 'lazy';
-                img.src = `${WORKER_URL}/?id=${photoId}&action=image`;
+                img.src = getScreenshotUrl(photoId);
                 img.alt = `${app.name} screenshot ${idx + 1}`;
 
                 img.onerror = () => {
@@ -1379,7 +1387,7 @@ function updateScreenshotLightboxUI() {
 
     if (!img || currentLightboxImages.length === 0) return;
     const fileId = currentLightboxImages[currentLightboxIndex];
-    img.src = `${WORKER_URL}/?id=${fileId}&action=image`;
+    img.src = getScreenshotUrl(fileId);
 
     if (counter) {
         counter.textContent = `${currentLightboxIndex + 1} / ${currentLightboxImages.length}`;
