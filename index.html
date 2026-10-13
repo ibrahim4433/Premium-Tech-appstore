@@ -39,13 +39,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="css/style.css?v=12" as="style">
-    <link rel="preload" href="js/app.js?v=12" as="script">
+    <link rel="preload" href="css/style.css?v=13" as="style">
+    <link rel="preload" href="js/app.js?v=13" as="script">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" as="style">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=12">
+    <link rel="stylesheet" href="css/style.css?v=13">
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- PWA Manifest -->
@@ -1623,6 +1623,18 @@
                 </div>
             </div>
             
+            <!-- App Screenshots Gallery -->
+            <div id="modal-gallery-container" class="modal-gallery-container" style="display: none;">
+                <div class="gallery-header">
+                    <div class="gallery-header-title">
+                        <i class="fa-solid fa-images"></i>
+                        <span id="gallery-title-text">صور من داخل التطبيق</span>
+                    </div>
+                    <span id="modal-gallery-count" class="gallery-count-badge"></span>
+                </div>
+                <div id="modal-gallery-track" class="modal-gallery-track" role="region" aria-label="Screenshots"></div>
+            </div>
+
             <div class="modal-actions">
                 <div class="modal-download-group">
                     <a id="modal-download" href="#" class="download-btn btn-large" target="_blank" rel="noopener noreferrer">
@@ -1736,10 +1748,27 @@
             </div>
         </div>
     </div>
+    <!-- Screenshot Fullscreen Lightbox -->
+    <div id="screenshot-lightbox" class="gallery-lightbox" aria-hidden="true" role="dialog">
+        <button id="lightbox-close" class="lightbox-close" aria-label="Close Preview">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <button id="lightbox-prev" class="lightbox-nav-btn lightbox-prev" aria-label="Previous image">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+        <div class="lightbox-content">
+            <img id="lightbox-img" class="lightbox-img" src="" alt="Screenshot Preview">
+        </div>
+        <button id="lightbox-next" class="lightbox-nav-btn lightbox-next" aria-label="Next image">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div id="lightbox-counter" class="lightbox-counter">1 / 1</div>
+    </div>
+
     <!-- Toast Notification Container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <script src="js/app.js?v=12"></script>
+    <script src="js/app.js?v=13"></script>
     <!-- Register Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {

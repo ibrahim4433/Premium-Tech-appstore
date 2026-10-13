@@ -126,7 +126,9 @@ const strings = {
         badgeTypeApp: "تطبيق بريميوم",
         badgeTypeGame: "لعبة معدلة",
         chipAll: "الكل",
-        searchClearTitle: "مسح البحث"
+        searchClearTitle: "مسح البحث",
+        galleryTitle: "صور من داخل التطبيق",
+        galleryPhotos: "صور"
     },
     en: {
         search: "Search for apps & games...",
@@ -193,7 +195,9 @@ const strings = {
         badgeTypeApp: "Premium App",
         badgeTypeGame: "Modded Game",
         chipAll: "All",
-        searchClearTitle: "Clear Search"
+        searchClearTitle: "Clear Search",
+        galleryTitle: "Inside Preview",
+        galleryPhotos: "photos"
     }
 };
 
@@ -317,7 +321,13 @@ function setLanguage(lang) {
     renderCategoryChips();
     if (window.currentModalApp) {
         updateModalFavBtn(isFavorite(window.currentModalApp.id || window.currentModalApp.name));
+        if (window.currentModalApp.screenshots && window.currentModalApp.screenshots.length > 0) {
+            const galleryCount = document.getElementById('modal-gallery-count');
+            if (galleryCount) galleryCount.textContent = `${window.currentModalApp.screenshots.length} ${strings[lang].galleryPhotos}`;
+        }
     }
+    const galleryTitleText = document.getElementById('gallery-title-text');
+    if (galleryTitleText) galleryTitleText.textContent = strings[lang].galleryTitle;
 
     document.querySelectorAll('.cb-text').forEach(span => {
         span.textContent = span.getAttribute(`data-${lang}`);
@@ -529,6 +539,7 @@ function setupEventListeners() {
     });
 
     document.querySelector('.close-modal').addEventListener('click', () => {
+        closeScreenshotLightbox();
         if (modal.classList.contains('active')) {
             modal.classList.remove('active');
             window.currentModalApp = null;
@@ -538,6 +549,7 @@ function setupEventListeners() {
     });
     window.addEventListener('click', (e) => { 
         if (e.target === modal && modal.classList.contains('active')) {
+            closeScreenshotLightbox();
             modal.classList.remove('active');
             window.currentModalApp = null;
             cleanAppQueryParam();
@@ -549,6 +561,7 @@ function setupEventListeners() {
         }
     });
     window.addEventListener('popstate', (e) => {
+        closeScreenshotLightbox();
         if (modal.classList.contains('active')) {
             modal.classList.remove('active');
             window.currentModalApp = null;
@@ -616,6 +629,9 @@ function setupEventListeners() {
 
     // Initialize chips drag and desktop scroll arrows
     initChipsDragAndScroll();
+
+    // Initialize Screenshots Lightbox Events
+    initScreenshotLightboxEvents();
 }
 
 function switchView(viewName) {
@@ -1275,7 +1291,159 @@ function openAppDetails(app, pushUrl = true) {
         modalIcon.style.display = 'none';
     }
 
+    // Screenshots Gallery (Google Play / App Store style)
+    const galleryContainer = document.getElementById('modal-gallery-container');
+    const galleryTrack = document.getElementById('modal-gallery-track');
+    const galleryCount = document.getElementById('modal-gallery-count');
+    const galleryTitleText = document.getElementById('gallery-title-text');
+    if (galleryTitleText) galleryTitleText.textContent = strings[currentLanguage].galleryTitle;
+
+    if (app.screenshots && Array.isArray(app.screenshots) && app.screenshots.length > 0) {
+        if (galleryTrack) {
+            galleryTrack.innerHTML = '';
+            app.screenshots.forEach((photoId, idx) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.setAttribute('role', 'button');
+                item.setAttribute('tabindex', '0');
+                item.setAttribute('aria-label', `${app.name} preview ${idx + 1}`);
+
+                const img = document.createElement('img');
+                img.className = 'gallery-img';
+                img.loading = 'lazy';
+                img.src = `${WORKER_URL}/?id=${photoId}&action=image`;
+                img.alt = `${app.name} screenshot ${idx + 1}`;
+
+                img.onerror = () => {
+                    item.style.display = 'none';
+                };
+
+                item.appendChild(img);
+                item.addEventListener('click', () => {
+                    openScreenshotLightbox(app.screenshots, idx, app.name);
+                });
+                item.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openScreenshotLightbox(app.screenshots, idx, app.name);
+                    }
+                });
+                galleryTrack.appendChild(item);
+            });
+        }
+        if (galleryCount) {
+            galleryCount.textContent = `${app.screenshots.length} ${strings[currentLanguage].galleryPhotos}`;
+        }
+        if (galleryContainer) galleryContainer.style.display = 'block';
+    } else {
+        if (galleryContainer) galleryContainer.style.display = 'none';
+        if (galleryTrack) galleryTrack.innerHTML = '';
+    }
+
     modal.classList.add('active');
+}
+
+// ==========================================
+// SCREENSHOT LIGHTBOX VIEWER
+// ==========================================
+let currentLightboxImages = [];
+let currentLightboxIndex = 0;
+
+function openScreenshotLightbox(images, startIndex = 0, appName = '') {
+    if (!images || !Array.isArray(images) || images.length === 0) return;
+    currentLightboxImages = images;
+    currentLightboxIndex = startIndex >= 0 && startIndex < images.length ? startIndex : 0;
+
+    const lightbox = document.getElementById('screenshot-lightbox');
+    if (!lightbox) return;
+
+    updateScreenshotLightboxUI();
+    lightbox.classList.add('active');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeScreenshotLightbox() {
+    const lightbox = document.getElementById('screenshot-lightbox');
+    if (!lightbox || !lightbox.classList.contains('active')) return;
+    lightbox.classList.remove('active');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+}
+
+function updateScreenshotLightboxUI() {
+    const img = document.getElementById('lightbox-img');
+    const counter = document.getElementById('lightbox-counter');
+    const prevBtn = document.getElementById('lightbox-prev');
+    const nextBtn = document.getElementById('lightbox-next');
+
+    if (!img || currentLightboxImages.length === 0) return;
+    const fileId = currentLightboxImages[currentLightboxIndex];
+    img.src = `${WORKER_URL}/?id=${fileId}&action=image`;
+
+    if (counter) {
+        counter.textContent = `${currentLightboxIndex + 1} / ${currentLightboxImages.length}`;
+    }
+    const hasMultiple = currentLightboxImages.length > 1;
+    if (prevBtn) prevBtn.style.display = hasMultiple ? 'flex' : 'none';
+    if (nextBtn) nextBtn.style.display = hasMultiple ? 'flex' : 'none';
+}
+
+function showNextScreenshot() {
+    if (currentLightboxImages.length <= 1) return;
+    currentLightboxIndex = (currentLightboxIndex + 1) % currentLightboxImages.length;
+    updateScreenshotLightboxUI();
+}
+
+function showPrevScreenshot() {
+    if (currentLightboxImages.length <= 1) return;
+    currentLightboxIndex = (currentLightboxIndex - 1 + currentLightboxImages.length) % currentLightboxImages.length;
+    updateScreenshotLightboxUI();
+}
+
+function initScreenshotLightboxEvents() {
+    const lightbox = document.getElementById('screenshot-lightbox');
+    const closeBtn = document.getElementById('lightbox-close');
+    const prevBtn = document.getElementById('lightbox-prev');
+    const nextBtn = document.getElementById('lightbox-next');
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeScreenshotLightbox();
+        });
+    }
+    if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showPrevScreenshot();
+        });
+    }
+    if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showNextScreenshot();
+        });
+    }
+    if (lightbox) {
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeScreenshotLightbox();
+            }
+        });
+    }
+    window.addEventListener('keydown', (e) => {
+        if (!lightbox || !lightbox.classList.contains('active')) return;
+        if (e.key === 'Escape') {
+            closeScreenshotLightbox();
+        } else if (e.key === 'ArrowRight') {
+            if (currentLanguage === 'ar') showPrevScreenshot();
+            else showNextScreenshot();
+        } else if (e.key === 'ArrowLeft') {
+            if (currentLanguage === 'ar') showNextScreenshot();
+            else showPrevScreenshot();
+        }
+    });
 }
 
 // ==========================================

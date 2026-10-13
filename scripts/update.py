@@ -140,6 +140,102 @@ def extract_text_info(text):
     app_data['description'] = '\n'.join(desc_lines).strip()
     return app_data
 
+GROUP_CHAT_ID = os.environ.get('TELEGRAM_GROUP_ID', '-1002471318704')
+ADMIN_CACHE = {}
+
+def is_admin_sender(message):
+    chat = message.get('chat', {})
+    chat_id = str(chat.get('id', ''))
+    
+    # 1. Anonymous admin posting as the group
+    sender_chat = message.get('sender_chat', {})
+    if sender_chat:
+        sender_chat_id = str(sender_chat.get('id', ''))
+        if sender_chat_id == chat_id or sender_chat_id == str(GROUP_CHAT_ID):
+            return True
+
+    # 2. Telegram GroupAnonymousBot
+    from_user = message.get('from', {})
+    if from_user.get('username') == 'GroupAnonymousBot' or from_user.get('id') == 1087968824:
+        return True
+
+    # 3. Check admin status for normal user accounts in group
+    user_id = from_user.get('id')
+    if user_id:
+        if user_id in ADMIN_CACHE:
+            return ADMIN_CACHE[user_id]
+        if BOT_TOKEN and chat_id:
+            try:
+                res = requests.get(
+                    f"https://api.telegram.org/bot{BOT_TOKEN}/getChatMember",
+                    params={'chat_id': chat_id, 'user_id': user_id},
+                    timeout=5
+                ).json()
+                if res.get('ok') and res.get('result', {}).get('status') in ['creator', 'administrator']:
+                    ADMIN_CACHE[user_id] = True
+                    return True
+                ADMIN_CACHE[user_id] = False
+            except Exception:
+                pass
+    return False
+
+def find_target_app(reply_msg, apps, current_app):
+    if not reply_msg:
+        return None
+
+    # Method 1: Match by forwarded channel message ID (which matches app['id'])
+    fwd_orig_id = reply_msg.get('forward_from_message_id')
+    if not fwd_orig_id and 'forward_origin' in reply_msg:
+        fwd_orig_id = reply_msg['forward_origin'].get('message_id')
+
+    if fwd_orig_id:
+        str_id = str(fwd_orig_id)
+        for a in apps:
+            if str(a.get('id')) == str_id:
+                return a
+        # In channel: Info post (ID) -> APK file (ID+1)
+        try:
+            int_id = int(str_id)
+            for a in apps:
+                if str(a.get('id')) in (str(int_id + 1), str(int_id - 1)):
+                    return a
+        except Exception:
+            pass
+        if current_app and str(current_app.get('id')) == str_id:
+            return current_app
+
+    # Method 2: Match by Document (file_id or file_name)
+    if 'document' in reply_msg:
+        doc = reply_msg['document']
+        doc_file_id = doc.get('file_id')
+        doc_name = doc.get('file_name', '').strip().lower()
+        if doc_file_id:
+            for a in apps:
+                if a.get('file_id') == doc_file_id:
+                    return a
+            if current_app and current_app.get('file_id') == doc_file_id:
+                return current_app
+        if doc_name:
+            for a in apps:
+                if a.get('file_name', '').strip().lower() == doc_name:
+                    return a
+            if current_app and current_app.get('file_name', '').strip().lower() == doc_name:
+                return current_app
+
+    # Method 3: Match by Caption / Text (Info post)
+    text = reply_msg.get('caption', reply_msg.get('text', ''))
+    if '🧩 تطبيق' in text or '🎮 لعبة' in text:
+        info = extract_text_info(text)
+        name = info.get('name', '').strip().lower()
+        if name:
+            for a in apps:
+                if a.get('name', '').strip().lower() == name:
+                    return a
+            if current_app and current_app.get('name', '').strip().lower() == name:
+                return current_app
+
+    return None
+
 def main():
     if not BOT_TOKEN:
         print("Error: TELEGRAM_BOT_TOKEN environment variable not set.")
@@ -159,13 +255,14 @@ def main():
     import json
     highest_offset = offset
     added_count = 0
+    media_group_to_app = {}
     
     while True:
         print(f"Fetching updates from offset: {offset}")
         params = {
             'offset': offset, 
             'timeout': 10,
-            'allowed_updates': json.dumps(['message', 'channel_post', 'edited_channel_post'])
+            'allowed_updates': json.dumps(['message', 'edited_message', 'channel_post', 'edited_channel_post'])
         }
         response = requests.get(url, params=params)
         if response.status_code != 200:
@@ -183,38 +280,40 @@ def main():
             update_id = update['update_id']
             highest_offset = max(highest_offset, update_id + 1)
             
-            is_edit = 'edited_channel_post' in update
-            message = update.get('channel_post') or update.get('edited_channel_post') or update.get('message')
+            is_edit = 'edited_channel_post' in update or 'edited_message' in update
+            message = update.get('channel_post') or update.get('edited_channel_post') or update.get('message') or update.get('edited_message')
             if not message:
                 continue
                 
-            # Check for Message 1: Photo + Caption (App Info)
-            if 'photo' in message and ('caption' in message or 'text' in message):
-                text = message.get('caption', message.get('text', ''))
-                if '🧩 تطبيق' in text or '🎮 لعبة' in text:
-                    extracted_info = extract_text_info(text)
-                    
-                    photo_array = message['photo']
-                    thumb_index = 1 if len(photo_array) > 1 else 0
-                    extracted_info['icon_id'] = photo_array[thumb_index]['file_id']
-                    
-                    if is_edit:
-                        # Update existing app in database by name (case-insensitive)
-                        existing_app = next((a for a in apps if a.get('name', '').strip().lower() == extracted_info['name'].strip().lower()), None)
-                        if existing_app:
-                            existing_app.update(extracted_info)
-                            added_count += 1
-                            print(f"Updated info for existing app: {existing_app['name']}")
-                        elif current_app and current_app.get('name', '').strip().lower() == extracted_info['name'].strip().lower():
-                            current_app.update(extracted_info)
-                            save_pending(current_app)
-                    else:
-                        current_app = extracted_info
+            # Check for Message 1: Photo + Caption (App Info Post from Channel)
+            text = message.get('caption', message.get('text', ''))
+            if 'photo' in message and ('🧩 تطبيق' in text or '🎮 لعبة' in text):
+                extracted_info = extract_text_info(text)
+                
+                photo_array = message['photo']
+                thumb_index = 1 if len(photo_array) > 1 else 0
+                extracted_info['icon_id'] = photo_array[thumb_index]['file_id']
+                
+                if is_edit:
+                    # Update existing app in database by name (case-insensitive)
+                    existing_app = next((a for a in apps if a.get('name', '').strip().lower() == extracted_info['name'].strip().lower()), None)
+                    if existing_app:
+                        existing_app.update(extracted_info)
+                        added_count += 1
+                        print(f"Updated info for existing app: {existing_app['name']}")
+                    elif current_app and current_app.get('name', '').strip().lower() == extracted_info['name'].strip().lower():
+                        current_app.update(extracted_info)
                         save_pending(current_app)
-                        print(f"Found info for: {current_app['name']}, waiting for APK...")
-                    
-            # Check for Message 2: Document (APK)
-            elif 'document' in message:
+                else:
+                    # Preserve any screenshots already attached
+                    if current_app and 'screenshots' in current_app:
+                        extracted_info['screenshots'] = current_app['screenshots']
+                    current_app = extracted_info
+                    save_pending(current_app)
+                    print(f"Found info for: {current_app['name']}, waiting for APK...")
+                
+            # Check for Message 2: Document (APK file from Channel)
+            elif 'document' in message and not (message.get('reply_to_message') and message['document'].get('mime_type', '').startswith('image/')):
                 if is_edit:
                     # Update existing APK if the file was replaced
                     app_to_update = next((a for a in apps if a.get('id') == str(message['message_id'])), None)
@@ -248,6 +347,39 @@ def main():
                     # Reset pending state
                     current_app = {}
                     save_pending(current_app)
+
+            # Check for Message 3: Screenshot posted as Reply in Linked Group by Admins
+            elif 'photo' in message or ('document' in message and message.get('document', {}).get('mime_type', '').startswith('image/')):
+                reply_msg = message.get('reply_to_message')
+                media_group_id = message.get('media_group_id')
+                
+                if (reply_msg or (media_group_id and media_group_id in media_group_to_app)) and is_admin_sender(message):
+                    target_app = None
+                    if reply_msg:
+                        target_app = find_target_app(reply_msg, apps, current_app)
+                        if target_app and media_group_id:
+                            media_group_to_app[media_group_id] = target_app
+                    elif media_group_id and media_group_id in media_group_to_app:
+                        target_app = media_group_to_app[media_group_id]
+                        
+                    if target_app:
+                        # Extract photo file_id (highest resolution)
+                        if 'photo' in message and message['photo']:
+                            photo_id = message['photo'][-1]['file_id']
+                        elif 'document' in message:
+                            photo_id = message['document']['file_id']
+                        else:
+                            photo_id = None
+                            
+                        if photo_id:
+                            if 'screenshots' not in target_app:
+                                target_app['screenshots'] = []
+                            if photo_id not in target_app['screenshots']:
+                                target_app['screenshots'].append(photo_id)
+                                added_count += 1
+                                if current_app and target_app == current_app:
+                                    save_pending(current_app)
+                                print(f"Added screenshot for app '{target_app.get('name')}': {photo_id[:16]}...")
     
         offset = highest_offset
         save_offset(highest_offset)
