@@ -1184,6 +1184,14 @@ function formatBytes(bytes) {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${['B', 'KB', 'MB', 'GB'][i]}`;
 }
 
+function getScreenshotUrl(photoRef) {
+    if (!photoRef) return '';
+    if (photoRef.startsWith('assets/') || photoRef.startsWith('/') || photoRef.startsWith('http://') || photoRef.startsWith('https://')) {
+        return photoRef;
+    }
+    return `${WORKER_URL}/?id=${photoRef}&action=image`;
+}
+
 function openAppDetails(app, pushUrl = true) {
     window.currentModalApp = app;
     if (pushUrl) {
@@ -1267,14 +1275,14 @@ function openAppDetails(app, pushUrl = true) {
         const joinBtn = document.createElement('a');
         joinBtn.id = 'modal-join-btn';
         joinBtn.href = 'https://t.me/+ij7-LS669ahhMDFk';
-        joinBtn.className = 'download-btn btn-large';
+        joinBtn.className = 'download-btn join-channel-btn';
         joinBtn.target = '_blank';
         joinBtn.rel = 'noopener noreferrer';
-        joinBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> ${currentLanguage === 'ar' ? 'انضمام للقناة' : 'Join Channel'}`;
+        joinBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> <span>${currentLanguage === 'ar' ? 'انضمام للقناة' : 'Join Channel'}</span>`;
         
         downloadGroup.style.display = 'flex';
-        downloadGroup.style.gap = '0.5rem';
-        downloadBtn.style.flex = '2';
+        downloadGroup.style.gap = '0.6rem';
+        downloadBtn.style.flex = '1';
         joinBtn.style.flex = '1';
         
         downloadGroup.appendChild(joinBtn);
@@ -1305,13 +1313,7 @@ function openAppDetails(app, pushUrl = true) {
     const galleryTitleText = document.getElementById('gallery-title-text');
     if (galleryTitleText) galleryTitleText.textContent = strings[currentLanguage].galleryTitle;
 
-function getScreenshotUrl(photoRef) {
-    if (!photoRef) return '';
-    if (photoRef.startsWith('assets/') || photoRef.startsWith('/') || photoRef.startsWith('http://') || photoRef.startsWith('https://')) {
-        return photoRef;
-    }
-    return `${WORKER_URL}/?id=${photoRef}&action=image`;
-}
+// getScreenshotUrl moved to global scope
 
     if (app.screenshots && Array.isArray(app.screenshots) && app.screenshots.length > 0) {
         if (galleryTrack) {
@@ -1334,7 +1336,8 @@ function getScreenshotUrl(photoRef) {
                 };
 
                 item.appendChild(img);
-                item.addEventListener('click', () => {
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     openScreenshotLightbox(app.screenshots, idx, app.name);
                 });
                 item.addEventListener('keydown', (e) => {
@@ -1446,6 +1449,26 @@ function initScreenshotLightboxEvents() {
                 closeScreenshotLightbox();
             }
         });
+
+        // Touch swipe support on mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        lightbox.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        lightbox.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            const diff = touchEndX - touchStartX;
+            if (Math.abs(diff) > 40) {
+                if (diff > 0) {
+                    if (currentLanguage === 'ar') showNextScreenshot();
+                    else showPrevScreenshot();
+                } else {
+                    if (currentLanguage === 'ar') showPrevScreenshot();
+                    else showNextScreenshot();
+                }
+            }
+        }, { passive: true });
     }
     window.addEventListener('keydown', (e) => {
         if (!lightbox || !lightbox.classList.contains('active')) return;

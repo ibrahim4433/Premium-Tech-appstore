@@ -694,14 +694,32 @@ body {
 
 .modal-actions { margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 2rem; }
 .download-btn {
-    display: flex; align-items: center; justify-content: center; gap: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     background: linear-gradient(135deg, #00a8e8, #035b8f);
-    color: white; padding: 1rem; border-radius: 20px;
-    text-decoration: none; font-weight: 800; font-size: 1.2rem;
-    box-shadow: 0 4px 15px rgba(0, 168, 232, 0.3);
+    color: white;
+    padding: 0.65rem 1rem;
+    min-height: 44px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 12px rgba(0, 168, 232, 0.25);
     border: none;
     cursor: pointer;
     font-family: inherit;
+    white-space: nowrap;
+    transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 168, 232, 0.4);
+}
+#modal-join-btn,
+.join-channel-btn {
+    background: linear-gradient(135deg, #0288d1, #0077b6);
 }
 
 .home-actions-container {
@@ -727,7 +745,11 @@ body {
 @media (max-width: 480px) {
     .apps-grid { grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 1rem; }
     .card-title { font-size: 0.95rem; }
+    .modal { padding: 0.5rem; }
+    .modal-content { padding: 1.25rem 1rem; border-radius: 20px; }
     .modal-header { flex-direction: column; align-items: center; text-align: center; }
+    .download-btn { font-size: 0.9rem; padding: 0.6rem 0.75rem; min-height: 42px; }
+    .modal-tool-btn { font-size: 0.85rem; padding: 0.55rem 0.7rem; min-height: 38px; }
     .nav-label { font-size: 0.65rem; }
     
     .action-btn {
@@ -1430,19 +1452,19 @@ html[lang="ar"] .chips-btn-left {
 .modal-actions {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
+    gap: 0.65rem;
+    margin-bottom: 1.25rem;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
 }
 .modal-download-group {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.6rem;
     width: 100%;
 }
 .modal-tools-group {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.6rem;
     width: 100%;
 }
 .modal-tool-btn {
@@ -1450,11 +1472,12 @@ html[lang="ar"] .chips-btn-left {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    border-radius: 14px;
+    gap: 0.45rem;
+    padding: 0.6rem 0.85rem;
+    min-height: 40px;
+    border-radius: 12px;
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     border: 1px solid var(--border-color);
     background: rgba(255, 255, 255, 0.06);
     color: var(--text-primary);
