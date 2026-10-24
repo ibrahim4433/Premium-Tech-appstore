@@ -1,10 +1,11 @@
-const CACHE_NAME = 'premium-techs-cache-v18';
+const CACHE_NAME = 'premium-techs-cache-v19';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './css/style.css',
   './js/app.js',
   './manifest.json',
+  './favicon.ico',
   './assets/logo-192.png',
   './assets/logo-512.png'
 ];
