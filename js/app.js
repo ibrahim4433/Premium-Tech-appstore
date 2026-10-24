@@ -1,7 +1,7 @@
 // ==========================================
 // STORE CONFIGURATION
 // ==========================================
-const WORKER_URL = "https://appstore-proxy.4445622.workers.dev"; // The worker URL from user
+const WORKER_URL = "https://appstore-proxy.iateam.workers.dev"; // The worker URL from user
 
 let storeBanners = [];
 // ==========================================
@@ -234,7 +234,7 @@ function setLanguage(lang) {
     currentLanguage = lang;
     document.documentElement.setAttribute('lang', lang);
     document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-    
+
     // Update Text UI
     searchInput.placeholder = strings[lang].search;
     document.getElementById('loading-text').textContent = strings[lang].loading;
@@ -263,27 +263,27 @@ function setLanguage(lang) {
     if (btnFilterText) btnFilterText.textContent = lang === 'ar' ? 'تصفية وترتيب' : 'Filter & Sort';
 
     ['label-sort', 'opt-sort-new', 'opt-sort-old', 'opt-sort-asc', 'opt-sort-desc', 'opt-size-asc', 'opt-size-desc',
-     'label-size', 'opt-size-all', 'opt-size-small', 'opt-size-large', 'label-category', 'opt-cat-all'].forEach(id => {
-         const el = document.getElementById(id);
-         if (el) {
-             const key = id.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
-             el.textContent = strings[lang][key];
-         }
-     });
+        'label-size', 'opt-size-all', 'opt-size-small', 'opt-size-large', 'label-category', 'opt-cat-all'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                const key = id.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+                el.textContent = strings[lang][key];
+            }
+        });
 
     // Update PWA UI
     const pwaBtnText = document.getElementById('pwa-btn-text');
     if (pwaBtnText) pwaBtnText.textContent = strings[lang].pwaInstallBtn;
-    
+
     const staticInstallText = document.getElementById('static-install-text');
     if (staticInstallText) staticInstallText.textContent = strings[lang].pwaInstallBtn;
-    
+
     const pwaModalTitle = document.getElementById('install-modal-title');
     if (pwaModalTitle) pwaModalTitle.textContent = strings[lang].pwaModalTitle;
-    
+
     const pwaModalDesc = document.getElementById('install-modal-desc');
     if (pwaModalDesc) pwaModalDesc.textContent = strings[lang].pwaModalDesc;
-    
+
     const pwaConfirmText = document.getElementById('confirm-install-text');
     if (pwaConfirmText) pwaConfirmText.textContent = strings[lang].pwaConfirmBtn;
 
@@ -437,26 +437,26 @@ function setupEventListeners() {
             let idx = sortModes.indexOf(currentSortMode);
             idx = (idx + 1) % sortModes.length;
             currentSortMode = sortModes[idx];
-            
+
             const labels = currentLanguage === 'ar' ? labelsAr : labelsEn;
             utilSort.innerHTML = `<i class="fa-solid ${icons[idx]}"></i> <span class="util-text">${labels[idx]}</span>`;
-            
+
             // Update page title based on sorting mode
             const pageTitle = document.getElementById('page-title');
             if (pageTitle) {
                 pageTitle.textContent = labels[idx];
             }
-            
+
             if (currentSortMode !== 'new') utilSort.classList.add('active');
             else utilSort.classList.remove('active');
-            
+
             const sortSelect = document.getElementById('sort-select');
             if (sortSelect) sortSelect.value = currentSortMode;
-            
+
             renderApps();
         });
     }
-    
+
     const utilGroup = document.getElementById('util-group');
     if (utilGroup) {
         utilGroup.addEventListener('click', () => {
@@ -464,14 +464,14 @@ function setupEventListeners() {
             const icons = ['fa-layer-group', 'fa-tags', 'fa-font', 'fa-calendar-day'];
             const labelsAr = ['تجميع', 'التصنيفات', 'أبجدياً', 'التاريخ'];
             const labelsEn = ['Group', 'Categories', 'Alphabetical', 'Date'];
-            
+
             let idx = groupModes.indexOf(currentGroupMode);
             idx = (idx + 1) % groupModes.length;
             currentGroupMode = groupModes[idx];
-            
+
             const labels = currentLanguage === 'ar' ? labelsAr : labelsEn;
             utilGroup.innerHTML = `<i class="fa-solid ${icons[idx]}"></i> <span class="util-text">${labels[idx]}</span>`;
-            
+
             if (currentGroupMode === 'none') {
                 utilGroup.classList.remove('active');
             } else {
@@ -488,21 +488,21 @@ function setupEventListeners() {
             const icons = ['fa-grip', 'fa-list', 'fa-square'];
             const labelsAr = ['شبكة', 'قائمة', 'صف واحد'];
             const labelsEn = ['Grid', 'List', 'Single'];
-            
+
             let idx = viewModes.indexOf(currentViewMode);
             idx = (idx + 1) % viewModes.length;
             currentViewMode = viewModes[idx];
-            
+
             const labels = currentLanguage === 'ar' ? labelsAr : labelsEn;
             utilView.innerHTML = `<i class="fa-solid ${icons[idx]}"></i> <span class="util-text">${labels[idx]}</span>`;
-            
+
             if (currentViewMode !== 'grid') utilView.classList.add('active');
             else utilView.classList.remove('active');
-            
+
             updateGridClass();
         });
     }
-    
+
     const utilSlider = document.getElementById('grid-columns-slider');
     if (utilSlider) {
         utilSlider.addEventListener('input', (e) => {
@@ -551,14 +551,14 @@ function setupEventListeners() {
             if (history.state && history.state.modalOpen) history.back();
         }
     });
-    window.addEventListener('click', (e) => { 
+    window.addEventListener('click', (e) => {
         if (e.target === modal && modal.classList.contains('active')) {
             closeScreenshotLightbox();
             modal.classList.remove('active');
             window.currentModalApp = null;
             cleanAppQueryParam();
             if (history.state && history.state.modalOpen) history.back();
-        } 
+        }
         const favModal = document.getElementById('favorites-modal');
         if (favModal && e.target === favModal && favModal.classList.contains('active')) {
             closeFavoritesModal();
@@ -608,7 +608,7 @@ function setupEventListeners() {
             const playLink = document.getElementById('req-link').value.trim();
             const notes = document.getElementById('req-notes').value.trim();
             const otherMod = document.getElementById('req-mod-other').value.trim();
-            
+
             // Gather checkboxes
             const selectedMods = [];
             document.querySelectorAll('.req-mod-cb:checked').forEach(cb => {
@@ -624,7 +624,7 @@ function setupEventListeners() {
 
             const botUrl = `https://t.me/IA_Assistantbot?text=${encodeURIComponent(message)}`;
             window.open(botUrl, '_blank');
-            
+
             // Reset and close
             requestForm.reset();
             reqModal.classList.remove('active');
@@ -641,14 +641,14 @@ function setupEventListeners() {
 function switchView(viewName) {
     if (activeView === viewName && currentSearch === '') return;
     activeView = viewName;
-    
+
     // Update active nav button
     navItems.forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll(`[data-view="${viewName}"]`).forEach(btn => btn.classList.add('active'));
 
     // Hide all pages
     Object.values(views).forEach(page => {
-        if(page) page.classList.remove('active');
+        if (page) page.classList.remove('active');
     });
 
     // Handle Search Override
@@ -656,7 +656,7 @@ function switchView(viewName) {
         currentSearch = '';
         searchInput.value = '';
     }
-    
+
     // Toggle home actions
     const homeActions = document.getElementById('home-actions');
     if (homeActions) {
@@ -723,8 +723,8 @@ async function fetchApps() {
         const response = await fetch('apps.json');
         if (!response.ok) throw new Error('Failed to load apps');
         allApps = await response.json();
-        allApps.forEach((app, idx) => { 
-            if(!app.category) app.category = 'Apps';
+        allApps.forEach((app, idx) => {
+            if (!app.category) app.category = 'Apps';
             app._index = idx; // Store original insertion order for sorting
             if (app.description) {
                 const words = app.description.trim().split(/\s+/);
@@ -758,12 +758,12 @@ async function fetchBanners() {
 
 function renderBanners() {
     bannersSection.innerHTML = '';
-    
+
     // Setup snapping physics
     bannersSection.style.scrollSnapType = 'x mandatory';
     bannersSection.style.overflowX = 'auto';
     bannersSection.style.scrollBehavior = 'smooth';
-    
+
     if (window.mainScrollTimer) clearInterval(window.mainScrollTimer);
     if (window.slideTimers) {
         window.slideTimers.forEach(t => clearInterval(t));
@@ -775,7 +775,7 @@ function renderBanners() {
         div.className = 'banner';
         div.dataset.index = index;
         div.style.scrollSnapAlign = 'center';
-        
+
         // Handle Action Click
         div.addEventListener('click', () => {
             if (!bannerConfig.action) return;
@@ -793,10 +793,10 @@ function renderBanners() {
             bannerConfig.slides.forEach((slide, sIdx) => {
                 const slideDiv = document.createElement('div');
                 slideDiv.className = `banner-slide ${sIdx === 0 ? 'active' : ''}`;
-                
+
                 const titleStr = slide.title[currentLanguage] || slide.title.en || '';
                 const subStr = slide.subtitle[currentLanguage] || slide.subtitle.en || '';
-                
+
                 slideDiv.innerHTML = `
                     <div style="background: linear-gradient(45deg, #024773, #11a6d4); width:100%; height:100%; position:absolute; top:0; left:0; z-index:-2;"></div>
                     <img src="${slide.image}" onerror="this.style.display='none'" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;" alt="Banner Image">
@@ -809,10 +809,10 @@ function renderBanners() {
                 div.appendChild(slideDiv);
             });
         }
-        
+
         bannersSection.appendChild(div);
     });
-    
+
     setupRobustBanners();
 }
 
@@ -826,7 +826,7 @@ function setupRobustBanners() {
     banners.forEach((banner) => {
         const slides = banner.querySelectorAll('.banner-slide');
         if (slides.length <= 1) return;
-        
+
         let currentSlide = 0;
         // Make sure first is active
         slides.forEach((s, i) => {
@@ -839,7 +839,7 @@ function setupRobustBanners() {
             currentSlide = (currentSlide + 1) % slides.length;
             slides[currentSlide].classList.add('active');
         }, 3000); // Crossfade every 3 seconds
-        
+
         window.slideTimers.push(timer);
     });
 
@@ -868,7 +868,7 @@ function getTagInfo(tag) {
     let icon = 'fa-tag';
     let ar = tag.replace('#', '');
     let en = tag.replace('#', '');
-    
+
     if (lower.includes('game') || lower.includes('gta') || lower.includes('psp') || lower.includes('racer')) { icon = 'fa-gamepad'; ar = 'ألعاب'; en = 'Games'; }
     else if (lower.includes('watch') || lower.includes('tv') || lower.includes('movie') || lower.includes('anime') || lower.includes('player') || lower.includes('media')) { icon = 'fa-tv'; ar = 'ميديا ومشاهدة'; en = 'Media'; }
     else if (lower.includes('tool') || lower.includes('edit') || lower.includes('manager') || lower.includes('scanner') || lower.includes('camera') || lower.includes('launcher')) { icon = 'fa-wrench'; ar = 'أدوات'; en = 'Tools'; }
@@ -885,19 +885,19 @@ function getTagInfo(tag) {
     else if (lower.includes('browser') || lower.includes('web')) { icon = 'fa-globe'; ar = 'تصفح'; en = 'Browsers'; }
     else if (lower.includes('business') || lower.includes('finance')) { icon = 'fa-briefcase'; ar = 'أعمال'; en = 'Business'; }
     else if (lower.includes('map') || lower.includes('nav')) { icon = 'fa-map-location-dot'; ar = 'خرائط'; en = 'Maps'; }
-    
+
     return { ar: ar, en: en, icon: icon };
 }
 
 function renderCategories() {
     categoriesGrid.innerHTML = '';
     const uniqueTags = new Set();
-    allApps.forEach(app => { if(app.tags) app.tags.forEach(t => uniqueTags.add(t)); });
+    allApps.forEach(app => { if (app.tags) app.tags.forEach(t => uniqueTags.add(t)); });
 
-    if(uniqueTags.size === 0) return;
-    
+    if (uniqueTags.size === 0) return;
+
     const renderedNames = new Set(); // Avoid duplicate categories with different tags but same mapped name
-    
+
     const categorySelect = document.getElementById('category-select');
     let prevSelected = '';
     if (categorySelect) {
@@ -908,25 +908,25 @@ function renderCategories() {
     uniqueTags.forEach(tag => {
         const tagData = getTagInfo(tag);
         const label = currentLanguage === 'ar' ? tagData.ar : tagData.en;
-        
+
         if (renderedNames.has(label)) return;
-        
+
         if (currentSearch && !currentSearch.startsWith('#')) {
             if (!label.toLowerCase().includes(currentSearch)) {
                 return;
             }
         }
-        
+
         renderedNames.add(label);
-        
+
         const card = document.createElement('div');
         card.className = 'category-card';
-        
+
         card.innerHTML = `
             <i class="fa-solid ${tagData.icon}"></i>
             <span>${label}</span>
         `;
-        
+
         card.onclick = () => {
             switchView('home');
             currentSearch = tag;
@@ -935,7 +935,7 @@ function renderCategories() {
             renderApps();
         };
         categoriesGrid.appendChild(card);
-        
+
         // Add to dropdown
         if (categorySelect) {
             const opt = document.createElement('option');
@@ -958,7 +958,7 @@ function renderApps() {
         gridObserver.disconnect();
         gridObserver = null;
     }
-    
+
     const selectedCat = document.getElementById('category-select') ? document.getElementById('category-select').value : 'all';
     const sizeFilter = document.getElementById('size-select') ? document.getElementById('size-select').value : 'all';
 
@@ -995,12 +995,12 @@ function renderApps() {
         // View Filtering
         if (activeView === 'apps' && app.category !== 'Apps') return false;
         if (activeView === 'games' && app.category !== 'Games') return false;
-        
+
         // Size filtering
         const isLarge = app.size > 19.5 * 1024 * 1024;
         if (sizeFilter === 'small' && isLarge) return false;
         if (sizeFilter === 'large' && !isLarge) return false;
-        
+
         // Text Search
         if (currentSearch && !currentSearch.startsWith('#')) {
             const term = currentSearch.toLowerCase();
@@ -1008,13 +1008,13 @@ function renderApps() {
         }
         return true;
     });
-    
+
     // Sort
     const sortMethod = currentSortMode;
     filteredApps.sort((a, b) => {
         const aDate = a.date ? a.date : a._index;
         const bDate = b.date ? b.date : b._index;
-        
+
         if (sortMethod === 'new') return bDate - aDate; // Newest first
         if (sortMethod === 'old') return aDate - bDate; // Oldest first
         if (sortMethod === 'name_asc') return a.name.localeCompare(b.name);
@@ -1049,7 +1049,7 @@ function renderApps() {
             } else if (currentGroupMode === 'date') {
                 if (app.date) {
                     const d = new Date(app.date * 1000);
-                    groupKey = `${d.getFullYear()}/${(d.getMonth()+1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')}`;
+                    groupKey = `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')}`;
                 } else {
                     groupKey = currentLanguage === 'ar' ? 'أقدم' : 'Older';
                 }
@@ -1057,17 +1057,17 @@ function renderApps() {
             if (!grouped[groupKey]) grouped[groupKey] = [];
             grouped[groupKey].push(app);
         });
-        
+
         let sortedKeys = Object.keys(grouped).sort();
         if (currentGroupMode === 'date') sortedKeys = sortedKeys.reverse();
-        
+
         const fragment = document.createDocumentFragment();
         sortedKeys.forEach(key => {
             const header = document.createElement('div');
             header.className = 'group-header';
             header.textContent = key;
             fragment.appendChild(header);
-            
+
             grouped[key].forEach(app => {
                 fragment.appendChild(createAppCard(app));
             });
@@ -1080,26 +1080,26 @@ function renderApps() {
 
 function renderNextBatch() {
     if (currentlyRenderedCount >= currentFilteredApps.length) return;
-    
+
     const fragment = document.createDocumentFragment();
     const nextLimit = Math.min(currentlyRenderedCount + BATCH_SIZE, currentFilteredApps.length);
-    
+
     for (let i = currentlyRenderedCount; i < nextLimit; i++) {
         fragment.appendChild(createAppCard(currentFilteredApps[i]));
     }
     currentlyRenderedCount = nextLimit;
-    
+
     const oldSentinel = document.getElementById('grid-sentinel');
     if (oldSentinel) oldSentinel.remove();
-    
+
     appsGrid.appendChild(fragment);
-    
+
     if (currentlyRenderedCount < currentFilteredApps.length) {
         const sentinel = document.createElement('div');
         sentinel.id = 'grid-sentinel';
         sentinel.style.cssText = 'grid-column: 1 / -1; height: 30px; width: 100%; pointer-events: none;';
         appsGrid.appendChild(sentinel);
-        
+
         if (!gridObserver) {
             gridObserver = new IntersectionObserver((entries) => {
                 if (entries[0].isIntersecting) {
@@ -1118,7 +1118,7 @@ function updateGridClass() {
     else {
         appsGrid.style.gridTemplateColumns = `repeat(${currentGridCols}, minmax(100px, 1fr))`;
     }
-    
+
     if (currentViewMode !== 'grid') appsGrid.style.gridTemplateColumns = '';
 }
 
@@ -1128,28 +1128,28 @@ function createAppCard(app) {
     card.onclick = () => openAppDetails(app);
 
     const isFav = isFavorite(app.id || app.name);
-    const favTitle = isFav 
+    const favTitle = isFav
         ? (currentLanguage === 'ar' ? 'إزالة من المفضلة' : 'Remove from Favorites')
         : (currentLanguage === 'ar' ? 'إضافة للمفضلة' : 'Add to Favorites');
 
-    const imgHTML = app.icon_id 
+    const imgHTML = app.icon_id
         ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="card-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'card-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
         : `<div class="card-icon fallback"><i class="fa-brands fa-android"></i></div>`;
 
     const categoryText = app._descShort || (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
-    
+
     const isLarge = app.size > 19.5 * 1024 * 1024;
-    
+
     let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
     if (app.chat_id && app.chat_id.startsWith('-100')) {
         const baseChatId = app.chat_id.substring(4);
         tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
     }
-    
-    const downloadLink = isLarge 
+
+    const downloadLink = isLarge
         ? tgLink
         : `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
-    
+
     const btnIcon = isLarge ? 'fa-paper-plane' : 'fa-download';
     const btnText = strings[currentLanguage].download;
 
@@ -1199,33 +1199,33 @@ function openAppDetails(app, pushUrl = true) {
         url.searchParams.set('app', app.name);
         history.pushState({ modalOpen: true, appName: app.name }, '', url.toString());
     }
-    
+
     document.getElementById('modal-title').textContent = app.name;
-    
+
     // Status Badges
     const badgesContainer = document.getElementById('modal-badges');
     if (badgesContainer) {
         const isLarge = app.size > 19.5 * 1024 * 1024;
         const sizeBadge = `<span class="status-badge badge-size"><i class="fa-solid fa-hard-drive"></i> ${formatBytes(app.size)}</span>`;
-        const directBadge = isLarge 
+        const directBadge = isLarge
             ? `<span class="status-badge badge-telegram"><i class="fa-brands fa-telegram"></i> ${strings[currentLanguage].badgeTelegram}</span>`
             : `<span class="status-badge badge-direct"><i class="fa-solid fa-bolt"></i> ${strings[currentLanguage].badgeDirect}</span>`;
         const typeBadge = `<span class="status-badge badge-type"><i class="fa-solid ${app.category === 'Games' ? 'fa-gamepad' : 'fa-mobile-screen'}"></i> ${app.category === 'Games' ? strings[currentLanguage].badgeTypeGame : strings[currentLanguage].badgeTypeApp}</span>`;
-        const versionBadge = app.version 
+        const versionBadge = app.version
             ? `<span class="status-badge badge-version"><i class="fa-solid fa-code-branch"></i> ${app.version.startsWith('v') ? app.version : 'v' + app.version}</span>`
             : '';
         badgesContainer.innerHTML = `${sizeBadge}${directBadge}${typeBadge}${versionBadge}`;
     }
 
     const versionText = app.version ? (currentLanguage === 'ar' ? `إصدار: ${app.version}` : `v${app.version}`) : (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
-    
+
     const catEl = document.getElementById('modal-category');
     if (catEl) catEl.innerHTML = `<span style="color: var(--accent-color); font-weight: bold;">${versionText}</span>`;
-    
+
     const sizeLabel = strings[currentLanguage].badgeSize;
     const sizeEl = document.getElementById('modal-size');
     if (sizeEl) sizeEl.textContent = sizeLabel + formatBytes(app.size);
-    
+
     let dateString = '';
     if (app.date) {
         const d = new Date(app.date * 1000);
@@ -1240,37 +1240,37 @@ function openAppDetails(app, pushUrl = true) {
     const dateLabel = currentLanguage === 'ar' ? 'تاريخ النشر: ' : 'Posted: ';
     const dateEl = document.getElementById('modal-date');
     if (dateEl) dateEl.textContent = dateLabel + dateString;
-    
+
     // Add Note for large files at the bottom
     const isLarge = app.size > 19.5 * 1024 * 1024;
     let descriptionHtml = app.description.replace(/\n/g, '<br>');
-    
+
     if (isLarge) {
-        const noteText = currentLanguage === 'ar' 
-            ? 'ملاحظة: يجب الانضمام للقناة الخاصة أولاً لتتمكن من تحميل هذا الملف الكبير عبر تليجرام.' 
+        const noteText = currentLanguage === 'ar'
+            ? 'ملاحظة: يجب الانضمام للقناة الخاصة أولاً لتتمكن من تحميل هذا الملف الكبير عبر تليجرام.'
             : 'Note: You must join the private channel first to download this large file via Telegram.';
         descriptionHtml += `<div style="background: rgba(0, 168, 232, 0.1); border-right: 4px solid var(--accent-color); padding: 1rem; margin-top: 1.5rem; border-radius: 4px; font-weight: 600;">${noteText}</div>`;
     }
-    
+
     document.getElementById('modal-description').innerHTML = descriptionHtml;
-    
+
     const downloadBtn = document.getElementById('modal-download');
     const downloadGroup = document.querySelector('.modal-download-group') || document.querySelector('.modal-actions');
-    
+
     // Remove existing join button if it exists
     const existingJoinBtn = document.getElementById('modal-join-btn');
     if (existingJoinBtn) existingJoinBtn.remove();
-    
+
     if (isLarge) {
         let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
         if (app.chat_id && app.chat_id.startsWith('-100')) {
             const baseChatId = app.chat_id.substring(4);
             tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
         }
-        
+
         downloadBtn.href = tgLink;
         downloadBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span id="download-text">${strings[currentLanguage].download}</span>`;
-        
+
         // Add join button
         const joinBtn = document.createElement('a');
         joinBtn.id = 'modal-join-btn';
@@ -1279,12 +1279,12 @@ function openAppDetails(app, pushUrl = true) {
         joinBtn.target = '_blank';
         joinBtn.rel = 'noopener noreferrer';
         joinBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> <span>${currentLanguage === 'ar' ? 'انضمام للقناة' : 'Join Channel'}</span>`;
-        
+
         downloadGroup.style.display = 'flex';
         downloadGroup.style.gap = '0.6rem';
         downloadBtn.style.flex = '1';
         joinBtn.style.flex = '1';
-        
+
         downloadGroup.appendChild(joinBtn);
     } else {
         downloadBtn.href = `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
@@ -1294,7 +1294,7 @@ function openAppDetails(app, pushUrl = true) {
 
     // Modal Tools: Favorite & Share Buttons
     updateModalFavBtn(isFavorite(app.id || app.name));
-    
+
     const shareTextEl = document.getElementById('modal-share-text');
     if (shareTextEl) shareTextEl.textContent = strings[currentLanguage].shareText;
 
@@ -1313,7 +1313,7 @@ function openAppDetails(app, pushUrl = true) {
     const galleryTitleText = document.getElementById('gallery-title-text');
     if (galleryTitleText) galleryTitleText.textContent = strings[currentLanguage].galleryTitle;
 
-// getScreenshotUrl moved to global scope
+    // getScreenshotUrl moved to global scope
 
     if (app.screenshots && Array.isArray(app.screenshots) && app.screenshots.length > 0) {
         if (galleryTrack) {
@@ -1554,7 +1554,7 @@ function toggleFavorite(app, targetBtn = null) {
     // Update all card buttons for this app
     document.querySelectorAll(`.card-fav-btn[data-id="${appId}"]`).forEach(btn => {
         btn.classList.toggle('active', isAdded);
-        btn.title = isAdded 
+        btn.title = isAdded
             ? (currentLanguage === 'ar' ? 'إزالة من المفضلة' : 'Remove from Favorites')
             : (currentLanguage === 'ar' ? 'إضافة للمفضلة' : 'Add to Favorites');
         const icon = btn.querySelector('i');
@@ -1639,8 +1639,8 @@ function closeFavoritesModal() {
     if (clearBtn && clearBtn.classList.contains('confirming')) {
         clearTimeout(clearConfirmTimer);
         clearBtn.classList.remove('confirming');
-        const normalText = (strings[currentLanguage] && strings[currentLanguage].clearAll) 
-            ? strings[currentLanguage].clearAll 
+        const normalText = (strings[currentLanguage] && strings[currentLanguage].clearAll)
+            ? strings[currentLanguage].clearAll
             : (currentLanguage === 'ar' ? 'مسح الكل' : 'Clear All');
         clearBtn.innerHTML = `<i class="fa-solid fa-trash-can"></i> <span id="clear-favs-text">${normalText}</span>`;
     }
@@ -1676,8 +1676,8 @@ function clearAllFavorites(e = null) {
             updateModalFavBtn(false);
         }
 
-        const clearedMsg = (strings[currentLanguage] && strings[currentLanguage].allFavsCleared) 
-            ? strings[currentLanguage].allFavsCleared 
+        const clearedMsg = (strings[currentLanguage] && strings[currentLanguage].allFavsCleared)
+            ? strings[currentLanguage].allFavsCleared
             : (currentLanguage === 'ar' ? 'تم مسح قائمة المفضلة بنجاح' : 'Favorites cleared successfully');
         showToast(clearedMsg, 'info', 'fa-trash-can');
         return;
@@ -1692,8 +1692,8 @@ function clearAllFavorites(e = null) {
     clearConfirmTimer = setTimeout(() => {
         if (btn && btn.classList.contains('confirming')) {
             btn.classList.remove('confirming');
-            const normalText = (strings[currentLanguage] && strings[currentLanguage].clearAll) 
-                ? strings[currentLanguage].clearAll 
+            const normalText = (strings[currentLanguage] && strings[currentLanguage].clearAll)
+                ? strings[currentLanguage].clearAll
                 : (currentLanguage === 'ar' ? 'مسح الكل' : 'Clear All');
             btn.innerHTML = `<i class="fa-solid fa-trash-can"></i> <span id="clear-favs-text">${normalText}</span>`;
         }
@@ -1743,14 +1743,14 @@ function renderFavoritesList() {
             const baseChatId = app.chat_id.substring(4);
             tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
         }
-        const downloadLink = isLarge 
-            ? tgLink 
+        const downloadLink = isLarge
+            ? tgLink
             : `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
 
         const card = document.createElement('div');
         card.className = 'fav-item-card';
 
-        const imgHTML = app.icon_id 
+        const imgHTML = app.icon_id
             ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="fav-item-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'fav-item-icon fallback\\' style=\\'display:flex;align-items:center;justify-content:center;color:var(--accent-color);\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
             : `<div class="fav-item-icon fallback" style="display:flex;align-items:center;justify-content:center;color:var(--accent-color);"><i class="fa-brands fa-android"></i></div>`;
 
@@ -1833,10 +1833,10 @@ function appMatchesCategory(app, catId) {
     switch (catId) {
         case 'islamic':
             return hasAnyTag(['islam', 'quran', 'دين', 'ديني', 'قران', 'اذكار', 'أسلامي', 'religion']) ||
-                   name.includes('مصحف') || name.includes('قرآن') || name.includes('قران') ||
-                   name.includes('أذكار') || name.includes('اذكار') || name.includes('صلات') ||
-                   name.includes('prayer') || name.includes('quran') || name.includes('islam') ||
-                   name.includes('tarteel') || name.includes('khatmah') || name.includes('muslim');
+                name.includes('مصحف') || name.includes('قرآن') || name.includes('قران') ||
+                name.includes('أذكار') || name.includes('اذكار') || name.includes('صلات') ||
+                name.includes('prayer') || name.includes('quran') || name.includes('islam') ||
+                name.includes('tarteel') || name.includes('khatmah') || name.includes('muslim');
 
         case 'games':
             return category === 'Games' || hasAnyTag(['game', 'gta', 'psp', 'racer']);
@@ -2089,7 +2089,7 @@ function checkDeepLink() {
     if (!appParam || allApps.length === 0) return;
 
     const query = decodeURIComponent(appParam).trim().toLowerCase();
-    const target = allApps.find(a => 
+    const target = allApps.find(a =>
         a.name.toLowerCase() === query ||
         a.name.toLowerCase().replace(/\s+/g, '') === query.replace(/\s+/g, '') ||
         String(a.id) === query
@@ -2150,7 +2150,7 @@ const confirmInstallBtn = document.getElementById('confirm-install-btn');
 // If the event fired before this script loaded, show the button immediately
 if (window.deferredPrompt && installBtn) {
     installBtn.style.display = 'flex';
-    
+
     // Auto-show popup on big screens if not dismissed before
     if (window.innerWidth >= 768 && !localStorage.getItem('pwa-popup-dismissed')) {
         setTimeout(() => {
@@ -2196,8 +2196,8 @@ if (confirmInstallBtn) {
             if (installBtn) installBtn.style.display = 'none';
             if (staticInstallBtn) staticInstallBtn.style.display = 'none';
         } else {
-            alert(document.documentElement.lang === 'ar' 
-                ? "لا يمكن تثبيت التطبيق حالياً. قد يكون مثبتاً بالفعل، أو أن المتصفح لا يدعم هذه الميزة (تأكد من فتح الرابط الرسمي)." 
+            alert(document.documentElement.lang === 'ar'
+                ? "لا يمكن تثبيت التطبيق حالياً. قد يكون مثبتاً بالفعل، أو أن المتصفح لا يدعم هذه الميزة (تأكد من فتح الرابط الرسمي)."
                 : "Cannot install app right now. It might already be installed, or your browser doesn't support it (make sure you are on the live HTTPS link).");
         }
     });
