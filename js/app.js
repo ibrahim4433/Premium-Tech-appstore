@@ -219,6 +219,10 @@ function initTheme() {
 function updateThemeIcon(theme) {
     const icon = themeToggle.querySelector('i');
     icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta) {
+        themeColorMeta.setAttribute('content', theme === 'dark' ? '#011b33' : '#e0f7fa');
+    }
 }
 
 function initLanguage() {
@@ -668,6 +672,9 @@ function switchView(viewName) {
     if (chipsWrapper) {
         if (viewName === 'games' || viewName === 'categories') {
             chipsWrapper.style.display = 'none';
+            if (viewName === 'games') {
+                activeCategoryChipId = 'all';
+            }
         } else {
             chipsWrapper.style.display = 'flex';
             if (activeCategoryChipId === 'games' && viewName === 'apps') {
@@ -967,8 +974,8 @@ function renderApps() {
                 }
             }
             if (!hasTag) return false;
-        } else if (activeCategoryChipId && activeCategoryChipId !== 'all') {
-            // Header Category Chip Filter
+        } else if (activeView !== 'games' && activeCategoryChipId && activeCategoryChipId !== 'all') {
+            // Header Category Chip Filter (does not affect the Games tab)
             if (!appMatchesCategory(app, activeCategoryChipId)) return false;
         } else if (currentSearch.startsWith('#')) {
             // Handle explicit Tag filtering from Category click

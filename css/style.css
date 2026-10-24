@@ -1,4 +1,6 @@
 :root[data-theme="dark"] {
+    color-scheme: dark;
+    background-color: #011b33;
     --bg-primary: rgba(1, 27, 51, 0.7);
     --bg-secondary: rgba(2, 71, 115, 0.5);
     --bg-tertiary: rgba(17, 166, 212, 0.15);
@@ -14,6 +16,8 @@
 }
 
 :root[data-theme="light"] {
+    color-scheme: light;
+    background-color: #e0f7fa;
     --bg-primary: rgba(255, 255, 255, 0.85);
     --bg-secondary: rgba(230, 248, 255, 0.7);
     --bg-tertiary: rgba(17, 166, 212, 0.15);
@@ -66,9 +70,27 @@ button, a, input, select, textarea,
     transform: scale(0.98);
 }
 
-body {
+html {
+    background-color: #011b33;
     background: linear-gradient(135deg, #011b33 0%, #024773 50%, #00a8e8 100%);
     background-attachment: fixed;
+    background-size: cover;
+    min-height: 100%;
+}
+
+:root[data-theme="light"] html,
+html[data-theme="light"] {
+    background-color: #e0f7fa;
+    background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #4dd0e1 100%);
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+body {
+    background-color: #011b33;
+    background: linear-gradient(135deg, #011b33 0%, #024773 50%, #00a8e8 100%);
+    background-attachment: fixed;
+    background-size: cover;
     color: var(--text-primary);
     font-family: 'Cairo', 'Inter', system-ui, sans-serif;
     min-height: 100vh;
@@ -77,7 +99,10 @@ body {
 }
 
 :root[data-theme="light"] body {
+    background-color: #e0f7fa;
     background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #4dd0e1 100%);
+    background-attachment: fixed;
+    background-size: cover;
 }
 
 /* Floating Geometric Shapes */
@@ -288,8 +313,8 @@ body {
         flex-wrap: nowrap;
         gap: 1.5rem;
     }
-    .nav-brand { order: 1; margin-left: auto; margin-right: -0.5rem; }
-    :root[dir="ltr"] .nav-brand { margin-left: -0.5rem; margin-right: auto; }
+    .nav-brand { order: 1; margin-left: auto; margin-right: 0; }
+    :root[dir="ltr"] .nav-brand { margin-left: -1.2rem; margin-right: auto; }
     
     .desktop-tabs-wrapper {
         order: 2;
@@ -714,9 +739,9 @@ body {
     .action-btn i { font-size: 0.75rem !important; }
     
     /* Pull logo strictly to the corner in small screens */
-    .top-header { padding: 0.5rem 0.2rem; }
-    .nav-brand { margin-right:-6.5rem ; margin-left: 0; }
-    :root[dir="ltr"] .nav-brand { margin-left: -0.5rem; margin-right: 0; }
+    .top-header { padding: 0.5rem 0.5rem; }
+    .nav-brand { margin-right: 0.2rem; margin-left: 0; }
+    :root[dir="ltr"] .nav-brand { margin-left: -0.8rem; margin-right: 0; }
 }
 
 /* Floating Background Animations */
