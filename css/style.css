@@ -642,7 +642,7 @@ body {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: rgba(0, 0, 0, 0.6);
-    z-index: 1000;
+    z-index: 10000;
     align-items: center;
     justify-content: center;
     padding: 1rem;
@@ -920,11 +920,20 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    z-index: 1000;
+    z-index: 850;
     transition: all 0.3s ease;
     animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 :root[dir="rtl"] .pwa-floating-btn { right: auto; left: 20px; }
+
+/* Hide floating install button when any modal or lightbox sub-window is active */
+body:has(.modal.active) .pwa-floating-btn,
+body:has(.gallery-lightbox.active) .pwa-floating-btn {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: scale(0.6) !important;
+}
 .pwa-floating-btn:hover {
     transform: scale(1.05);
     background: #0186b8;

@@ -39,13 +39,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="css/style.css?v=17" as="style">
-    <link rel="preload" href="js/app.js?v=17" as="script">
+    <link rel="preload" href="css/style.css?v=18" as="style">
+    <link rel="preload" href="js/app.js?v=18" as="script">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" as="style">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=17">
+    <link rel="stylesheet" href="css/style.css?v=18">
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- PWA Manifest -->
@@ -1613,6 +1613,12 @@
         </button>
     </nav>
 
+    <!-- Install Floating Button -->
+    <button id="pwa-install-btn" class="pwa-floating-btn" style="display: none;" title="تثبيت المتجر">
+        <i class="fa-solid fa-download"></i>
+        <span class="pwa-btn-text" id="pwa-btn-text">تثبيت المتجر</span>
+    </button>
+
     <!-- App Details Modal -->
     <div id="app-modal" class="modal">
         <div class="modal-content">
@@ -1693,11 +1699,6 @@
         </div>
     </div>
 
-    <!-- Install Floating Button -->
-    <button id="pwa-install-btn" class="pwa-floating-btn" style="display: none;" title="تثبيت المتجر">
-        <i class="fa-solid fa-download"></i>
-        <span class="pwa-btn-text" id="pwa-btn-text">تثبيت المتجر</span>
-    </button>
 
     <!-- Install Instruction Modal -->
     <div id="install-modal" class="modal">
@@ -1774,7 +1775,7 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <script src="js/app.js?v=17"></script>
+    <script src="js/app.js?v=18"></script>
     <!-- Register Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {
