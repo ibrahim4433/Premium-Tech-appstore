@@ -87,10 +87,7 @@ html[data-theme="light"] {
 }
 
 body {
-    background-color: #011b33;
-    background: linear-gradient(135deg, #011b33 0%, #024773 50%, #00a8e8 100%);
-    background-attachment: fixed;
-    background-size: cover;
+    background: transparent;
     color: var(--text-primary);
     font-family: 'Cairo', 'Inter', system-ui, sans-serif;
     min-height: 100vh;
@@ -99,17 +96,14 @@ body {
 }
 
 :root[data-theme="light"] body {
-    background-color: #e0f7fa;
-    background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #4dd0e1 100%);
-    background-attachment: fixed;
-    background-size: cover;
+    background: transparent;
 }
 
 /* Floating Geometric Shapes */
 .bg-shapes {
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
-    z-index: -1;
+    z-index: 0;
     overflow: hidden;
     pointer-events: none;
 }
@@ -261,6 +255,9 @@ body {
 :root[dir="rtl"] .search-icon { left: auto; right: 1rem; }
 
 /* Desktop Tabs */
+.desktop-tabs-wrapper {
+    display: none;
+}
 .desktop-tabs {
     display: none; /* hidden on mobile */
     gap: 0.5rem;
@@ -314,7 +311,7 @@ body {
         gap: 1.5rem;
     }
     .nav-brand { order: 1; margin-left: auto; margin-right: 0; }
-    :root[dir="ltr"] .nav-brand { margin-left: -1.2rem; margin-right: auto; }
+    :root[dir="ltr"] .nav-brand { margin-left: 0; margin-right: auto; }
     
     .desktop-tabs-wrapper {
         order: 2;
@@ -348,6 +345,8 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 1.5rem 1rem;
+    position: relative;
+    z-index: 1;
 }
 .page { display: none; animation: fadeIn 0.3s ease; }
 .page.active { display: block; }
@@ -738,10 +737,14 @@ body {
     }
     .action-btn i { font-size: 0.75rem !important; }
     
-    /* Pull logo strictly to the corner in small screens */
-    .top-header { padding: 0.5rem 0.5rem; }
-    .nav-brand { margin-right: 0.2rem; margin-left: 0; }
-    :root[dir="ltr"] .nav-brand { margin-left: -0.8rem; margin-right: 0; }
+    /* Header alignment in small screens: logo close to corner with clean margin */
+    .top-header { padding: 0.5rem 0.65rem; }
+    .brand-logo { width: 40px; height: 40px; }
+    .brand-text { font-size: 1.25rem; }
+    .nav-brand { margin: 0; gap: 0.5rem; }
+    :root[dir="ltr"] .nav-brand { margin: 0; }
+    .icon-btn { width: 36px; height: 36px; font-size: 1rem; }
+    .nav-actions { gap: 0.35rem; }
 }
 
 /* Floating Background Animations */
@@ -752,7 +755,7 @@ body {
     width: 100vw;
     height: 100vh;
     pointer-events: none;
-    z-index: -1;
+    z-index: 0;
     overflow: hidden;
 }
 

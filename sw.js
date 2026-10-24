@@ -1,4 +1,4 @@
-const CACHE_NAME = 'premium-techs-cache-v15';
+const CACHE_NAME = 'premium-techs-cache-v16';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
