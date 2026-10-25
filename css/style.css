@@ -153,7 +153,7 @@ body {
 }
 
 .top-header.header-minimized {
-    padding-top: 0.35rem;
+    padding-top: 0rem;
     padding-bottom: 0.35rem;
     box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
 }
