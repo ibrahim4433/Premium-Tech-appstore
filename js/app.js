@@ -885,6 +885,9 @@ function getTagInfo(tag) {
     else if (lower.includes('browser') || lower.includes('web')) { icon = 'fa-globe'; ar = 'تصفح'; en = 'Browsers'; }
     else if (lower.includes('business') || lower.includes('finance')) { icon = 'fa-briefcase'; ar = 'أعمال'; en = 'Business'; }
     else if (lower.includes('map') || lower.includes('nav')) { icon = 'fa-map-location-dot'; ar = 'خرائط'; en = 'Maps'; }
+    else if (lower.includes('call') || lower.includes('phone') || lower.includes('contact')) { icon = 'fa-phone-volume'; ar = 'تطبيقات الاتصال'; en = 'Calling Apps'; }
+    else if (lower.includes('news') || lower.includes('أخبار')) { icon = 'fa-newspaper'; ar = 'أخبار'; en = 'News'; }
+    else if (lower.includes('shop') || lower.includes('market') || lower.includes('متجر') || lower.includes('تسوق')) { icon = 'fa-cart-shopping'; ar = 'تسوق'; en = 'Shopping'; }
 
     return { ar: ar, en: en, icon: icon };
 }
@@ -906,6 +909,10 @@ function renderCategories() {
     }
 
     uniqueTags.forEach(tag => {
+        // Skip noise or test tags
+        const cleanTag = tag.replace('#', '').trim();
+        if (cleanTag.length <= 2 || cleanTag.toLowerCase() === 'to') return;
+
         const tagData = getTagInfo(tag);
         const label = currentLanguage === 'ar' ? tagData.ar : tagData.en;
 
@@ -919,12 +926,26 @@ function renderCategories() {
 
         renderedNames.add(label);
 
+        // Count apps matching this category
+        let count = 0;
+        allApps.forEach(a => {
+            if (a.tags && a.tags.some(t => {
+                const info = getTagInfo(t);
+                return (currentLanguage === 'ar' ? info.ar : info.en) === label;
+            })) {
+                count++;
+            }
+        });
+
         const card = document.createElement('div');
         card.className = 'category-card';
 
         card.innerHTML = `
-            <i class="fa-solid ${tagData.icon}"></i>
-            <span>${label}</span>
+            <div class="cat-icon-badge">
+                <i class="fa-solid ${tagData.icon}"></i>
+            </div>
+            <span class="cat-name">${label}</span>
+            <span class="cat-count">${count} ${currentLanguage === 'ar' ? 'تطبيق' : 'Apps'}</span>
         `;
 
         card.onclick = () => {
@@ -1113,10 +1134,18 @@ function renderNextBatch() {
 
 function updateGridClass() {
     appsGrid.className = 'apps-grid';
-    if (currentViewMode === 'list') appsGrid.classList.add('view-list');
-    else if (currentViewMode === 'single') appsGrid.classList.add('view-single');
-    else {
-        appsGrid.style.gridTemplateColumns = `repeat(${currentGridCols}, minmax(100px, 1fr))`;
+    if (currentViewMode === 'list') {
+        appsGrid.classList.add('view-list');
+        appsGrid.style.gridTemplateColumns = '';
+    } else if (currentViewMode === 'single') {
+        appsGrid.classList.add('view-single');
+        appsGrid.style.gridTemplateColumns = '';
+    } else {
+        if (window.innerWidth < 768) {
+            appsGrid.style.gridTemplateColumns = '';
+        } else {
+            appsGrid.style.gridTemplateColumns = `repeat(${currentGridCols}, minmax(130px, 1fr))`;
+        }
     }
 
     if (currentViewMode !== 'grid') appsGrid.style.gridTemplateColumns = '';
@@ -1202,29 +1231,19 @@ function openAppDetails(app, pushUrl = true) {
 
     document.getElementById('modal-title').textContent = app.name;
 
-    // Status Badges
-    const badgesContainer = document.getElementById('modal-badges');
-    if (badgesContainer) {
-        const isLarge = app.size > 19.5 * 1024 * 1024;
-        const sizeBadge = `<span class="status-badge badge-size"><i class="fa-solid fa-hard-drive"></i> ${formatBytes(app.size)}</span>`;
-        const directBadge = isLarge
-            ? `<span class="status-badge badge-telegram"><i class="fa-brands fa-telegram"></i> ${strings[currentLanguage].badgeTelegram}</span>`
-            : `<span class="status-badge badge-direct"><i class="fa-solid fa-bolt"></i> ${strings[currentLanguage].badgeDirect}</span>`;
-        const typeBadge = `<span class="status-badge badge-type"><i class="fa-solid ${app.category === 'Games' ? 'fa-gamepad' : 'fa-mobile-screen'}"></i> ${app.category === 'Games' ? strings[currentLanguage].badgeTypeGame : strings[currentLanguage].badgeTypeApp}</span>`;
-        const versionBadge = app.version
-            ? `<span class="status-badge badge-version"><i class="fa-solid fa-code-branch"></i> ${app.version.startsWith('v') ? app.version : 'v' + app.version}</span>`
-            : '';
-        badgesContainer.innerHTML = `${sizeBadge}${directBadge}${typeBadge}${versionBadge}`;
-    }
-
     const versionText = app.version ? (currentLanguage === 'ar' ? `إصدار: ${app.version}` : `v${app.version}`) : (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
-
     const catEl = document.getElementById('modal-category');
-    if (catEl) catEl.innerHTML = `<span style="color: var(--accent-color); font-weight: bold;">${versionText}</span>`;
+    if (catEl) catEl.textContent = versionText;
 
-    const sizeLabel = strings[currentLanguage].badgeSize;
-    const sizeEl = document.getElementById('modal-size');
-    if (sizeEl) sizeEl.textContent = sizeLabel + formatBytes(app.size);
+    // Stat Bar (Google Play style)
+    const statVer = document.getElementById('stat-version-val');
+    if (statVer) statVer.textContent = app.version ? (app.version.startsWith('v') ? app.version : 'v' + app.version) : 'v1.0';
+
+    const statSize = document.getElementById('stat-size-val');
+    if (statSize) statSize.textContent = formatBytes(app.size);
+
+    const statType = document.getElementById('stat-type-val');
+    if (statType) statType.textContent = app.category === 'Games' ? (currentLanguage === 'ar' ? 'ألعاب' : 'Game') : (currentLanguage === 'ar' ? 'تطبيق' : 'App');
 
     let dateString = '';
     if (app.date) {
@@ -1241,6 +1260,37 @@ function openAppDetails(app, pushUrl = true) {
     const dateEl = document.getElementById('modal-date');
     if (dateEl) dateEl.textContent = dateLabel + dateString;
 
+    // Mod Features Card
+    const modCard = document.getElementById('modal-mod-card');
+    const modBadges = document.getElementById('modal-mod-badges');
+    if (modCard && modBadges) {
+        const features = [];
+        const textToScan = `${app.name} ${app.description || ''}`.toLowerCase();
+        if (textToScan.includes('premium') || textToScan.includes('بريميوم') || textToScan.includes('مدفوع')) {
+            features.push({ icon: 'fa-gem', text: currentLanguage === 'ar' ? 'مفتوح Premium' : 'Premium Unlocked' });
+        }
+        if (textToScan.includes('no ads') || textToScan.includes('بدون اعلانات') || textToScan.includes('بدون إعلانات')) {
+            features.push({ icon: 'fa-ban', text: currentLanguage === 'ar' ? 'بدون إعلانات' : 'No Ads' });
+        }
+        if (textToScan.includes('unlimited') || textToScan.includes('غير محدود') || textToScan.includes('قلوب') || textToScan.includes('أموال') || textToScan.includes('فلوس')) {
+            features.push({ icon: 'fa-infinity', text: currentLanguage === 'ar' ? 'موارد غير محدودة' : 'Unlimited Resources' });
+        }
+        if (textToScan.includes('pro') || textToScan.includes('برو')) {
+            features.push({ icon: 'fa-shield-halved', text: currentLanguage === 'ar' ? 'ميزات Pro' : 'Pro Unlocked' });
+        }
+
+        if (features.length > 0) {
+            modBadges.innerHTML = features.map(f => `
+                <span class="mod-badge-item">
+                    <i class="fa-solid ${f.icon}"></i> ${f.text}
+                </span>
+            `).join('');
+            modCard.style.display = 'block';
+        } else {
+            modCard.style.display = 'none';
+        }
+    }
+
     // Add Note for large files at the bottom
     const isLarge = app.size > 19.5 * 1024 * 1024;
     let descriptionHtml = app.description.replace(/\n/g, '<br>');
@@ -1249,15 +1299,18 @@ function openAppDetails(app, pushUrl = true) {
         const noteText = currentLanguage === 'ar'
             ? 'ملاحظة: يجب الانضمام للقناة الخاصة أولاً لتتمكن من تحميل هذا الملف الكبير عبر تليجرام.'
             : 'Note: You must join the private channel first to download this large file via Telegram.';
-        descriptionHtml += `<div style="background: rgba(0, 168, 232, 0.1); border-right: 4px solid var(--accent-color); padding: 1rem; margin-top: 1.5rem; border-radius: 4px; font-weight: 600;">${noteText}</div>`;
+        descriptionHtml += `<div style="background: rgba(0, 168, 232, 0.08); border: 1px solid rgba(0, 168, 232, 0.25); padding: 0.9rem 1rem; margin-top: 1.25rem; border-radius: 14px; font-weight: 600; line-height: 1.6; display: flex; align-items: center; gap: 0.6rem;"><i class="fa-solid fa-circle-info" style="color: var(--accent-color); font-size: 1.2rem;"></i><span>${noteText}</span></div>`;
     }
 
     document.getElementById('modal-description').innerHTML = descriptionHtml;
 
+    // Single Dominant CTA & Secondary Tools
     const downloadBtn = document.getElementById('modal-download');
-    const downloadGroup = document.querySelector('.modal-download-group') || document.querySelector('.modal-actions');
+    const toolsGroup = document.querySelector('.modal-tools-group');
 
-    // Remove existing join button if it exists
+    const existingChannelTool = document.getElementById('modal-channel-tool');
+    if (existingChannelTool) existingChannelTool.remove();
+
     const existingJoinBtn = document.getElementById('modal-join-btn');
     if (existingJoinBtn) existingJoinBtn.remove();
 
@@ -1269,27 +1322,23 @@ function openAppDetails(app, pushUrl = true) {
         }
 
         downloadBtn.href = tgLink;
-        downloadBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span id="download-text">${strings[currentLanguage].download}</span>`;
+        downloadBtn.className = 'download-btn btn-large main-cta-btn';
+        downloadBtn.innerHTML = `<i class="fa-brands fa-telegram"></i> <span id="download-text">${currentLanguage === 'ar' ? 'تحميل عبر تليجرام' : 'Download via Telegram'} • ${formatBytes(app.size)}</span>`;
 
-        // Add join button
-        const joinBtn = document.createElement('a');
-        joinBtn.id = 'modal-join-btn';
-        joinBtn.href = 'https://t.me/+ij7-LS669ahhMDFk';
-        joinBtn.className = 'download-btn join-channel-btn';
-        joinBtn.target = '_blank';
-        joinBtn.rel = 'noopener noreferrer';
-        joinBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> <span>${currentLanguage === 'ar' ? 'انضمام للقناة' : 'Join Channel'}</span>`;
-
-        downloadGroup.style.display = 'flex';
-        downloadGroup.style.gap = '0.6rem';
-        downloadBtn.style.flex = '1';
-        joinBtn.style.flex = '1';
-
-        downloadGroup.appendChild(joinBtn);
+        if (toolsGroup) {
+            const channelTool = document.createElement('a');
+            channelTool.id = 'modal-channel-tool';
+            channelTool.href = 'https://t.me/+ij7-LS669ahhMDFk';
+            channelTool.target = '_blank';
+            channelTool.rel = 'noopener noreferrer';
+            channelTool.className = 'modal-tool-btn channel-tool-btn';
+            channelTool.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>${currentLanguage === 'ar' ? 'القناة الخاصة' : 'Channel'}</span>`;
+            toolsGroup.appendChild(channelTool);
+        }
     } else {
         downloadBtn.href = `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
-        downloadBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span id="download-text">${strings[currentLanguage].download}</span>`;
-        downloadBtn.style.flex = '1';
+        downloadBtn.className = 'download-btn btn-large main-cta-btn';
+        downloadBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span id="download-text">${currentLanguage === 'ar' ? 'تثبيت مباشر' : 'Direct Download'} • ${formatBytes(app.size)}</span>`;
     }
 
     // Modal Tools: Favorite & Share Buttons
@@ -1299,6 +1348,49 @@ function openAppDetails(app, pushUrl = true) {
     if (shareTextEl) shareTextEl.textContent = strings[currentLanguage].shareText;
 
     const modalIcon = document.getElementById('modal-icon');
+    if (app.icon_id) {
+        modalIcon.src = `${WORKER_URL}/?id=${app.icon_id}&action=image`;
+        modalIcon.style.display = 'block';
+    } else {
+        modalIcon.style.display = 'none';
+    }
+
+    // Setup mobile bottom sheet swipe-to-dismiss gesture once
+    const modalContent = document.querySelector('#app-modal .modal-content');
+    if (modalContent && !modalContent._swipeBound) {
+        modalContent._swipeBound = true;
+        let touchStartY = 0;
+        let touchCurrentY = 0;
+        modalContent.addEventListener('touchstart', (e) => {
+            if (modalContent.scrollTop <= 0) {
+                touchStartY = e.touches[0].clientY;
+            } else {
+                touchStartY = 0;
+            }
+        }, { passive: true });
+
+        modalContent.addEventListener('touchmove', (e) => {
+            if (touchStartY > 0) {
+                touchCurrentY = e.touches[0].clientY;
+                const diff = touchCurrentY - touchStartY;
+                if (diff > 0) {
+                    modalContent.style.transform = `translateY(${diff}px)`;
+                }
+            }
+        }, { passive: true });
+
+        modalContent.addEventListener('touchend', () => {
+            if (touchStartY > 0 && touchCurrentY > touchStartY + 90) {
+                modalContent.style.transform = '';
+                const closeBtn = document.querySelector('.close-modal');
+                if (closeBtn) closeBtn.click();
+            } else {
+                modalContent.style.transform = '';
+            }
+            touchStartY = 0;
+            touchCurrentY = 0;
+        });
+    }
     if (app.icon_id) {
         modalIcon.src = `${WORKER_URL}/?id=${app.icon_id}&action=image`;
         modalIcon.style.display = 'block';

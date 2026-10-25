@@ -1599,63 +1599,63 @@
     </main>
 
     <!-- Bottom Navigation Bar for Mobile UI -->
-    <nav class="bottom-nav">
+    <nav class="bottom-nav" aria-label="التنقل الرئيسي">
         <button class="nav-item active" data-view="home">
-            <i class="fa-solid fa-house"></i>
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-house"></i></span>
             <span class="nav-label">الرئيسية</span>
         </button>
         <button class="nav-item" data-view="games">
-            <i class="fa-solid fa-gamepad"></i>
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-gamepad"></i></span>
             <span class="nav-label">الألعاب</span>
         </button>
         <button class="nav-item" data-view="apps">
-            <i class="fa-solid fa-table-cells-large"></i>
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-table-cells-large"></i></span>
             <span class="nav-label">التطبيقات</span>
         </button>
         <button class="nav-item" data-view="categories">
-            <i class="fa-solid fa-layer-group"></i>
+            <span class="nav-icon-wrapper"><i class="fa-solid fa-layer-group"></i></span>
             <span class="nav-label">التصنيفات</span>
         </button>
     </nav>
 
-    <!-- Install Floating Button -->
-    <button id="pwa-install-btn" class="pwa-floating-btn" style="display: none;" title="تثبيت المتجر">
-        <i class="fa-solid fa-download"></i>
-        <span class="pwa-btn-text" id="pwa-btn-text">تثبيت المتجر</span>
-    </button>
-
-    <!-- App Details Modal -->
-    <div id="app-modal" class="modal">
+    <!-- App Details Modal / Mobile Bottom Sheet -->
+    <div id="app-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="modal-content">
-            <button class="close-modal"><i class="fa-solid fa-xmark"></i></button>
+            <div class="sheet-handle" aria-hidden="true"></div>
+            <button class="close-modal" aria-label="إغلاق"><i class="fa-solid fa-xmark"></i></button>
             
             <div class="modal-header">
-                <img id="modal-icon" class="modal-app-icon" src="" alt="App Icon">
+                <img id="modal-icon" class="modal-app-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" alt="App Icon">
                 <div class="modal-title-group">
                     <h2 id="modal-title">App Title</h2>
-                    <div id="modal-badges" class="modal-badges"></div>
-                    <p id="modal-category" class="app-category" style="display: none;">Apps</p>
-                    <p id="modal-size" class="app-size" style="display: none;">0 MB</p>
-                    <p id="modal-date" class="app-date" style="margin-top: 5px; color: var(--text-secondary); font-size: 0.85rem;"></p>
+                    <div id="modal-category" class="app-category"></div>
+                    <div id="modal-date" class="app-date"></div>
                 </div>
-            </div>
-            
-            <!-- App Screenshots Gallery -->
-            <div id="modal-gallery-container" class="modal-gallery-container" style="display: none;">
-                <div class="gallery-header">
-                    <div class="gallery-header-title">
-                        <i class="fa-solid fa-images"></i>
-                        <span id="gallery-title-text">صور من داخل التطبيق</span>
-                    </div>
-                    <span id="modal-gallery-count" class="gallery-count-badge"></span>
-                </div>
-                <div id="modal-gallery-track" class="modal-gallery-track" role="region" aria-label="Screenshots"></div>
             </div>
 
+            <!-- Play Store style Stat Bar -->
+            <div id="modal-stats" class="modal-stats">
+                <div class="stat-pill" id="stat-version">
+                    <span class="stat-value" id="stat-version-val">v1.0</span>
+                    <span class="stat-label">الإصدار</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-pill" id="stat-size">
+                    <span class="stat-value" id="stat-size-val">0 MB</span>
+                    <span class="stat-label">الحجم</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-pill" id="stat-type">
+                    <span class="stat-value" id="stat-type-val">تطبيق</span>
+                    <span class="stat-label">النوع</span>
+                </div>
+            </div>
+
+            <!-- Primary & Secondary Action CTAs -->
             <div class="modal-actions">
                 <div class="modal-download-group">
-                    <a id="modal-download" href="#" class="download-btn btn-large" target="_blank" rel="noopener noreferrer">
-                        <i class="fa-solid fa-download"></i> <span id="download-text">تثبيت</span>
+                    <a id="modal-download" href="#" class="download-btn btn-large main-cta-btn" target="_blank" rel="noopener noreferrer">
+                        <i class="fa-solid fa-download"></i> <span id="download-text">تنزيل</span>
                     </a>
                 </div>
                 <div class="modal-tools-group">
@@ -1668,6 +1668,28 @@
                 </div>
             </div>
 
+            <!-- Mod Features Highlight Card -->
+            <div id="modal-mod-card" class="modal-mod-card" style="display: none;">
+                <div class="mod-card-header">
+                    <i class="fa-solid fa-sparkles"></i>
+                    <span id="mod-card-title">مميزات النسخة المعدلة</span>
+                </div>
+                <div id="modal-mod-badges" class="mod-badges-list"></div>
+            </div>
+
+            <!-- App Screenshots Gallery -->
+            <div id="modal-gallery-container" class="modal-gallery-container" style="display: none;">
+                <div class="gallery-header">
+                    <div class="gallery-header-title">
+                        <i class="fa-solid fa-images"></i>
+                        <span id="gallery-title-text">صور من داخل التطبيق</span>
+                    </div>
+                    <span id="modal-gallery-count" class="gallery-count-badge"></span>
+                </div>
+                <div id="modal-gallery-track" class="modal-gallery-track" role="region" aria-label="Screenshots"></div>
+            </div>
+
+            <!-- App Description -->
             <div class="modal-body">
                 <h3 id="about-title">حول هذا التطبيق</h3>
                 <p id="modal-description" class="app-description"></p>
@@ -1769,7 +1791,7 @@
             <i class="fa-solid fa-chevron-right"></i>
         </button>
         <div class="lightbox-content">
-            <img id="lightbox-img" class="lightbox-img" src="" alt="Screenshot Preview">
+            <img id="lightbox-img" class="lightbox-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" alt="Screenshot Preview">
         </div>
         <button id="lightbox-next" class="lightbox-nav-btn lightbox-next" aria-label="Next image">
             <i class="fa-solid fa-chevron-left"></i>
