@@ -216,6 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchBanners();
     fetchApps();
     setupEventListeners();
+    updateHeaderSpacer();
 });
 
 function initTheme() {
@@ -718,41 +719,71 @@ function setupEventListeners() {
     // Initialize Screenshots Lightbox Events
     initScreenshotLightboxEvents();
 
-    // Auto-minimizing Header on Scroll Down, Expanding on Scroll Up
-    let lastHeaderScrollY = window.scrollY || 0;
+    // Robust Auto-minimizing Header on Scroll Down, Expanding on Scroll Up (with hysteresis & deadzone)
+    let lastHeaderScrollY = Math.max(0, window.scrollY || document.documentElement.scrollTop || 0);
     let headerScrollTicking = false;
-    const HEADER_SCROLL_THRESHOLD = 8;
+    let isHeaderMinimized = false;
 
     function handleHeaderScroll() {
-        const currentScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+        const currentScrollY = Math.max(0, window.scrollY || document.documentElement.scrollTop || 0);
         const header = document.querySelector('.top-header');
-        if (!header) return;
+        if (!header) {
+            headerScrollTicking = false;
+            return;
+        }
 
         // Keep header fully expanded if user is actively searching
         const searchInput = document.getElementById('search-input');
         if (searchInput && document.activeElement === searchInput) {
-            header.classList.remove('header-minimized');
+            if (isHeaderMinimized) {
+                header.classList.remove('header-minimized');
+                isHeaderMinimized = false;
+            }
             lastHeaderScrollY = currentScrollY;
             headerScrollTicking = false;
             return;
         }
 
-        if (currentScrollY <= 25) {
-            header.classList.remove('header-minimized');
-        } else if (currentScrollY > lastHeaderScrollY + HEADER_SCROLL_THRESHOLD && currentScrollY > 60) {
-            header.classList.add('header-minimized');
-            // Hide filter panel if open
-            const filterPanel = document.getElementById('filter-panel');
-            if (filterPanel && filterPanel.style.display !== 'none') {
-                filterPanel.style.display = 'none';
-                const filterToggle = document.getElementById('filter-toggle');
-                if (filterToggle) filterToggle.classList.remove('active');
+        // Rule 1: Always force expanded near top (scrollY < 60)
+        // and lock from collapsing until scrollY > 120 so it never jitters near the top
+        if (currentScrollY < 60) {
+            if (isHeaderMinimized) {
+                header.classList.remove('header-minimized');
+                isHeaderMinimized = false;
             }
-        } else if (currentScrollY < lastHeaderScrollY - HEADER_SCROLL_THRESHOLD) {
-            header.classList.remove('header-minimized');
+            lastHeaderScrollY = currentScrollY;
+            headerScrollTicking = false;
+            return;
         }
 
-        lastHeaderScrollY = Math.max(0, currentScrollY);
+        // Calculate scroll delta
+        const delta = currentScrollY - lastHeaderScrollY;
+
+        // Rule 2: Only toggle when user has scrolled continuously by at least 18px
+        if (delta > 18 && currentScrollY > 120) {
+            // Scrolling DOWN past 120px with sufficient movement: minimize
+            if (!isHeaderMinimized) {
+                header.classList.add('header-minimized');
+                isHeaderMinimized = true;
+
+                // Close filter panel if open
+                const filterPanel = document.getElementById('filter-panel');
+                if (filterPanel && filterPanel.style.display !== 'none') {
+                    filterPanel.style.display = 'none';
+                    const filterToggle = document.getElementById('filter-toggle');
+                    if (filterToggle) filterToggle.classList.remove('active');
+                }
+            }
+            lastHeaderScrollY = currentScrollY;
+        } else if (delta < -18) {
+            // Scrolling UP by at least 18px: restore full header
+            if (isHeaderMinimized) {
+                header.classList.remove('header-minimized');
+                isHeaderMinimized = false;
+            }
+            lastHeaderScrollY = currentScrollY;
+        }
+
         headerScrollTicking = false;
     }
 
@@ -762,6 +793,15 @@ function setupEventListeners() {
             headerScrollTicking = true;
         }
     }, { passive: true });
+
+    // Measure and set header spacer height
+    updateHeaderSpacer();
+    window.addEventListener('resize', () => {
+        const header = document.querySelector('.top-header');
+        if (header && !header.classList.contains('header-minimized')) {
+            updateHeaderSpacer();
+        }
+    });
 }
 
 function switchView(viewName) {
@@ -1217,8 +1257,8 @@ function renderApps() {
             header.textContent = key;
             fragment.appendChild(header);
 
-            grouped[key].forEach(app => {
-                fragment.appendChild(createAppCard(app));
+            grouped[key].forEach((app, idx) => {
+                fragment.appendChild(createAppCard(app, idx < 8));
             });
         });
         appsGrid.appendChild(fragment);
@@ -1234,7 +1274,7 @@ function renderNextBatch() {
     const nextLimit = Math.min(currentlyRenderedCount + BATCH_SIZE, currentFilteredApps.length);
 
     for (let i = currentlyRenderedCount; i < nextLimit; i++) {
-        fragment.appendChild(createAppCard(currentFilteredApps[i]));
+        fragment.appendChild(createAppCard(currentFilteredApps[i], i < 16));
     }
     currentlyRenderedCount = nextLimit;
 
@@ -1257,6 +1297,15 @@ function renderNextBatch() {
             }, { rootMargin: '600px 0px' });
         }
         gridObserver.observe(sentinel);
+    }
+}
+
+function updateHeaderSpacer() {
+    const header = document.querySelector('.top-header');
+    const spacer = document.getElementById('header-spacer');
+    if (header && spacer && !header.classList.contains('header-minimized')) {
+        const h = header.offsetHeight;
+        if (h > 0) spacer.style.height = `${h}px`;
     }
 }
 
@@ -1283,7 +1332,7 @@ function updateGridClass() {
     if (currentViewMode !== 'grid') appsGrid.style.gridTemplateColumns = '';
 }
 
-function createAppCard(app) {
+function createAppCard(app, isInitial = false) {
     const card = document.createElement('div');
     card.className = 'app-card';
     card.onclick = () => openAppDetails(app);
@@ -1293,8 +1342,9 @@ function createAppCard(app) {
         ? (currentLanguage === 'ar' ? 'إزالة من المفضلة' : 'Remove from Favorites')
         : (currentLanguage === 'ar' ? 'إضافة للمفضلة' : 'Add to Favorites');
 
+    const loadingAttr = isInitial ? 'loading="eager"' : 'loading="lazy"';
     const imgHTML = app.icon_id
-        ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="card-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'card-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
+        ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="card-icon" ${loadingAttr} decoding="async" onerror="this.outerHTML='<div class=\\'card-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
         : `<div class="card-icon fallback"><i class="fa-brands fa-android"></i></div>`;
 
     const categoryText = app._descShort || (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
@@ -2239,6 +2289,7 @@ function renderCategoryChips() {
 
     if (activeView === 'games' || activeView === 'categories') {
         if (wrapper) wrapper.style.display = 'none';
+        updateHeaderSpacer();
         return;
     } else {
         if (wrapper) wrapper.style.display = 'flex';
@@ -2266,6 +2317,8 @@ function renderCategoryChips() {
 
         container.appendChild(btn);
     });
+
+    updateHeaderSpacer();
 }
 
 function selectCategoryChip(chipId, chipLabel, chipBtn = null) {

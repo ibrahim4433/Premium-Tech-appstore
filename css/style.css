@@ -138,12 +138,18 @@ body {
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
     border-bottom: 1px solid var(--border-color);
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 100;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    box-sizing: border-box;
     padding: 0.5rem 1rem 0.5rem;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     transition: padding 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 .top-header.header-minimized {
@@ -166,6 +172,19 @@ body {
 
 .top-header.header-minimized .nav-container {
     padding: 0.15rem 0;
+}
+
+/* Fixed Header Spacer to prevent layout shifts */
+.header-spacer {
+    height: 155px;
+    width: 100%;
+    pointer-events: none;
+    flex-shrink: 0;
+}
+@media (min-width: 768px) {
+    .header-spacer {
+        height: 145px;
+    }
 }
 
 .nav-brand { order: 1; }
@@ -263,7 +282,6 @@ body {
     border-radius: 12px;
     border: 1px solid var(--border-color);
     background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(5px);
     color: var(--text-primary);
     font-size: 1rem;
     font-family: inherit;
@@ -543,9 +561,7 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    background: var(--bg-primary);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
+    background: rgba(1, 27, 51, 0.88);
     border: 1px solid var(--border-color);
     border-radius: 18px;
     box-shadow: 0 4px 14px rgba(0,0,0,0.18);
@@ -553,6 +569,9 @@ body {
     cursor: pointer;
     transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     position: relative;
+}
+:root[data-theme="light"] .app-card {
+    background: rgba(255, 255, 255, 0.95);
 }
 .app-card:hover {
     transform: translateY(-4px);
@@ -644,7 +663,7 @@ body {
     gap: 1rem;
 }
 .category-card {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    background: rgba(1, 27, 51, 0.88);
     border-radius: 20px;
     padding: 1.25rem 0.85rem;
     display: flex;
@@ -655,10 +674,11 @@ body {
     border: 1px solid var(--border-color);
     cursor: pointer;
     transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
     text-align: center;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+:root[data-theme="light"] .category-card {
+    background: rgba(255, 255, 255, 0.95);
 }
 .category-card:hover {
     background: rgba(0, 168, 232, 0.1);
@@ -707,6 +727,8 @@ body {
     justify-content: space-around;
     padding: 0.4rem 0 calc(0.4rem + env(safe-area-inset-bottom, 0px)) 0;
     z-index: 900;
+    transform: translateZ(0);
+    will-change: transform;
 }
 @media (min-width: 768px) {
     .bottom-nav {
@@ -1688,9 +1710,7 @@ a.modal-tool-btn:hover,
     height: 32px;
     min-width: 32px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
     font-size: 0.8rem;
@@ -1742,9 +1762,7 @@ html[lang="ar"] .chips-btn-left {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.08);
     border: 1px solid var(--border-color);
     border-radius: 20px;
     padding: 0.35rem 0.85rem;
@@ -1806,9 +1824,7 @@ html[lang="ar"] .chips-btn-left {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(0, 15, 30, 0.72);
     border: 1px solid rgba(255, 255, 255, 0.15);
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem;
@@ -2095,9 +2111,7 @@ a.modal-tool-btn:hover,
     height: 38px;
     min-width: 38px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.12);
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
     font-size: 1.05rem;
