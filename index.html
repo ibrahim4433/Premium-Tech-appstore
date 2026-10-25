@@ -44,8 +44,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="css/style.css?v=25" as="style">
-    <link rel="preload" href="js/app.js?v=25" as="script">
+    <link rel="preload" href="css/style.css?v=26" as="style">
+    <link rel="preload" href="js/app.js?v=26" as="script">
     <link rel="preload"
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap"
         as="style">
@@ -54,7 +54,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=25">
+    <link rel="stylesheet" href="css/style.css?v=26">
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Favicon & Browser Tab Icons -->
@@ -6921,6 +6921,9 @@
             </div>
 
             <div class="nav-actions">
+                <button id="about-us-toggle" class="icon-btn about-us-btn" title="من نحن" aria-label="About Us">
+                    <i class="fa-solid fa-circle-info"></i>
+                </button>
                 <button id="favorites-toggle" class="icon-btn favorites-btn" title="المفضلة" aria-label="Favorites">
                     <i class="fa-solid fa-heart"></i>
                     <span id="fav-badge" class="fav-badge">0</span>
@@ -7153,6 +7156,78 @@
         </div>
     </div>
 
+    <!-- About Us Modal -->
+    <div id="about-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
+        <div class="modal-content about-modal-content">
+            <div class="about-modal-header">
+                <div class="about-header-start">
+                    <div class="about-logo-badge">
+                        <img src="assets/ia-team-logo.jpg" alt="IA Team Logo" class="about-team-img">
+                    </div>
+                    <div class="about-header-info">
+                        <h2 id="about-modal-title">فريق IA | Incentive Aid</h2>
+                        <p id="about-modal-subtitle" class="about-subtitle">نصنع التغيير معاً • We Make The Change Together</p>
+                    </div>
+                </div>
+                <button id="close-about-modal" class="about-close-btn" type="button" title="إغلاق" aria-label="Close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="about-modal-body">
+                <div class="about-intro-card">
+                    <h3 id="about-intro-heading" class="about-intro-heading">من هم الفريق IA:</h3>
+                    <div class="about-text-content" id="about-text-content">
+                        <div class="about-point">
+                            <span class="point-badge">🔶</span>
+                            <div class="point-text">
+                                <strong>فريق تقني وخدمي وتطوعي (إلكتروني)</strong>
+                                <span class="point-sub">تأسس في 1/1/2020</span>
+                            </div>
+                        </div>
+                        <div class="about-point">
+                            <span class="point-badge">🔶</span>
+                            <div class="point-text">
+                                <strong>أعضاؤه من البلاد العربية كافة...</strong>
+                            </div>
+                        </div>
+                        <div class="about-point">
+                            <span class="point-badge">🔶</span>
+                            <div class="point-text">
+                                <strong>رمز (الشمس) للدلالة على:</strong>
+                                <span class="quote-text">"الشمس التي تنير درب الآخرين"</span>
+                            </div>
+                        </div>
+                        <div class="about-point">
+                            <span class="point-badge">🔶</span>
+                            <div class="point-text">
+                                <strong>رمز ( IA ) يشير إلى:</strong>
+                                <span class="quote-text">الكلمة الإنجليزية "Incentive Aid" وهي تعني المساعدة التحفيزية</span>
+                            </div>
+                        </div>
+                        <div class="about-mission-box">
+                            <p class="mission-text">
+                                العمل في فريقنا هو <strong>"خدمي تطوعي"</strong>، وهدفنا الأساسي نشر العلم والترفيه الرقمي لخدمة المجتمع وتوعيته بالمخاطر التقنية والتطوير الذاتي.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons: GitHub & Buy Us a Coffee -->
+                <div class="about-actions-group">
+                    <a href="https://github.com/ibrahim4433/Premium-Tech-appstore" target="_blank" rel="noopener noreferrer" class="about-action-btn github-btn" id="about-github-btn">
+                        <i class="fa-brands fa-github"></i>
+                        <span id="about-github-text">مستودع المشروع (GitHub)</span>
+                    </a>
+                    <a href="https://t.me/IA_Ibr" target="_blank" rel="noopener noreferrer" class="about-action-btn coffee-btn" id="about-coffee-btn">
+                        <i class="fa-solid fa-mug-hot"></i>
+                        <span id="about-coffee-text">قهوة للمطورين / Buy us a coffee ☕</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Install Instruction Modal -->
     <div id="install-modal" class="modal">
@@ -7241,7 +7316,7 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <script src="js/app.js?v=25"></script>
+    <script src="js/app.js?v=26"></script>
     <!-- Register Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {

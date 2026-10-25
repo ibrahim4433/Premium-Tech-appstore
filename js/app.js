@@ -132,7 +132,13 @@ const strings = {
         showMore: "عرض المزيد",
         showLess: "عرض أقل",
         moreTags: "المزيد",
-        channelText: "القناة الخاصة"
+        channelText: "القناة الخاصة",
+        aboutUsTitle: "فريق IA | Incentive Aid",
+        aboutUsSubtitle: "نصنع التغيير معاً • We Make The Change Together",
+        aboutUsHeading: "من هم الفريق IA:",
+        aboutUsBtnTooltip: "من نحن",
+        aboutGithubText: "مستودع المشروع (GitHub)",
+        aboutCoffeeText: "قهوة للمطورين / Buy us a coffee ☕"
     },
     en: {
         search: "Search for apps & games...",
@@ -205,7 +211,13 @@ const strings = {
         showMore: "Read more",
         showLess: "Show less",
         moreTags: "More",
-        channelText: "Channel"
+        channelText: "Channel",
+        aboutUsTitle: "IA Team | Incentive Aid",
+        aboutUsSubtitle: "We Make The Change Together",
+        aboutUsHeading: "Who is the IA Team:",
+        aboutUsBtnTooltip: "About Us",
+        aboutGithubText: "Project Repository (GitHub)",
+        aboutCoffeeText: "Support Us / Buy us a coffee ☕"
     }
 };
 
@@ -333,6 +345,97 @@ function setLanguage(lang) {
     const aboutTitle = document.getElementById('about-title');
     if (aboutTitle) aboutTitle.textContent = strings[lang].about;
 
+    // Update About Us Modal UI
+    const aboutToggle = document.getElementById('about-us-toggle');
+    if (aboutToggle) aboutToggle.title = strings[lang].aboutUsBtnTooltip;
+    const aboutModalTitle = document.getElementById('about-modal-title');
+    if (aboutModalTitle) aboutModalTitle.textContent = strings[lang].aboutUsTitle;
+    const aboutModalSubtitle = document.getElementById('about-modal-subtitle');
+    if (aboutModalSubtitle) aboutModalSubtitle.textContent = strings[lang].aboutUsSubtitle;
+    const aboutIntroHeading = document.getElementById('about-intro-heading');
+    if (aboutIntroHeading) aboutIntroHeading.textContent = strings[lang].aboutUsHeading;
+    const aboutGithubText = document.getElementById('about-github-text');
+    if (aboutGithubText) aboutGithubText.textContent = strings[lang].aboutGithubText;
+    const aboutCoffeeText = document.getElementById('about-coffee-text');
+    if (aboutCoffeeText) aboutCoffeeText.textContent = strings[lang].aboutCoffeeText;
+    const closeAboutBtn = document.getElementById('close-about-modal');
+    if (closeAboutBtn) closeAboutBtn.title = lang === 'ar' ? 'إغلاق' : 'Close';
+
+    const aboutTextContent = document.getElementById('about-text-content');
+    if (aboutTextContent) {
+        if (lang === 'en') {
+            aboutTextContent.innerHTML = `
+                <div class="about-point">
+                    <span class="point-badge">🔶</span>
+                    <div class="point-text">
+                        <strong>A technical, service, and voluntary online team</strong>
+                        <span class="point-sub">Founded on 1/1/2020</span>
+                    </div>
+                </div>
+                <div class="about-point">
+                    <span class="point-badge">🔶</span>
+                    <div class="point-text">
+                        <strong>Members from across the Arab world...</strong>
+                    </div>
+                </div>
+                <div class="about-point">
+                    <span class="point-badge">🔶</span>
+                    <div class="point-text">
+                        <strong>The (Sun) symbol represents:</strong>
+                        <span class="quote-text">"The sun that illuminates the path for others"</span>
+                    </div>
+                </div>
+                <div class="about-point">
+                    <span class="point-badge">🔶</span>
+                    <div class="point-text">
+                        <strong>The ( IA ) symbol stands for:</strong>
+                        <span class="quote-text">The English word "Incentive Aid", meaning motivational assistance</span>
+                    </div>
+                </div>
+                <div class="about-mission-box">
+                    <p class="mission-text">
+                        Work in our team is <strong>"voluntary service"</strong>. Our primary goal is spreading knowledge and digital entertainment to serve the community, raise tech risk awareness, and promote self-development.
+                    </p>
+                </div>
+            `;
+        } else {
+            aboutTextContent.innerHTML = `
+                <div class="about-point">
+                    <span class="point-badge">🔶</span>
+                    <div class="point-text">
+                        <strong>فريق تقني وخدمي وتطوعي (إلكتروني)</strong>
+                        <span class="point-sub">تأسس في 1/1/2020</span>
+                    </div>
+                </div>
+                <div class="about-point">
+                    <span class="point-badge">🔶</span>
+                    <div class="point-text">
+                        <strong>أعضاؤه من البلاد العربية كافة...</strong>
+                    </div>
+                </div>
+                <div class="about-point">
+                    <span class="point-badge">🔶</span>
+                    <div class="point-text">
+                        <strong>رمز (الشمس) للدلالة على:</strong>
+                        <span class="quote-text">"الشمس التي تنير درب الآخرين"</span>
+                    </div>
+                </div>
+                <div class="about-point">
+                    <span class="point-badge">🔶</span>
+                    <div class="point-text">
+                        <strong>رمز ( IA ) يشير إلى:</strong>
+                        <span class="quote-text">الكلمة الإنجليزية "Incentive Aid" وهي تعني المساعدة التحفيزية</span>
+                    </div>
+                </div>
+                <div class="about-mission-box">
+                    <p class="mission-text">
+                        العمل في فريقنا هو <strong>"خدمي تطوعي"</strong>، وهدفنا الأساسي نشر العلم والترفيه الرقمي لخدمة المجتمع وتوعيته بالمخاطر التقنية والتطوير الذاتي.
+                    </p>
+                </div>
+            `;
+        }
+    }
+
     updateFavoritesBadge();
     renderCategoryChips();
     if (window.currentModalApp) {
@@ -442,6 +545,22 @@ function setupEventListeners() {
                 renderApps();
             }
             searchInput.focus();
+        });
+    }
+
+    // About Us Toggle (Header)
+    const aboutToggle = document.getElementById('about-us-toggle');
+    if (aboutToggle) {
+        aboutToggle.addEventListener('click', () => {
+            openAboutModal();
+        });
+    }
+
+    // Close About Us Modal
+    const closeAboutBtn = document.getElementById('close-about-modal');
+    if (closeAboutBtn) {
+        closeAboutBtn.addEventListener('click', () => {
+            closeAboutModal();
         });
     }
 
@@ -645,6 +764,10 @@ function setupEventListeners() {
         if (favModal && e.target === favModal && favModal.classList.contains('active')) {
             closeFavoritesModal();
         }
+        const aboutModal = document.getElementById('about-modal');
+        if (aboutModal && e.target === aboutModal && aboutModal.classList.contains('active')) {
+            closeAboutModal();
+        }
     });
     window.addEventListener('popstate', (e) => {
         closeScreenshotLightbox();
@@ -656,6 +779,22 @@ function setupEventListeners() {
         const favModal = document.getElementById('favorites-modal');
         if (favModal && favModal.classList.contains('active')) {
             closeFavoritesModal();
+        }
+        const aboutModal = document.getElementById('about-modal');
+        if (aboutModal && aboutModal.classList.contains('active')) {
+            closeAboutModal();
+        }
+    });
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const aboutModal = document.getElementById('about-modal');
+            if (aboutModal && aboutModal.classList.contains('active')) {
+                closeAboutModal();
+            }
+            const favModal = document.getElementById('favorites-modal');
+            if (favModal && favModal.classList.contains('active')) {
+                closeFavoritesModal();
+            }
         }
     });
 
@@ -2023,6 +2162,17 @@ function updateModalFavBtn(isFav) {
         if (text) text.textContent = strings[currentLanguage].favBtnText;
         modalFavBtn.title = currentLanguage === 'ar' ? 'إضافة للمفضلة' : 'Add to Favorites';
     }
+}
+
+function openAboutModal() {
+    const aboutModal = document.getElementById('about-modal');
+    if (!aboutModal) return;
+    aboutModal.classList.add('active');
+}
+
+function closeAboutModal() {
+    const aboutModal = document.getElementById('about-modal');
+    if (aboutModal) aboutModal.classList.remove('active');
 }
 
 function openFavoritesModal() {

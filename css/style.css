@@ -2286,6 +2286,268 @@ a.modal-tool-btn:hover,
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
+/* ==========================================
+   ABOUT US MODAL
+   ========================================== */
+.about-modal-content {
+    max-width: 580px;
+    padding: 1.75rem;
+    box-sizing: border-box;
+    border-radius: 24px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.about-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.25rem;
+    position: relative;
+}
+
+.about-header-start {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+}
+
+.about-logo-badge {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #eab308;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #011b33;
+    flex-shrink: 0;
+}
+
+.about-team-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.about-header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.about-header-info h2 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.25;
+}
+
+.about-subtitle {
+    font-size: 0.82rem;
+    color: var(--accent-color);
+    font-weight: 600;
+    margin: 0;
+}
+
+.about-close-btn {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.about-close-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: #ef4444;
+    color: #ef4444;
+    transform: rotate(90deg);
+}
+
+.about-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.about-intro-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.25rem;
+}
+:root[data-theme="light"] .about-intro-card {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.about-intro-heading {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.about-text-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.about-point {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.point-badge {
+    font-size: 1rem;
+    line-height: 1.5;
+    flex-shrink: 0;
+}
+
+.point-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.point-text strong {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.point-sub {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.quote-text {
+    color: #f59e0b;
+    font-weight: 600;
+    font-style: italic;
+}
+:root[data-theme="light"] .quote-text {
+    color: #d97706;
+}
+
+.about-mission-box {
+    margin-top: 0.5rem;
+    padding: 0.9rem 1rem;
+    border-radius: 12px;
+    background: rgba(0, 168, 232, 0.08);
+    border: 1px solid rgba(0, 168, 232, 0.22);
+}
+
+.mission-text {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--text-primary);
+}
+
+.mission-text strong {
+    color: var(--accent-color);
+}
+
+.about-actions-group {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.about-action-btn {
+    flex: 1;
+    min-width: 200px;
+    min-height: 46px;
+    padding: 0.75rem 1rem;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    border: 1px solid transparent;
+}
+
+.about-action-btn.github-btn {
+    background: #24292e;
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+.about-action-btn.github-btn:hover {
+    background: #2f363d;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.about-action-btn.coffee-btn {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    color: #ffffff;
+    border-color: rgba(251, 191, 36, 0.4);
+}
+.about-action-btn.coffee-btn:hover {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 600px) {
+    .about-modal-content {
+        max-width: 100%;
+        padding: 1.25rem 1rem;
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+    .about-logo-badge {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+    }
+    .about-header-info h2 {
+        font-size: 1.1rem;
+    }
+    .about-actions-group {
+        flex-direction: column;
+    }
+    .about-action-btn {
+        min-width: 100%;
+        width: 100%;
+    }
+}
+
 /* Toast Notifications */
 .toast-container {
     position: fixed;
