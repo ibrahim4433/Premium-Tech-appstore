@@ -128,7 +128,11 @@ const strings = {
         chipAll: "الكل",
         searchClearTitle: "مسح البحث",
         galleryTitle: "صور من داخل التطبيق",
-        galleryPhotos: "صور"
+        galleryPhotos: "صور",
+        showMore: "عرض المزيد",
+        showLess: "عرض أقل",
+        moreTags: "المزيد",
+        channelText: "القناة الخاصة"
     },
     en: {
         search: "Search for apps & games...",
@@ -197,7 +201,11 @@ const strings = {
         chipAll: "All",
         searchClearTitle: "Clear Search",
         galleryTitle: "Inside Preview",
-        galleryPhotos: "photos"
+        galleryPhotos: "photos",
+        showMore: "Read more",
+        showLess: "Show less",
+        moreTags: "More",
+        channelText: "Channel"
     }
 };
 
@@ -321,6 +329,9 @@ function setLanguage(lang) {
     const modalShareText = document.getElementById('modal-share-text');
     if (modalShareText) modalShareText.textContent = strings[lang].shareText;
 
+    const aboutTitle = document.getElementById('about-title');
+    if (aboutTitle) aboutTitle.textContent = strings[lang].about;
+
     updateFavoritesBadge();
     renderCategoryChips();
     if (window.currentModalApp) {
@@ -328,6 +339,55 @@ function setLanguage(lang) {
         if (window.currentModalApp.screenshots && window.currentModalApp.screenshots.length > 0) {
             const galleryCount = document.getElementById('modal-gallery-count');
             if (galleryCount) galleryCount.textContent = `${window.currentModalApp.screenshots.length} ${strings[lang].galleryPhotos}`;
+        }
+
+        const channelBtn = document.getElementById('modal-channel-tool');
+        if (channelBtn) {
+            const channelText = channelBtn.querySelector('span');
+            if (channelText) channelText.textContent = strings[lang].channelText;
+        }
+
+        const descEl = document.getElementById('modal-description');
+        const expandText = document.getElementById('desc-expand-text');
+        if (descEl && expandText) {
+            const isCollapsed = descEl.classList.contains('collapsed');
+            expandText.textContent = isCollapsed ? strings[lang].showMore : strings[lang].showLess;
+        }
+
+        const modTagsContainer = document.getElementById('modal-mod-tags');
+        const modToggleBtn = document.getElementById('mod-tags-toggle-btn');
+        if (modTagsContainer && modToggleBtn) {
+            const isExpanded = modTagsContainer.classList.contains('expanded');
+            const remainingCount = modToggleBtn.getAttribute('data-count') || '';
+            const toggleText = modToggleBtn.querySelector('.toggle-text');
+            if (toggleText) {
+                toggleText.textContent = isExpanded ? strings[lang].showLess : `+${remainingCount} ${strings[lang].moreTags}`;
+            }
+        }
+
+        const isLarge = window.currentModalApp.size > 19.5 * 1024 * 1024;
+        const noteContainer = document.getElementById('modal-note-container');
+        if (noteContainer) {
+            if (isLarge) {
+                const noteText = lang === 'ar'
+                    ? 'ملاحظة: يجب الانضمام للقناة الخاصة أولاً لتتمكن من تحميل هذا الملف الكبير عبر تليجرام.'
+                    : 'Note: You must join the private channel first to download this large file via Telegram.';
+                noteContainer.innerHTML = `
+                    <div class="modal-note-card">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>${noteText}</span>
+                    </div>
+                `;
+                noteContainer.style.display = 'block';
+            } else {
+                noteContainer.innerHTML = '';
+                noteContainer.style.display = 'none';
+            }
+        }
+
+        const statType = document.getElementById('stat-type-val');
+        if (statType) {
+            statType.textContent = window.currentModalApp.category === 'Games' ? strings[lang].categoryGame : strings[lang].categoryApp;
         }
     }
     const galleryTitleText = document.getElementById('gallery-title-text');
@@ -423,6 +483,26 @@ function setupEventListeners() {
         modalShareBtn.addEventListener('click', () => {
             if (window.currentModalApp) {
                 handleShareApp(window.currentModalApp);
+            }
+        });
+    }
+
+    // Modal Description Expand / Collapse Button
+    const descExpandBtn = document.getElementById('desc-expand-btn');
+    if (descExpandBtn && !descExpandBtn._bound) {
+        descExpandBtn._bound = true;
+        descExpandBtn.addEventListener('click', () => {
+            const descEl = document.getElementById('modal-description');
+            if (!descEl) return;
+            const isCollapsed = descEl.classList.toggle('collapsed');
+            const expandText = document.getElementById('desc-expand-text');
+            const icon = descExpandBtn.querySelector('i');
+            if (isCollapsed) {
+                if (expandText) expandText.textContent = strings[currentLanguage].showMore || (currentLanguage === 'ar' ? 'عرض المزيد' : 'Read more');
+                if (icon) icon.className = 'fa-solid fa-chevron-down';
+            } else {
+                if (expandText) expandText.textContent = strings[currentLanguage].showLess || (currentLanguage === 'ar' ? 'عرض أقل' : 'Show less');
+                if (icon) icon.className = 'fa-solid fa-chevron-up';
             }
         });
     }
@@ -1311,6 +1391,7 @@ function openAppDetails(app, pushUrl = true) {
     // Mod Feature Badges directly under the App Title (replacing repeated version line)
     const modTagsContainer = document.getElementById('modal-mod-tags');
     if (modTagsContainer) {
+        modTagsContainer.classList.remove('expanded');
         let tagsList = parsed.modFeatures.slice();
 
         // Fallback detection if no mod bullet list was in the description
@@ -1331,29 +1412,102 @@ function openAppDetails(app, pushUrl = true) {
         }
 
         if (tagsList.length > 0) {
-            modTagsContainer.innerHTML = tagsList.map(tagText => `
-                <span class="mod-pill-tag">
-                    <i class="fa-solid fa-gem"></i> ${tagText}
-                </span>
-            `).join('');
+            let tagsHtml = '';
+            const maxVisible = 3;
+            tagsList.forEach((tagText, idx) => {
+                const hiddenClass = idx >= maxVisible ? ' mod-tag-hidden' : '';
+                tagsHtml += `
+                    <span class="mod-pill-tag${hiddenClass}">
+                        <i class="fa-solid fa-gem"></i> ${tagText}
+                    </span>
+                `;
+            });
+
+            if (tagsList.length > maxVisible) {
+                const moreCount = tagsList.length - maxVisible;
+                const moreLabel = strings[currentLanguage].moreTags || (currentLanguage === 'ar' ? 'المزيد' : 'More');
+                tagsHtml += `
+                    <button type="button" class="mod-tags-toggle-btn" id="mod-tags-toggle-btn" data-count="${moreCount}" aria-expanded="false">
+                        <span class="toggle-text">+${moreCount} ${moreLabel}</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                `;
+            }
+
+            modTagsContainer.innerHTML = tagsHtml;
             modTagsContainer.style.display = 'flex';
+
+            const toggleBtn = document.getElementById('mod-tags-toggle-btn');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    const isExpanded = modTagsContainer.classList.toggle('expanded');
+                    toggleBtn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+                    const toggleText = toggleBtn.querySelector('.toggle-text');
+                    const icon = toggleBtn.querySelector('i');
+                    const count = toggleBtn.getAttribute('data-count') || '';
+                    if (isExpanded) {
+                        if (toggleText) toggleText.textContent = strings[currentLanguage].showLess || (currentLanguage === 'ar' ? 'عرض أقل' : 'Show less');
+                        if (icon) icon.className = 'fa-solid fa-chevron-up';
+                    } else {
+                        const mLabel = strings[currentLanguage].moreTags || (currentLanguage === 'ar' ? 'المزيد' : 'More');
+                        if (toggleText) toggleText.textContent = `+${count} ${mLabel}`;
+                        if (icon) icon.className = 'fa-solid fa-chevron-down';
+                    }
+                });
+            }
         } else {
+            modTagsContainer.innerHTML = '';
             modTagsContainer.style.display = 'none';
         }
     }
 
     // Clean Description in "حول هذا التطبيق" without repeated version/mod bullets
     const isLarge = app.size > 19.5 * 1024 * 1024;
-    let descriptionHtml = (parsed.cleanDesc || app.description || '').replace(/\n/g, '<br>');
+    const cleanDesc = (parsed.cleanDesc || app.description || '').trim();
+    const descEl = document.getElementById('modal-description');
+    const expandBtn = document.getElementById('desc-expand-btn');
+    const expandText = document.getElementById('desc-expand-text');
 
-    if (isLarge) {
-        const noteText = currentLanguage === 'ar'
-            ? 'ملاحظة: يجب الانضمام للقناة الخاصة أولاً لتتمكن من تحميل هذا الملف الكبير عبر تليجرام.'
-            : 'Note: You must join the private channel first to download this large file via Telegram.';
-        descriptionHtml += `<div style="background: rgba(0, 168, 232, 0.08); border: 1px solid rgba(0, 168, 232, 0.25); padding: 0.9rem 1rem; margin-top: 1.25rem; border-radius: 14px; font-weight: 600; line-height: 1.6; display: flex; align-items: center; gap: 0.6rem;"><i class="fa-solid fa-circle-info" style="color: var(--accent-color); font-size: 1.2rem;"></i><span>${noteText}</span></div>`;
+    if (descEl) {
+        descEl.classList.add('collapsed');
+        descEl.innerHTML = cleanDesc.replace(/\n/g, '<br>');
+        if (expandText) {
+            expandText.textContent = strings[currentLanguage].showMore || (currentLanguage === 'ar' ? 'عرض المزيد' : 'Read more');
+        }
+        if (expandBtn) {
+            const icon = expandBtn.querySelector('i');
+            if (icon) icon.className = 'fa-solid fa-chevron-down';
+        }
+
+        const lineCount = cleanDesc.split('\n').filter(l => l.trim().length > 0).length;
+        const isLongText = cleanDesc.length > 220;
+        requestAnimationFrame(() => {
+            const isOverflow = (descEl.scrollHeight > descEl.clientHeight + 4) || lineCount > 5 || isLongText;
+            if (expandBtn) {
+                expandBtn.style.display = isOverflow ? 'inline-flex' : 'none';
+            }
+        });
     }
 
-    document.getElementById('modal-description').innerHTML = descriptionHtml;
+    // Large File Telegram Note (Moved to the bottom under everything else)
+    const noteContainer = document.getElementById('modal-note-container');
+    if (noteContainer) {
+        if (isLarge) {
+            const noteText = currentLanguage === 'ar'
+                ? 'ملاحظة: يجب الانضمام للقناة الخاصة أولاً لتتمكن من تحميل هذا الملف الكبير عبر تليجرام.'
+                : 'Note: You must join the private channel first to download this large file via Telegram.';
+            noteContainer.innerHTML = `
+                <div class="modal-note-card">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>${noteText}</span>
+                </div>
+            `;
+            noteContainer.style.display = 'block';
+        } else {
+            noteContainer.innerHTML = '';
+            noteContainer.style.display = 'none';
+        }
+    }
 
     // Single Dominant CTA & Secondary Tools
     const downloadBtn = document.getElementById('modal-download');
@@ -1384,7 +1538,7 @@ function openAppDetails(app, pushUrl = true) {
             channelTool.rel = 'noopener noreferrer';
             channelTool.className = 'modal-tool-btn channel-tool-btn';
             channelTool.style.textDecoration = 'none';
-            channelTool.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>${currentLanguage === 'ar' ? 'القناة الخاصة' : 'Channel'}</span>`;
+            channelTool.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>${strings[currentLanguage].channelText || (currentLanguage === 'ar' ? 'القناة الخاصة' : 'Channel')}</span>`;
             toolsGroup.appendChild(channelTool);
         }
     } else {

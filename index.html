@@ -39,13 +39,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="css/style.css?v=20" as="style">
-    <link rel="preload" href="js/app.js?v=20" as="script">
+    <link rel="preload" href="css/style.css?v=21" as="style">
+    <link rel="preload" href="js/app.js?v=21" as="script">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" as="style">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=20">
+    <link rel="stylesheet" href="css/style.css?v=21">
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Favicon & Browser Tab Icons -->
@@ -1671,7 +1671,13 @@
             <!-- App Description (Above Screenshots) -->
             <div class="modal-body">
                 <h3 id="about-title">حول هذا التطبيق</h3>
-                <p id="modal-description" class="app-description"></p>
+                <div class="description-wrapper">
+                    <p id="modal-description" class="app-description collapsed"></p>
+                    <button type="button" id="desc-expand-btn" class="desc-expand-btn" style="display: none;">
+                        <span id="desc-expand-text">عرض المزيد</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                </div>
             </div>
 
             <!-- App Screenshots Gallery -->
@@ -1685,6 +1691,9 @@
                 </div>
                 <div id="modal-gallery-track" class="modal-gallery-track" role="region" aria-label="Screenshots"></div>
             </div>
+
+            <!-- Large File Telegram Note (Under everything else) -->
+            <div id="modal-note-container" class="modal-note-container" style="display: none;"></div>
         </div>
     </div>
 
@@ -1793,7 +1802,7 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <script src="js/app.js?v=20"></script>
+    <script src="js/app.js?v=21"></script>
     <!-- Register Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {
