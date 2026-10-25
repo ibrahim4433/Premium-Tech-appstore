@@ -143,6 +143,13 @@ body {
     z-index: 100;
     padding: 0.5rem 1rem 0.5rem;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    transition: padding 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+
+.top-header.header-minimized {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
 }
 
 .nav-container {
@@ -154,6 +161,11 @@ body {
     padding: 0.5rem 0 0.5rem;
     gap: 1rem;
     flex-wrap: wrap;
+    transition: padding 0.25s ease;
+}
+
+.top-header.header-minimized .nav-container {
+    padding: 0.15rem 0;
 }
 
 .nav-brand { order: 1; }
@@ -228,6 +240,21 @@ body {
 .search-container {
     max-width: 1200px;
     margin: 0 auto;
+    transition: max-height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                max-width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.22s ease,
+                margin 0.28s ease,
+                transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.top-header.header-minimized .search-container {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transform: translateY(-8px);
 }
 .search-bar { position: relative; display: flex; align-items: center; }
 .search-bar input {
@@ -332,15 +359,49 @@ body {
     }
     
     .nav-actions { order: 4; }
+
+    /* Desktop Minimized Header on Scroll Down */
+    .top-header.header-minimized .search-container {
+        max-width: 0;
+        max-height: 48px;
+        opacity: 0;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        pointer-events: none;
+        transform: scale(0.9);
+    }
+    .top-header.header-minimized .brand-logo {
+        width: 50px;
+        height: 50px;
+    }
+    .top-header.header-minimized .brand-text {
+        font-size: 1.45rem;
+    }
 }
 
-/* Main Content Layout */
+/* Main Content Layout - Ultra-wide & Adaptive for all PC scales */
 .main-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 1.5rem 1rem;
     position: relative;
     z-index: 1;
+    transition: max-width 0.2s ease;
+}
+
+@media (min-width: 1024px) {
+    .main-content {
+        max-width: min(96%, 1760px);
+        width: 100%;
+        padding: 1.5rem clamp(1rem, 2.5vw, 2.5rem);
+        box-sizing: border-box;
+    }
+}
+@media (min-width: 1600px) {
+    .main-content {
+        max-width: min(96%, 2000px);
+    }
 }
 .page { display: none; animation: fadeIn 0.3s ease; }
 .page.active { display: block; }
@@ -399,15 +460,31 @@ body {
 
 @media (min-width: 768px) {
     .banners-slider {
-        gap: 2rem;
+        gap: 1.5rem;
+        padding-bottom: 0.75rem;
+        margin-bottom: 1.5rem;
+        scroll-padding: 0 1.5rem;
     }
     .banner { 
-        min-width: calc(50% - 1rem); 
-        height: 250px; 
-        border-radius: 28px;
+        min-width: clamp(540px, 62%, 920px); 
+        height: clamp(280px, 24vw, 380px); 
+        border-radius: 26px;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
     }
-    .banner h2 { font-size: 2.2rem; }
-    .banner p { font-size: 1.2rem; }
+    .banner h2 { 
+        font-size: clamp(1.8rem, 2.3vw, 2.5rem); 
+        line-height: 1.25;
+        margin-bottom: 0.35rem;
+    }
+    .banner p { 
+        font-size: clamp(0.95rem, 1.2vw, 1.2rem); 
+    }
+}
+@media (min-width: 1440px) {
+    .banner {
+        min-width: clamp(680px, 64%, 1080px);
+        height: clamp(320px, 25vw, 420px);
+    }
 }
 .banner i.bg-icon {
     position: absolute;
@@ -522,13 +599,22 @@ body {
     min-height: 2.6em;
     word-break: break-word;
 }
+.card-desc,
 .card-category {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: var(--text-secondary);
-    font-weight: 600;
-    white-space: nowrap;
+    font-weight: 500;
+    line-height: 1.38;
+    height: 2.76em;
+    min-height: 2.76em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+    margin-top: 0.15rem;
 }
 .card-install-btn {
     width: 100%;
@@ -949,8 +1035,9 @@ a.modal-tool-btn:hover,
     justify-content: center;
     align-items: center;
     gap: 0.75rem;
-    margin-bottom: 1.25rem;
+    margin: 0 auto 1.5rem auto;
     width: 100%;
+    max-width: 1100px;
 }
 .action-btn {
     flex: 1;
@@ -1090,8 +1177,11 @@ a.modal-tool-btn:hover,
     .action-btn i { font-size: 0.85rem !important; }
 
     .top-header { padding: 0.5rem 0.75rem; }
+    .top-header.header-minimized { padding: 0.35rem 0.75rem; }
     .brand-logo { width: 40px; height: 40px; }
+    .top-header.header-minimized .brand-logo { width: 36px; height: 36px; }
     .brand-text { font-size: 1.2rem; }
+    .top-header.header-minimized .brand-text { font-size: 1.12rem; }
     .nav-brand { margin: 0; gap: 0.5rem; }
     .icon-btn { width: 36px; height: 36px; font-size: 1rem; }
     .nav-actions { gap: 0.35rem; }
@@ -1356,9 +1446,17 @@ a.modal-tool-btn:hover,
     min-height: auto;
     margin-bottom: 0.1rem;
 }
+.apps-grid.view-list .card-desc,
 .apps-grid.view-list .card-category {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     color: var(--text-secondary);
+    height: auto;
+    min-height: auto;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: normal;
 }
 .apps-grid.view-list .card-install-btn {
     width: auto;
@@ -1529,6 +1627,34 @@ a.modal-tool-btn:hover,
     align-items: center;
     gap: 0.4rem;
     box-sizing: border-box;
+    transition: max-height 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.22s ease,
+                margin 0.28s ease,
+                padding 0.28s ease,
+                transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.top-header.header-minimized .chips-wrapper {
+    max-height: 0;
+    opacity: 0;
+    margin: 0 auto;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transform: translateY(-6px);
+}
+
+@media (min-width: 1024px) {
+    .chips-wrapper {
+        max-width: min(96%, 1760px);
+        padding: 0 clamp(0.5rem, 2vw, 2rem);
+    }
+}
+@media (min-width: 1600px) {
+    .chips-wrapper {
+        max-width: min(96%, 2000px);
+    }
 }
 .category-chips-bar {
     flex: 1;

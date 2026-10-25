@@ -586,6 +586,7 @@ function setupEventListeners() {
     const utilSlider = document.getElementById('grid-columns-slider');
     if (utilSlider) {
         utilSlider.addEventListener('input', (e) => {
+            window._userCustomCols = true;
             currentGridCols = parseInt(e.target.value);
             updateGridClass();
         });
@@ -716,6 +717,51 @@ function setupEventListeners() {
 
     // Initialize Screenshots Lightbox Events
     initScreenshotLightboxEvents();
+
+    // Auto-minimizing Header on Scroll Down, Expanding on Scroll Up
+    let lastHeaderScrollY = window.scrollY || 0;
+    let headerScrollTicking = false;
+    const HEADER_SCROLL_THRESHOLD = 8;
+
+    function handleHeaderScroll() {
+        const currentScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+        const header = document.querySelector('.top-header');
+        if (!header) return;
+
+        // Keep header fully expanded if user is actively searching
+        const searchInput = document.getElementById('search-input');
+        if (searchInput && document.activeElement === searchInput) {
+            header.classList.remove('header-minimized');
+            lastHeaderScrollY = currentScrollY;
+            headerScrollTicking = false;
+            return;
+        }
+
+        if (currentScrollY <= 25) {
+            header.classList.remove('header-minimized');
+        } else if (currentScrollY > lastHeaderScrollY + HEADER_SCROLL_THRESHOLD && currentScrollY > 60) {
+            header.classList.add('header-minimized');
+            // Hide filter panel if open
+            const filterPanel = document.getElementById('filter-panel');
+            if (filterPanel && filterPanel.style.display !== 'none') {
+                filterPanel.style.display = 'none';
+                const filterToggle = document.getElementById('filter-toggle');
+                if (filterToggle) filterToggle.classList.remove('active');
+            }
+        } else if (currentScrollY < lastHeaderScrollY - HEADER_SCROLL_THRESHOLD) {
+            header.classList.remove('header-minimized');
+        }
+
+        lastHeaderScrollY = Math.max(0, currentScrollY);
+        headerScrollTicking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+        if (!headerScrollTicking) {
+            requestAnimationFrame(handleHeaderScroll);
+            headerScrollTicking = true;
+        }
+    }, { passive: true });
 }
 
 function switchView(viewName) {
@@ -807,8 +853,10 @@ async function fetchApps() {
             if (!app.category) app.category = 'Apps';
             app._index = idx; // Store original insertion order for sorting
             if (app.description) {
-                const words = app.description.trim().split(/\s+/);
-                app._descShort = words.length > 4 ? words.slice(0, 4).join(' ') + '...' : words.slice(0, 4).join(' ');
+                const parsed = parseAppDescription(app.description);
+                const clean = (parsed.cleanDesc || app.description || '').trim();
+                const singleLine = clean.replace(/\r?\n+/g, ' ').replace(/\s+/g, ' ').trim();
+                app._descShort = singleLine;
             } else {
                 app._descShort = '';
             }
@@ -1224,7 +1272,11 @@ function updateGridClass() {
         if (window.innerWidth < 768) {
             appsGrid.style.gridTemplateColumns = '';
         } else {
-            appsGrid.style.gridTemplateColumns = `repeat(${currentGridCols}, minmax(130px, 1fr))`;
+            if (window._userCustomCols) {
+                appsGrid.style.gridTemplateColumns = `repeat(${currentGridCols}, minmax(130px, 1fr))`;
+            } else {
+                appsGrid.style.gridTemplateColumns = '';
+            }
         }
     }
 
@@ -1269,7 +1321,7 @@ function createAppCard(app) {
         ${imgHTML}
         <div class="card-info">
             <div class="card-title">${app.name}</div>
-            <div class="card-category" style="opacity: 0.8; font-size: 0.8rem; line-height: 1.4;">${categoryText}</div>
+            <div class="card-desc card-category">${categoryText}</div>
         </div>
         <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
             <i class="fa-solid ${btnIcon}"></i> ${btnText}
