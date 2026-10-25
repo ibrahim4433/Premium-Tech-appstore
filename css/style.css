@@ -1074,6 +1074,9 @@ a.modal-tool-btn:hover,
     font-family: 'Cairo', 'Inter', sans-serif !important;
 }
 
+.modal-body {
+    margin-bottom: 1.25rem;
+}
 .modal-body h3 { margin-bottom: 0.85rem; font-size: 1.15rem; color: var(--text-primary); }
 .description-wrapper { position: relative; }
 .app-description {
@@ -2347,6 +2350,7 @@ a.modal-tool-btn:hover,
    APP SCREENSHOTS GALLERY & LIGHTBOX
    ========================================== */
 .modal-gallery-container {
+    margin-top: 1.25rem;
     margin-bottom: 1.5rem;
     padding: 1rem;
     background: rgba(255, 255, 255, 0.03);
