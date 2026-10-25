@@ -60,6 +60,235 @@ const TAG_MAP = {
     '#IA': { ar: 'ذكاء اصطناعي', en: 'AI', icon: 'fa-robot' }
 };
 
+// Master Categories Definition (Curated Categories with Icons, Localized Names, and Descriptions)
+const MASTER_CATEGORIES = [
+    {
+        id: 'games',
+        icon: 'fa-gamepad',
+        name: { ar: 'الألعاب والترفيه', en: 'Games & Entertainment' },
+        desc: {
+            ar: 'ألعاب الأكشن والمغامرات والسباقات ومحاكيات PSP المعدلة بأعلى الجرافيكس.',
+            en: 'Action, adventure, racing, and PSP emulator modded games.'
+        }
+    },
+    {
+        id: 'watching',
+        icon: 'fa-play',
+        name: { ar: 'مشاهدة وبث مباشر', en: 'Movies & Live TV' },
+        desc: {
+            ar: 'تطبيقات بث المباريات المباشرة والأفلام والمسلسلات وقنوات IPTV المشفرة.',
+            en: 'Live sports streaming, cinema movies, series, and premium IPTV players.'
+        }
+    },
+    {
+        id: 'tools',
+        icon: 'fa-wrench',
+        name: { ar: 'أدوات ونظام', en: 'Tools & Utilities' },
+        desc: {
+            ar: 'أدوات تسريع الهاتف، مدراء الملفات المتقدمة، وتطبيقات الصيانة والتحكم.',
+            en: 'System optimization tools, advanced file managers, and system utilities.'
+        }
+    },
+    {
+        id: 'editing',
+        icon: 'fa-wand-magic-sparkles',
+        name: { ar: 'مونتاج وتصميم', en: 'Editing & Design' },
+        desc: {
+            ar: 'تطبيقات تحرير الفيديو الاحترافي، فلاتر الصور، وإزالة الخلفيات وتصميم Reels.',
+            en: 'Pro video editing, photo filters, background removal, and design tools.'
+        }
+    },
+    {
+        id: 'vpn',
+        icon: 'fa-shield-halved',
+        name: { ar: 'شبكات و VPN', en: 'VPN & Security' },
+        desc: {
+            ar: 'تطبيقات فك الحجب وتأمين الاتصال وحماية الخصوصية وتجاوز القيود.',
+            en: 'Fast unblocking proxies, privacy shields, and encrypted network tunnels.'
+        }
+    },
+    {
+        id: 'ai',
+        icon: 'fa-robot',
+        name: { ar: 'ذكاء اصطناعي', en: 'AI & Smart Bots' },
+        desc: {
+            ar: 'مساعدات الذكاء الاصطناعي التوليدي، روبوتات الدردشة، وتوليد وتعديل الصور.',
+            en: 'Generative AI assistants, smart chatbots, and text/image generators.'
+        }
+    },
+    {
+        id: 'social',
+        icon: 'fa-users',
+        name: { ar: 'تواصل واجتماعي', en: 'Social & Communication' },
+        desc: {
+            ar: 'تطبيقات المحادثة والمراسلة، منصات التواصل المعدلة، وأدوات التفاعل.',
+            en: 'Instant messaging, modded social platforms, and media interaction tools.'
+        }
+    },
+    {
+        id: 'islamic',
+        icon: 'fa-mosque',
+        name: { ar: 'إسلاميات ودين', en: 'Islamic & Quran' },
+        desc: {
+            ar: 'المصحف الشريف، الأذكار اليومية، مواقيت الصلاة، والتفاسير الصوتية.',
+            en: 'Holy Quran recitations, Athkar, accurate prayer times, and Islamic guides.'
+        }
+    },
+    {
+        id: 'education',
+        icon: 'fa-graduation-cap',
+        name: { ar: 'تعليم وتطوير', en: 'Education & Learning' },
+        desc: {
+            ar: 'تطبيقات تعلم اللغات الأجنبية، دورات البرمجة، والمنصات التعليمية التفاعلية.',
+            en: 'Language learning apps, coding courses, and interactive study platforms.'
+        }
+    },
+    {
+        id: 'music',
+        icon: 'fa-music',
+        name: { ar: 'موسيقى وصوتيات', en: 'Music & Audio' },
+        desc: {
+            ar: 'مشغلات الموسيقى بدون نت، محطات البودكاست، ومحررات المقاطع الصوتية.',
+            en: 'Offline music streaming, podcast players, audio cutters, and recorders.'
+        }
+    },
+    {
+        id: 'books',
+        icon: 'fa-book-open',
+        name: { ar: 'كتب ومستندات', en: 'Books & Documents' },
+        desc: {
+            ar: 'قارئات ملفات PDF والكتب الإلكترونية، القواميس، وتدوين الملاحظات الذكية.',
+            en: 'PDF e-book readers, dictionaries, document viewers, and note-taking apps.'
+        }
+    },
+    {
+        id: 'sports',
+        icon: 'fa-futbol',
+        name: { ar: 'رياضة ولياقة', en: 'Sports & Fitness' },
+        desc: {
+            ar: 'متابعة نتائج المباريات لحظياً، برامج التمارين الرياضية، وعداد السعرات.',
+            en: 'Live sports scores, fitness workout coaches, and calorie counters.'
+        }
+    },
+    {
+        id: 'camera',
+        icon: 'fa-camera',
+        name: { ar: 'كاميرا وتصوير', en: 'Camera & Photography' },
+        desc: {
+            ar: 'تطبيقات الكاميرا اليدوية الاحترافية، العدسات والفلاتر، وتحسين جودة الصور.',
+            en: 'Pro manual camera controls, artistic lens filters, and photo enhancers.'
+        }
+    },
+    {
+        id: 'browsers',
+        icon: 'fa-globe',
+        name: { ar: 'متصفحات وإنترنت', en: 'Browsers & Web' },
+        desc: {
+            ar: 'متصفحات إنترنت سريعة، أدوات حجب الإعلانات المزعجة، والتصفح الآمن الخفي.',
+            en: 'Fast web browsers with built-in ad blocking and private browsing.'
+        }
+    },
+    {
+        id: 'wallpapers',
+        icon: 'fa-palette',
+        name: { ar: 'خلفيات وثيمات', en: 'Wallpapers & Themes' },
+        desc: {
+            ar: 'خلفيات بدقة 4K لشاشات AMOLED، حزم الأيقونات، ومغيرات واجهة الهاتف.',
+            en: 'High-res 4K AMOLED wallpapers, custom icon packs, and launcher themes.'
+        }
+    },
+    {
+        id: 'productivity',
+        icon: 'fa-briefcase',
+        name: { ar: 'أعمال وإنتاجية', en: 'Productivity & Office' },
+        desc: {
+            ar: 'مجموعات الأوفيس لتحرير المستندات والجداول، إدارة الوقت، وتنظيم المهام.',
+            en: 'Office suites for editing docs and sheets, task managers, and planners.'
+        }
+    }
+];
+
+const TOP_CHIPS = [
+    { id: 'all', ar: 'الكل', en: 'All', icon: 'fa-shapes' },
+    ...MASTER_CATEGORIES.map(c => ({
+        id: c.id,
+        ar: c.name.ar,
+        en: c.name.en,
+        icon: c.icon
+    }))
+];
+
+function appMatchesCategory(app, catId) {
+    if (!catId || catId === 'all') return true;
+
+    const tags = Array.isArray(app.tags) ? app.tags.map(t => String(t).toLowerCase()) : [];
+    const name = (app.name || '').toLowerCase();
+    const desc = (app.description || '').toLowerCase();
+    const category = app.category || '';
+
+    const hasAnyTag = (keywords) => {
+        return tags.some(tag => keywords.some(kw => tag.includes(kw)));
+    };
+
+    switch (catId) {
+        case 'islamic':
+            return hasAnyTag(['islam', 'quran', 'دين', 'ديني', 'قران', 'اذكار', 'أسلامي', 'religion']) ||
+                name.includes('مصحف') || name.includes('قرآن') || name.includes('قران') ||
+                name.includes('أذكار') || name.includes('اذكار') || name.includes('صلات') ||
+                name.includes('prayer') || name.includes('quran') || name.includes('islam') ||
+                name.includes('tarteel') || name.includes('khatmah') || name.includes('muslim');
+
+        case 'games':
+            return category === 'Games' || hasAnyTag(['game', 'gta', 'psp', 'racer']);
+
+        case 'watching':
+            return hasAnyTag(['watch', 'tv', 'movie', 'anime', 'player', 'media', 'iptv', 'cartoon', 'romance']);
+
+        case 'tools':
+            return hasAnyTag(['tool', 'manager', 'scanner', 'launcher', 'utility', 'ادوات', 'battery', 'controls', 'cleaner', 'recover']);
+
+        case 'editing':
+            return hasAnyTag(['edit', 'photoeditor', 'photography', 'photosgenerator', 'remove_bckground', 'videocaptions', 'design']);
+
+        case 'vpn':
+            return hasAnyTag(['vpn', 'secur', 'firewall', 'freeinternet', 'udp', 'proxy']);
+
+        case 'ai':
+            return hasAnyTag(['ai', 'bot', 'ia', 'chatgpt']);
+
+        case 'social':
+            return hasAnyTag(['social', 'chat', 'wa', 'insta', 'tiktok', 'comunication', 'telegram', 'calling']);
+
+        case 'music':
+            return hasAnyTag(['music', 'audio', 'podcast', 'radio', 'spotify', 'listen', 'karoke', 'mp3', 'ringtone', 'tuner']);
+
+        case 'browsers':
+            return hasAnyTag(['browser', 'web']);
+
+        case 'education':
+            return hasAnyTag(['educat', 'learn', 'lesson', 'quiz', 'programming', 'translation']);
+
+        case 'books':
+            return hasAnyTag(['book', 'pdf', 'read', 'dictionary', 'notes', 'thesaurus', 'ebook']);
+
+        case 'wallpapers':
+            return hasAnyTag(['wallpaper', 'thim', 'theme']);
+
+        case 'camera':
+            return hasAnyTag(['camera', 'photo']);
+
+        case 'sports':
+            return hasAnyTag(['sport', 'football', 'fitness', 'workout', 'gym', 'رياض']) ||
+                   name.includes('fit') || name.includes('sport');
+
+        case 'productivity':
+            return hasAnyTag(['product', 'office', 'business']) || name.includes('office');
+
+        default:
+            return hasAnyTag([catId.toLowerCase()]);
+    }
+}
+
 const strings = {
     ar: {
         search: "البحث عن تطبيقات وألعاب...",
@@ -261,6 +490,8 @@ function setLanguage(lang) {
     document.getElementById('loading-text').textContent = strings[lang].loading;
     document.getElementById('about-title').textContent = strings[lang].about;
     document.getElementById('download-text').textContent = strings[lang].download;
+    const catSectionTitle = document.getElementById('categories-title');
+    if (catSectionTitle) catSectionTitle.textContent = strings[lang].navCategories;
     // Update Nav Labels (Mobile)
     document.querySelector('.bottom-nav [data-view="home"] .nav-label').textContent = strings[lang].navHome;
     document.querySelector('.bottom-nav [data-view="games"] .nav-label').textContent = strings[lang].navGames;
@@ -993,6 +1224,8 @@ function switchView(viewName) {
     if (viewName === 'categories') {
         bannersSection.style.display = 'none';
         views.categories.classList.add('active');
+        const catTitle = document.getElementById('categories-title');
+        if (catTitle) catTitle.textContent = strings[currentLanguage].navCategories;
         renderCategories();
     } else {
         bannersSection.style.display = viewName === 'home' ? 'flex' : 'none';
@@ -1005,6 +1238,11 @@ function switchView(viewName) {
 function updateViewTitle(customTitle = null) {
     if (customTitle) {
         pageTitle.textContent = customTitle;
+        return;
+    }
+    if (activeView === 'categories') {
+        const catTitle = document.getElementById('categories-title');
+        if (catTitle) catTitle.textContent = strings[currentLanguage].navCategories;
         return;
     }
     if (currentSearch) {
@@ -1200,13 +1438,14 @@ function getTagInfo(tag) {
 }
 
 function renderCategories() {
+    if (!categoriesGrid) return;
     categoriesGrid.innerHTML = '';
-    const uniqueTags = new Set();
-    allApps.forEach(app => { if (app.tags) app.tags.forEach(t => uniqueTags.add(t)); });
 
-    if (uniqueTags.size === 0) return;
-
-    const renderedNames = new Set(); // Avoid duplicate categories with different tags but same mapped name
+    // Update section title to match current language
+    const catTitle = document.getElementById('categories-title');
+    if (catTitle) {
+        catTitle.textContent = strings[currentLanguage].navCategories;
+    }
 
     const categorySelect = document.getElementById('category-select');
     let prevSelected = '';
@@ -1215,61 +1454,67 @@ function renderCategories() {
         while (categorySelect.options.length > 1) categorySelect.remove(1);
     }
 
-    uniqueTags.forEach(tag => {
-        // Skip noise or test tags
-        const cleanTag = tag.replace('#', '').trim();
-        if (cleanTag.length <= 2 || cleanTag.toLowerCase() === 'to') return;
-
-        const tagData = getTagInfo(tag);
-        const label = currentLanguage === 'ar' ? tagData.ar : tagData.en;
-
-        if (renderedNames.has(label)) return;
-
-        if (currentSearch && !currentSearch.startsWith('#')) {
-            if (!label.toLowerCase().includes(currentSearch)) {
-                return;
-            }
-        }
-
-        renderedNames.add(label);
+    MASTER_CATEGORIES.forEach(cat => {
+        const catName = cat.name[currentLanguage] || cat.name.ar;
+        const catDesc = cat.desc[currentLanguage] || cat.desc.ar;
 
         // Count apps matching this category
-        let count = 0;
-        allApps.forEach(a => {
-            if (a.tags && a.tags.some(t => {
-                const info = getTagInfo(t);
-                return (currentLanguage === 'ar' ? info.ar : info.en) === label;
-            })) {
-                count++;
-            }
-        });
+        const count = allApps.filter(app => appMatchesCategory(app, cat.id)).length;
+        if (count === 0) return;
+
+        // If user typed in search bar, filter by name or description
+        if (currentSearch && !currentSearch.startsWith('#')) {
+            const query = currentSearch.toLowerCase();
+            const matchesName = catName.toLowerCase().includes(query);
+            const matchesDesc = catDesc.toLowerCase().includes(query);
+            if (!matchesName && !matchesDesc) return;
+        }
 
         const card = document.createElement('div');
         card.className = 'category-card';
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', `${catName} - ${count} ${currentLanguage === 'ar' ? 'تطبيق ولعبة' : 'Apps & Games'}`);
+
+        const arrowIcon = currentLanguage === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right';
+        const countUnit = currentLanguage === 'ar' ? 'تطبيق ولعبة' : 'Apps & Games';
 
         card.innerHTML = `
-            <div class="cat-icon-badge">
-                <i class="fa-solid ${tagData.icon}"></i>
+            <div class="cat-card-header">
+                <div class="cat-icon-badge">
+                    <i class="fa-solid ${cat.icon}"></i>
+                </div>
+                <div class="cat-info">
+                    <h3 class="cat-name">${catName}</h3>
+                    <span class="cat-count">${count} ${countUnit}</span>
+                </div>
+                <div class="cat-arrow" aria-hidden="true">
+                    <i class="fa-solid ${arrowIcon}"></i>
+                </div>
             </div>
-            <span class="cat-name">${label}</span>
-            <span class="cat-count">${count} ${currentLanguage === 'ar' ? 'تطبيق' : 'Apps'}</span>
+            <p class="cat-desc">${catDesc}</p>
         `;
 
-        card.onclick = () => {
-            switchView('home');
-            currentSearch = tag;
-            searchInput.value = '';
-            updateViewTitle(label);
-            renderApps();
+        const activateCategory = () => {
+            selectCategoryChip(cat.id, catName);
         };
+
+        card.addEventListener('click', activateCategory);
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                activateCategory();
+            }
+        });
+
         categoriesGrid.appendChild(card);
 
         // Add to dropdown
         if (categorySelect) {
             const opt = document.createElement('option');
-            opt.value = label;
-            opt.text = label;
-            if (label === prevSelected) opt.selected = true;
+            opt.value = cat.id;
+            opt.text = catName;
+            if (cat.id === prevSelected || catName === prevSelected) opt.selected = true;
             categorySelect.appendChild(opt);
         }
     });
@@ -1293,15 +1538,7 @@ function renderApps() {
     const filteredApps = allApps.filter(app => {
         // Dropdown Category Filter
         if (selectedCat !== 'all') {
-            let hasTag = false;
-            if (app.tags) {
-                for (let i = 0; i < app.tags.length; i++) {
-                    const tagInfo = getTagInfo(app.tags[i]);
-                    const tagLabel = currentLanguage === 'ar' ? tagInfo.ar : tagInfo.en;
-                    if (tagLabel === selectedCat) { hasTag = true; break; }
-                }
-            }
-            if (!hasTag) return false;
+            if (!appMatchesCategory(app, selectedCat)) return false;
         } else if (activeView !== 'games' && activeCategoryChipId && activeCategoryChipId !== 'all') {
             // Header Category Chip Filter (does not affect the Games tab)
             if (!appMatchesCategory(app, activeCategoryChipId)) return false;
@@ -2348,89 +2585,7 @@ function renderFavoritesList() {
 // ==========================================
 // CATEGORY CHIPS BAR
 // ==========================================
-const TOP_CHIPS = [
-    { id: 'all', ar: 'الكل', en: 'All', icon: 'fa-shapes' },
-    { id: 'games', ar: 'ألعاب', en: 'Games', icon: 'fa-gamepad' },
-    { id: 'watching', ar: 'مشاهدة وميديا', en: 'Media', icon: 'fa-play' },
-    { id: 'tools', ar: 'أدوات', en: 'Tools', icon: 'fa-wrench' },
-    { id: 'editing', ar: 'مونتاج وتصميم', en: 'Editing', icon: 'fa-wand-magic-sparkles' },
-    { id: 'vpn', ar: 'VPN وكاسر', en: 'VPN & Proxy', icon: 'fa-shield-halved' },
-    { id: 'ai', ar: 'ذكاء اصطناعي', en: 'AI', icon: 'fa-robot' },
-    { id: 'islamic', ar: 'إسلاميات', en: 'Islamic', icon: 'fa-mosque' },
-    { id: 'social', ar: 'تواصل اجتماعي', en: 'Social', icon: 'fa-users' },
-    { id: 'music', ar: 'موسيقى وصوتيات', en: 'Music', icon: 'fa-music' },
-    { id: 'browsers', ar: 'متصفحات', en: 'Browsers', icon: 'fa-globe' },
-    { id: 'education', ar: 'تعليم', en: 'Education', icon: 'fa-graduation-cap' },
-    { id: 'books', ar: 'كتب ومستندات', en: 'Books', icon: 'fa-book' },
-    { id: 'wallpapers', ar: 'خلفيات وثيمات', en: 'Wallpapers', icon: 'fa-palette' },
-    { id: 'camera', ar: 'كاميرا وفلاتر', en: 'Camera', icon: 'fa-camera' }
-];
-
 let activeCategoryChipId = 'all';
-
-function appMatchesCategory(app, catId) {
-    if (!catId || catId === 'all') return true;
-
-    const tags = Array.isArray(app.tags) ? app.tags.map(t => String(t).toLowerCase()) : [];
-    const name = (app.name || '').toLowerCase();
-    const desc = (app.description || '').toLowerCase();
-    const category = app.category || '';
-
-    const hasAnyTag = (keywords) => {
-        return tags.some(tag => keywords.some(kw => tag.includes(kw)));
-    };
-
-    switch (catId) {
-        case 'islamic':
-            return hasAnyTag(['islam', 'quran', 'دين', 'ديني', 'قران', 'اذكار', 'أسلامي', 'religion']) ||
-                name.includes('مصحف') || name.includes('قرآن') || name.includes('قران') ||
-                name.includes('أذكار') || name.includes('اذكار') || name.includes('صلات') ||
-                name.includes('prayer') || name.includes('quran') || name.includes('islam') ||
-                name.includes('tarteel') || name.includes('khatmah') || name.includes('muslim');
-
-        case 'games':
-            return category === 'Games' || hasAnyTag(['game', 'gta', 'psp', 'racer']);
-
-        case 'watching':
-            return hasAnyTag(['watch', 'tv', 'movie', 'anime', 'player', 'media', 'iptv', 'cartoon', 'romance']);
-
-        case 'tools':
-            return hasAnyTag(['tool', 'manager', 'scanner', 'launcher', 'utility', 'ادوات', 'battery', 'controls', 'cleaner', 'recover']);
-
-        case 'editing':
-            return hasAnyTag(['edit', 'photoeditor', 'photography', 'photosgenerator', 'remove_bckground', 'videocaptions', 'design']);
-
-        case 'vpn':
-            return hasAnyTag(['vpn', 'secur', 'firewall', 'freeinternet', 'udp', 'proxy']);
-
-        case 'ai':
-            return hasAnyTag(['ai', 'bot', 'ia', 'chatgpt']);
-
-        case 'social':
-            return hasAnyTag(['social', 'chat', 'wa', 'insta', 'tiktok', 'comunication', 'telegram', 'calling']);
-
-        case 'music':
-            return hasAnyTag(['music', 'audio', 'podcast', 'radio', 'spotify', 'listen', 'karoke', 'mp3', 'ringtone', 'tuner']);
-
-        case 'browsers':
-            return hasAnyTag(['browser', 'web']);
-
-        case 'education':
-            return hasAnyTag(['educat', 'learn', 'lesson', 'quiz', 'programming', 'translation']);
-
-        case 'books':
-            return hasAnyTag(['book', 'pdf', 'read', 'dictionary', 'notes', 'thesaurus', 'ebook']);
-
-        case 'wallpapers':
-            return hasAnyTag(['wallpaper', 'thim', 'theme']);
-
-        case 'camera':
-            return hasAnyTag(['camera', 'photo']);
-
-        default:
-            return hasAnyTag([catId.toLowerCase()]);
-    }
-}
 
 function renderCategoryChips() {
     const container = document.getElementById('category-chips-bar');
