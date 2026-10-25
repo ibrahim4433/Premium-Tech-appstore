@@ -153,8 +153,7 @@ body {
 }
 
 .top-header.header-minimized {
-    padding-top: 0rem;
-    padding-bottom: 0.35rem;
+    padding: 0.4rem 1rem;
     box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
 }
 
@@ -171,7 +170,13 @@ body {
 }
 
 .top-header.header-minimized .nav-container {
-    padding: 0.15rem 0;
+    padding: 0;
+    margin: 0 auto;
+    flex-wrap: nowrap;
+    row-gap: 0;
+    gap: 0 0.75rem;
+    align-items: center;
+    min-height: 40px;
 }
 
 /* Fixed Header Spacer to prevent layout shifts */
@@ -239,7 +244,7 @@ body {
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-.nav-actions { display: flex; gap: 0.5rem; }
+.nav-actions { display: flex; align-items: center; gap: 0.5rem; }
 .icon-btn {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-color);
@@ -1199,14 +1204,42 @@ a.modal-tool-btn:hover,
     .action-btn i { font-size: 0.85rem !important; }
 
     .top-header { padding: 0.5rem 0.75rem; }
-    .top-header.header-minimized { padding: 0.35rem 0.75rem; }
+    .top-header.header-minimized {
+        padding: 0.4rem 0.75rem;
+    }
+    .top-header.header-minimized .nav-container {
+        padding: 0;
+        min-height: 38px;
+        align-items: center;
+        gap: 0 0.4rem;
+        flex-wrap: nowrap;
+        row-gap: 0;
+    }
+    .top-header.header-minimized .search-container {
+        display: none !important;
+    }
     .brand-logo { width: 40px; height: 40px; }
-    .top-header.header-minimized .brand-logo { width: 36px; height: 36px; }
+    .top-header.header-minimized .brand-logo {
+        width: 36px;
+        height: 36px;
+    }
     .brand-text { font-size: 1.2rem; }
-    .top-header.header-minimized .brand-text { font-size: 1.12rem; }
-    .nav-brand { margin: 0; gap: 0.5rem; }
+    .top-header.header-minimized .brand-text {
+        font-size: 1.15rem;
+        line-height: 1.2;
+    }
+    .nav-brand { margin: 0; gap: 0.5rem; align-items: center; }
     .icon-btn { width: 36px; height: 36px; font-size: 1rem; }
-    .nav-actions { gap: 0.35rem; }
+    .top-header.header-minimized .icon-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 0.95rem;
+    }
+    .nav-actions { gap: 0.35rem; align-items: center; }
+    .top-header.header-minimized .nav-actions {
+        gap: 0.3rem;
+        align-items: center;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1610,7 +1643,7 @@ a.modal-tool-btn:hover,
     top: -4px;
     right: -4px;
     background: #00a8e8;
-    color: #ffffff;
+    color: #011b33;
     font-size: 0.7rem;
     font-weight: 800;
     min-width: 19px;
@@ -1657,14 +1690,7 @@ a.modal-tool-btn:hover,
 }
 
 .top-header.header-minimized .chips-wrapper {
-    max-height: 0;
-    opacity: 0;
-    margin: 0 auto;
-    padding-top: 0;
-    padding-bottom: 0;
-    overflow: hidden;
-    pointer-events: none;
-    transform: translateY(-6px);
+    display: none !important;
 }
 
 @media (min-width: 1024px) {
