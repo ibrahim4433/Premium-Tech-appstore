@@ -1221,6 +1221,52 @@ function getScreenshotUrl(photoRef) {
     return `${WORKER_URL}/?id=${photoRef}&action=image`;
 }
 
+function parseAppDescription(rawDesc) {
+    if (!rawDesc) return { cleanDesc: '', modFeatures: [], extractedVersion: '' };
+    const lines = rawDesc.split('\n');
+    let cleanLines = [];
+    let modFeatures = [];
+    let extractedVersion = '';
+    let inModSection = false;
+
+    for (let line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) {
+            if (!inModSection) cleanLines.push(line);
+            continue;
+        }
+
+        // Check for version line (e.g. 🧊 الإصدار : v11.6.10, الإصدار : 1.26.52.3)
+        if (trimmed.includes('الإصدار') && (trimmed.includes('🧊') || trimmed.startsWith('الإصدار') || trimmed.startsWith('الاصدار'))) {
+            const vMatch = trimmed.match(/[:：]\s*(v?[\d\.\-_a-zA-Z]+)/i);
+            if (vMatch) extractedVersion = vMatch[1];
+            continue;
+        }
+
+        // Check for mod header line (e.g. 🏷 النسخة المعدلة وفيها :, 🏷 النسخة معدلة وفيها :)
+        if (trimmed.includes('النسخة') && (trimmed.includes('معدلة') || trimmed.includes('المعدلة'))) {
+            inModSection = true;
+            continue;
+        }
+
+        if (inModSection) {
+            // Mod feature lines! Clean any leading emoji / bullet / asterisk
+            let featureText = trimmed.replace(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1F100}-\u{1F1FF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}•\-\*\s]+/u, '').trim();
+            if (featureText) {
+                modFeatures.push(featureText);
+            }
+        } else {
+            cleanLines.push(line);
+        }
+    }
+
+    return {
+        cleanDesc: cleanLines.join('\n').trim(),
+        modFeatures,
+        extractedVersion
+    };
+}
+
 function openAppDetails(app, pushUrl = true) {
     window.currentModalApp = app;
     if (pushUrl) {
@@ -1231,13 +1277,15 @@ function openAppDetails(app, pushUrl = true) {
 
     document.getElementById('modal-title').textContent = app.name;
 
-    const versionText = app.version ? (currentLanguage === 'ar' ? `إصدار: ${app.version}` : `v${app.version}`) : (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
-    const catEl = document.getElementById('modal-category');
-    if (catEl) catEl.textContent = versionText;
+    // Parse Description to extract clean text and mod features accurately
+    const parsed = parseAppDescription(app.description || '');
 
-    // Stat Bar (Google Play style)
+    // Resolve version for the Stat Bar (Title on top, value underneath)
+    const resolvedVersion = app.version || parsed.extractedVersion || 'v1.0';
+    const displayVersion = resolvedVersion.startsWith('v') ? resolvedVersion : 'v' + resolvedVersion;
+
     const statVer = document.getElementById('stat-version-val');
-    if (statVer) statVer.textContent = app.version ? (app.version.startsWith('v') ? app.version : 'v' + app.version) : 'v1.0';
+    if (statVer) statVer.textContent = displayVersion;
 
     const statSize = document.getElementById('stat-size-val');
     if (statSize) statSize.textContent = formatBytes(app.size);
@@ -1260,40 +1308,43 @@ function openAppDetails(app, pushUrl = true) {
     const dateEl = document.getElementById('modal-date');
     if (dateEl) dateEl.textContent = dateLabel + dateString;
 
-    // Mod Features Card
-    const modCard = document.getElementById('modal-mod-card');
-    const modBadges = document.getElementById('modal-mod-badges');
-    if (modCard && modBadges) {
-        const features = [];
-        const textToScan = `${app.name} ${app.description || ''}`.toLowerCase();
-        if (textToScan.includes('premium') || textToScan.includes('بريميوم') || textToScan.includes('مدفوع')) {
-            features.push({ icon: 'fa-gem', text: currentLanguage === 'ar' ? 'مفتوح Premium' : 'Premium Unlocked' });
-        }
-        if (textToScan.includes('no ads') || textToScan.includes('بدون اعلانات') || textToScan.includes('بدون إعلانات')) {
-            features.push({ icon: 'fa-ban', text: currentLanguage === 'ar' ? 'بدون إعلانات' : 'No Ads' });
-        }
-        if (textToScan.includes('unlimited') || textToScan.includes('غير محدود') || textToScan.includes('قلوب') || textToScan.includes('أموال') || textToScan.includes('فلوس')) {
-            features.push({ icon: 'fa-infinity', text: currentLanguage === 'ar' ? 'موارد غير محدودة' : 'Unlimited Resources' });
-        }
-        if (textToScan.includes('pro') || textToScan.includes('برو')) {
-            features.push({ icon: 'fa-shield-halved', text: currentLanguage === 'ar' ? 'ميزات Pro' : 'Pro Unlocked' });
+    // Mod Feature Badges directly under the App Title (replacing repeated version line)
+    const modTagsContainer = document.getElementById('modal-mod-tags');
+    if (modTagsContainer) {
+        let tagsList = parsed.modFeatures.slice();
+
+        // Fallback detection if no mod bullet list was in the description
+        if (tagsList.length === 0) {
+            const textToScan = `${app.name} ${app.description || ''}`.toLowerCase();
+            if (textToScan.includes('premium') || textToScan.includes('بريميوم') || textToScan.includes('مدفوع')) {
+                tagsList.push(currentLanguage === 'ar' ? 'مفتوح Premium' : 'Premium Unlocked');
+            }
+            if (textToScan.includes('no ads') || textToScan.includes('بدون اعلانات') || textToScan.includes('بدون إعلانات')) {
+                tagsList.push(currentLanguage === 'ar' ? 'بدون إعلانات' : 'No Ads');
+            }
+            if (textToScan.includes('unlimited') || textToScan.includes('غير محدود') || textToScan.includes('قلوب') || textToScan.includes('أموال') || textToScan.includes('فلوس')) {
+                tagsList.push(currentLanguage === 'ar' ? 'موارد غير محدودة' : 'Unlimited Resources');
+            }
+            if (textToScan.includes('pro') || textToScan.includes('برو')) {
+                tagsList.push(currentLanguage === 'ar' ? 'ميزات Pro' : 'Pro Unlocked');
+            }
         }
 
-        if (features.length > 0) {
-            modBadges.innerHTML = features.map(f => `
-                <span class="mod-badge-item">
-                    <i class="fa-solid ${f.icon}"></i> ${f.text}
+        if (tagsList.length > 0) {
+            modTagsContainer.innerHTML = tagsList.map(tagText => `
+                <span class="mod-pill-tag">
+                    <i class="fa-solid fa-gem"></i> ${tagText}
                 </span>
             `).join('');
-            modCard.style.display = 'block';
+            modTagsContainer.style.display = 'flex';
         } else {
-            modCard.style.display = 'none';
+            modTagsContainer.style.display = 'none';
         }
     }
 
-    // Add Note for large files at the bottom
+    // Clean Description in "حول هذا التطبيق" without repeated version/mod bullets
     const isLarge = app.size > 19.5 * 1024 * 1024;
-    let descriptionHtml = app.description.replace(/\n/g, '<br>');
+    let descriptionHtml = (parsed.cleanDesc || app.description || '').replace(/\n/g, '<br>');
 
     if (isLarge) {
         const noteText = currentLanguage === 'ar'
@@ -1332,6 +1383,7 @@ function openAppDetails(app, pushUrl = true) {
             channelTool.target = '_blank';
             channelTool.rel = 'noopener noreferrer';
             channelTool.className = 'modal-tool-btn channel-tool-btn';
+            channelTool.style.textDecoration = 'none';
             channelTool.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>${currentLanguage === 'ar' ? 'القناة الخاصة' : 'Channel'}</span>`;
             toolsGroup.appendChild(channelTool);
         }

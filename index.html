@@ -39,13 +39,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="css/style.css?v=19" as="style">
-    <link rel="preload" href="js/app.js?v=19" as="script">
+    <link rel="preload" href="css/style.css?v=20" as="style">
+    <link rel="preload" href="js/app.js?v=20" as="script">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" as="style">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=19">
+    <link rel="stylesheet" href="css/style.css?v=20">
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Favicon & Browser Tab Icons -->
@@ -1628,7 +1628,7 @@
                 <img id="modal-icon" class="modal-app-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" alt="App Icon">
                 <div class="modal-title-group">
                     <h2 id="modal-title">App Title</h2>
-                    <div id="modal-category" class="app-category"></div>
+                    <div id="modal-mod-tags" class="modal-mod-tags"></div>
                     <div id="modal-date" class="app-date"></div>
                 </div>
             </div>
@@ -1636,18 +1636,18 @@
             <!-- Play Store style Stat Bar -->
             <div id="modal-stats" class="modal-stats">
                 <div class="stat-pill" id="stat-version">
-                    <span class="stat-value" id="stat-version-val">v1.0</span>
                     <span class="stat-label">الإصدار</span>
+                    <span class="stat-value" id="stat-version-val">v1.0</span>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-pill" id="stat-size">
-                    <span class="stat-value" id="stat-size-val">0 MB</span>
                     <span class="stat-label">الحجم</span>
+                    <span class="stat-value" id="stat-size-val">0 MB</span>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-pill" id="stat-type">
-                    <span class="stat-value" id="stat-type-val">تطبيق</span>
                     <span class="stat-label">النوع</span>
+                    <span class="stat-value" id="stat-type-val">تطبيق</span>
                 </div>
             </div>
 
@@ -1668,13 +1668,10 @@
                 </div>
             </div>
 
-            <!-- Mod Features Highlight Card -->
-            <div id="modal-mod-card" class="modal-mod-card" style="display: none;">
-                <div class="mod-card-header">
-                    <i class="fa-solid fa-sparkles"></i>
-                    <span id="mod-card-title">مميزات النسخة المعدلة</span>
-                </div>
-                <div id="modal-mod-badges" class="mod-badges-list"></div>
+            <!-- App Description (Above Screenshots) -->
+            <div class="modal-body">
+                <h3 id="about-title">حول هذا التطبيق</h3>
+                <p id="modal-description" class="app-description"></p>
             </div>
 
             <!-- App Screenshots Gallery -->
@@ -1687,12 +1684,6 @@
                     <span id="modal-gallery-count" class="gallery-count-badge"></span>
                 </div>
                 <div id="modal-gallery-track" class="modal-gallery-track" role="region" aria-label="Screenshots"></div>
-            </div>
-
-            <!-- App Description -->
-            <div class="modal-body">
-                <h3 id="about-title">حول هذا التطبيق</h3>
-                <p id="modal-description" class="app-description"></p>
             </div>
         </div>
     </div>
@@ -1802,7 +1793,7 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <script src="js/app.js?v=19"></script>
+    <script src="js/app.js?v=20"></script>
     <!-- Register Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {

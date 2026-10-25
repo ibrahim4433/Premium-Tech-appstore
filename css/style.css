@@ -749,19 +749,43 @@ body {
     margin-bottom: 0.25rem;
     line-height: 1.3;
 }
-.app-category { color: var(--accent-color); font-weight: 700; font-size: 0.9rem; }
+.modal-mod-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.35rem;
+    margin-bottom: 0.25rem;
+}
+.mod-pill-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: rgba(0, 168, 232, 0.15);
+    color: #38bdf8;
+    border: 1px solid rgba(0, 168, 232, 0.3);
+    border-radius: 20px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.mod-pill-tag i {
+    font-size: 0.75rem;
+}
 .app-date { color: var(--text-secondary); font-size: 0.8rem; margin-top: 0.2rem; }
 
-/* Play Store style Stat Bar */
+/* Play Store style Stat Bar - Compact and Refined */
 .modal-stats {
     display: flex;
     align-items: center;
     justify-content: space-around;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 0.75rem 0.5rem;
-    margin-bottom: 1.25rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 0.45rem 0.6rem;
+    margin: 0 auto 1.15rem auto;
+    width: 88%;
+    max-width: 400px;
 }
 .stat-pill {
     display: flex;
@@ -770,54 +794,22 @@ body {
     gap: 0.15rem;
     flex: 1;
 }
-.stat-value {
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: var(--text-primary);
-}
 .stat-label {
     font-size: 0.72rem;
     color: var(--text-secondary);
     font-weight: 600;
+    line-height: 1.1;
+}
+.stat-value {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.2;
 }
 .stat-divider {
     width: 1px;
-    height: 22px;
-    background: var(--border-color);
-}
-
-/* Mod Features Highlight Card */
-.modal-mod-card {
-    background: linear-gradient(135deg, rgba(0, 168, 232, 0.1), rgba(0, 119, 182, 0.05));
-    border: 1px solid rgba(0, 168, 232, 0.25);
-    border-radius: 16px;
-    padding: 0.9rem 1rem;
-    margin-bottom: 1.25rem;
-}
-.mod-card-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--accent-color);
-    font-weight: 800;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-}
-.mod-badges-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-}
-.mod-badge-item {
-    background: rgba(0, 168, 232, 0.18);
-    color: #fff;
-    padding: 0.3rem 0.7rem;
-    border-radius: 14px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
+    height: 18px;
+    background: rgba(255, 255, 255, 0.1);
 }
 
 /* Modal Actions */
@@ -862,7 +854,9 @@ body {
     margin-top: 0.75rem;
     width: 100%;
 }
-.modal-tool-btn {
+.modal-tool-btn,
+a.modal-tool-btn,
+.channel-tool-btn {
     flex: 1;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-color);
@@ -878,10 +872,15 @@ body {
     justify-content: center;
     gap: 0.4rem;
     transition: all 0.18s ease;
+    text-decoration: none !important;
 }
-.modal-tool-btn:hover {
+.modal-tool-btn:hover,
+a.modal-tool-btn:hover,
+.channel-tool-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: var(--accent-color);
+    color: var(--text-primary);
+    text-decoration: none !important;
 }
 #modal-join-btn,
 .join-channel-btn {
