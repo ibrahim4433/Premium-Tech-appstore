@@ -60,7 +60,7 @@ def parse_poll_option(text, index, total_options):
 
     return 3.0, 'average'
 
-def extract_rating_from_poll(poll, results):
+def extract_rating_from_poll(poll, results, voted_option=None):
     """
     Extracts weighted 5-star rating, total votes, and breakdown from a Telethon poll.
     """
@@ -74,6 +74,12 @@ def extract_rating_from_poll(poll, results):
     if getattr(results, 'results', None):
         for item in results.results:
             votes_by_option[item.option] = getattr(item, 'voters', 0)
+
+    # If we voted to unlock the results, subtract our vote so counts remain 100% authentic
+    if voted_option and voted_option in votes_by_option and votes_by_option[voted_option] > 0:
+        votes_by_option[voted_option] -= 1
+        if total_voters > 0:
+            total_voters -= 1
 
     breakdown = {
         'excellent': 0,
@@ -142,6 +148,7 @@ async def main():
     from telethon import TelegramClient
     from telethon.sessions import StringSession
     from telethon.tl.types import MessageMediaPoll
+    from telethon.tl.functions.messages import SendVoteRequest
 
     print("Connecting to Telegram MTProto via StringSession...")
     client = TelegramClient(StringSession(string_session), API_ID, API_HASH)
@@ -194,7 +201,31 @@ async def main():
                     continue
 
                 media = msg.media
-                rating, votes, breakdown = extract_rating_from_poll(media.poll, media.results)
+                poll = media.poll
+                results = media.results
+
+                # Check if poll results are locked by Telegram (user has not voted yet)
+                voted_opt = None
+                has_breakdown = bool(getattr(results, 'results', None))
+
+                if not has_breakdown and getattr(results, 'total_voters', 0) > 0 and getattr(poll, 'answers', None):
+                    unlock_opt = poll.answers[0].option
+                    try:
+                        await client(SendVoteRequest(
+                            peer=channel_entity,
+                            msg_id=msg.id,
+                            options=[unlock_opt]
+                        ))
+                        # Fetch the refreshed message now that the account has voted
+                        refreshed = await client.get_messages(channel_entity, ids=msg.id)
+                        if refreshed and getattr(refreshed, 'media', None) and getattr(refreshed.media, 'results', None):
+                            results = refreshed.media.results
+                            voted_opt = unlock_opt
+                        await asyncio.sleep(0.3)
+                    except Exception as unlock_err:
+                        pass
+
+                rating, votes, breakdown = extract_rating_from_poll(poll, results, voted_option=voted_opt)
 
                 # Update target app
                 target_app['poll_msg_id'] = msg.id
