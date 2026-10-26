@@ -609,36 +609,43 @@ body {
     flex-direction: column;
     gap: 0.2rem;
 }
-.card-title-row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 0.35rem;
-    width: 100%;
-}
 .card-rating-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
     display: inline-flex;
     align-items: center;
-    gap: 0.22rem;
-    padding: 0.12rem 0.4rem;
-    background: rgba(255, 183, 3, 0.12);
-    border: 1px solid rgba(255, 183, 3, 0.25);
-    border-radius: 6px;
-    font-size: 0.72rem;
-    font-weight: 700;
+    gap: 0.25rem;
+    padding: 0.2rem 0.5rem;
+    background: rgba(0, 15, 30, 0.75);
+    border: 1px solid rgba(255, 183, 3, 0.35);
+    border-radius: 20px;
+    font-size: 0.74rem;
+    font-weight: 800;
     color: #ffb703;
     line-height: 1;
-    flex-shrink: 0;
-    margin-top: 0.12rem;
+    z-index: 4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    pointer-events: none;
 }
 .card-rating-badge i {
-    font-size: 0.62rem;
+    font-size: 0.65rem;
     color: #ffb703;
 }
-.card-rating-badge.badge-new {
-    background: rgba(0, 168, 232, 0.12);
-    border-color: rgba(0, 168, 232, 0.25);
-    color: var(--accent-color);
+:root[data-theme="light"] .card-rating-badge {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 183, 3, 0.5);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+:root[dir="ltr"] .card-rating-badge {
+    right: auto;
+    left: 8px;
+}
+:root[dir="rtl"] .card-rating-badge {
+    left: auto;
+    right: 8px;
 }
 .card-title {
     font-size: 0.95rem;
@@ -653,7 +660,7 @@ body {
     line-height: 1.35;
     min-height: 2.6em;
     word-break: break-word;
-    flex: 1;
+    width: 100%;
 }
 .card-desc,
 .card-category {
@@ -1654,6 +1661,11 @@ a.modal-tool-btn:hover,
     border-radius: 20px;
     font-size: 0.82rem;
     white-space: nowrap;
+}
+.apps-grid.view-list .card-rating-badge {
+    position: static;
+    margin-inline-start: auto;
+    flex-shrink: 0;
 }
 
 .apps-grid.view-single {

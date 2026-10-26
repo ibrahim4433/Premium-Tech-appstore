@@ -1878,7 +1878,7 @@ function createAppCard(app, isInitial = false) {
 
     const hasRating = app.rating && app.votes > 0;
     const ratingBadgeHTML = hasRating
-        ? `<span class="card-rating-badge"><i class="fa-solid fa-star"></i> ${app.rating.toFixed(1)}</span>`
+        ? `<span class="card-rating-badge">${app.rating.toFixed(1)} <i class="fa-solid fa-star"></i></span>`
         : '';
 
     let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
@@ -1898,12 +1898,10 @@ function createAppCard(app, isInitial = false) {
         <button class="card-fav-btn ${isFav ? 'active' : ''}" data-id="${app.id || app.name}" title="${favTitle}" aria-label="Favorite">
             <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
         </button>
+        ${ratingBadgeHTML}
         ${imgHTML}
         <div class="card-info">
-            <div class="card-title-row">
-                <div class="card-title">${app.name}</div>
-                ${ratingBadgeHTML}
-            </div>
+            <div class="card-title">${app.name}</div>
             <div class="card-desc card-category">${categoryText}</div>
         </div>
         <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
