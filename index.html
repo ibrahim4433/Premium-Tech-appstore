@@ -6896,6 +6896,7 @@
                         <label id="label-sort">ترتيب حسب</label>
                         <select id="sort-select">
                             <option value="new" id="opt-sort-new">الأحدث</option>
+                            <option value="rating_desc" id="opt-sort-rating">الأعلى تقييماً</option>
                             <option value="old" id="opt-sort-old">الأقدم</option>
                             <option value="name_asc" id="opt-sort-asc">الاسم (أ-ي)</option>
                             <option value="name_desc" id="opt-sort-desc">الاسم (ي-أ)</option>
@@ -7064,18 +7065,25 @@
 
             <!-- Play Store style Stat Bar -->
             <div id="modal-stats" class="modal-stats">
+                <div class="stat-pill" id="stat-rating">
+                    <span class="stat-label" id="stat-rating-label">التقييم</span>
+                    <span class="stat-value" id="stat-rating-val">
+                        <i class="fa-solid fa-star" style="color: #ffb703;"></i> <span>--</span>
+                    </span>
+                </div>
+                <div class="stat-divider"></div>
                 <div class="stat-pill" id="stat-version">
-                    <span class="stat-label">الإصدار</span>
+                    <span class="stat-label" id="stat-version-label">الإصدار</span>
                     <span class="stat-value" id="stat-version-val">v1.0</span>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-pill" id="stat-size">
-                    <span class="stat-label">الحجم</span>
+                    <span class="stat-label" id="stat-size-label">الحجم</span>
                     <span class="stat-value" id="stat-size-val">0 MB</span>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-pill" id="stat-type">
-                    <span class="stat-label">النوع</span>
+                    <span class="stat-label" id="stat-type-label">النوع</span>
                     <span class="stat-value" id="stat-type-val">تطبيق</span>
                 </div>
             </div>
@@ -7121,6 +7129,72 @@
                     <span id="modal-gallery-count" class="gallery-count-badge"></span>
                 </div>
                 <div id="modal-gallery-track" class="modal-gallery-track" role="region" aria-label="Screenshots"></div>
+            </div>
+
+            <!-- Ratings & Reviews Section -->
+            <div id="modal-ratings-section" class="modal-ratings-section">
+                <div class="ratings-header">
+                    <div class="ratings-header-title">
+                        <i class="fa-solid fa-star-half-stroke"></i>
+                        <span id="ratings-title-text">تقييمات المشتركين</span>
+                    </div>
+                    <span id="modal-votes-count" class="ratings-votes-badge">0 تقييم</span>
+                </div>
+                
+                <div class="ratings-card">
+                    <!-- Overall Score & Stars Meter -->
+                    <div class="ratings-score-box">
+                        <div id="ratings-big-number" class="ratings-big-number">--</div>
+                        <div id="ratings-stars-meter" class="ratings-stars-meter">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div id="ratings-subtext" class="ratings-subtext">تقييم القناة</div>
+                    </div>
+
+                    <!-- Distribution Progress Bars -->
+                    <div class="ratings-bars-list">
+                        <div class="rating-bar-row" data-key="excellent">
+                            <span class="bar-label">🔥 ممتاز</span>
+                            <div class="bar-track">
+                                <div class="bar-fill fill-excellent" style="width: 0%;"></div>
+                            </div>
+                            <span class="bar-count">0</span>
+                        </div>
+                        <div class="rating-bar-row" data-key="good">
+                            <span class="bar-label">⚡️ جيد</span>
+                            <div class="bar-track">
+                                <div class="bar-fill fill-good" style="width: 0%;"></div>
+                            </div>
+                            <span class="bar-count">0</span>
+                        </div>
+                        <div class="rating-bar-row" data-key="average">
+                            <span class="bar-label">😐 عادي</span>
+                            <div class="bar-track">
+                                <div class="bar-fill fill-average" style="width: 0%;"></div>
+                            </div>
+                            <span class="bar-count">0</span>
+                        </div>
+                        <div class="rating-bar-row" data-key="bad">
+                            <span class="bar-label">👎 سيء</span>
+                            <div class="bar-track">
+                                <div class="bar-fill fill-bad" style="width: 0%;"></div>
+                            </div>
+                            <span class="bar-count">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Telegram Poll Voting CTA Button -->
+                <div class="ratings-cta-container">
+                    <a id="modal-vote-tg-btn" href="#" target="_blank" rel="noopener noreferrer" class="ratings-vote-btn">
+                        <i class="fa-brands fa-telegram"></i>
+                        <span id="vote-tg-btn-text">شارك في التقييم على تليجرام</span>
+                    </a>
+                </div>
             </div>
 
             <!-- Large File Telegram Note (Under everything else) -->

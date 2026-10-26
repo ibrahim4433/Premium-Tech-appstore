@@ -323,6 +323,7 @@ const strings = {
         bannerDesc: "أفضل التطبيقات والألعاب المميزة",
         labelSort: "ترتيب حسب",
         optSortNew: "الأحدث",
+        optSortRating: "الأعلى تقييماً",
         optSortOld: "الأقدم",
         optSortAsc: "الاسم (أ-ي)",
         optSortDesc: "الاسم (ي-أ)",
@@ -375,6 +376,20 @@ const strings = {
         showLess: "عرض أقل",
         moreTags: "المزيد",
         channelText: "القناة الخاصة",
+        statRating: "التقييم",
+        statVersion: "الإصدار",
+        statSize: "الحجم",
+        statType: "النوع",
+        ratingsTitle: "تقييمات المشتركين",
+        ratingsSubtext: "تقييم القناة",
+        voteOnTelegram: "شارك في التقييم على تليجرام",
+        badgeNew: "جديد",
+        votesLabel: "تقييم",
+        noRatingsYet: "لا توجد تقييمات بعد",
+        ratingOptExcellent: "🔥 ممتاز",
+        ratingOptGood: "⚡️ جيد",
+        ratingOptAverage: "😐 عادي",
+        ratingOptBad: "👎 سيء",
         aboutUsTitle: "فريق IA | Incentive Aid",
         aboutUsSubtitle: "نصنع التغيير معاً • We Make The Change Together",
         aboutUsHeading: "من هم الفريق IA:",
@@ -402,6 +417,7 @@ const strings = {
         bannerDesc: "The best premium apps & games",
         labelSort: "Sort By",
         optSortNew: "Newest",
+        optSortRating: "Highest Rated",
         optSortOld: "Oldest",
         optSortAsc: "Name (A-Z)",
         optSortDesc: "Name (Z-A)",
@@ -454,6 +470,20 @@ const strings = {
         showLess: "Show less",
         moreTags: "More",
         channelText: "Channel",
+        statRating: "Rating",
+        statVersion: "Version",
+        statSize: "Size",
+        statType: "Type",
+        ratingsTitle: "Community Ratings",
+        ratingsSubtext: "Channel Rating",
+        voteOnTelegram: "Vote on Telegram",
+        badgeNew: "New",
+        votesLabel: "votes",
+        noRatingsYet: "No ratings yet",
+        ratingOptExcellent: "🔥 Excellent",
+        ratingOptGood: "⚡️ Good",
+        ratingOptAverage: "😐 Average",
+        ratingOptBad: "👎 Bad",
         aboutUsTitle: "IA Team | Incentive Aid",
         aboutUsSubtitle: "We Make The Change Together",
         aboutUsHeading: "Who is the IA Team:",
@@ -527,7 +557,7 @@ function setLanguage(lang) {
     const btnFilterText = document.getElementById('btn-filter-text');
     if (btnFilterText) btnFilterText.textContent = lang === 'ar' ? 'تصفية وترتيب' : 'Filter & Sort';
 
-    ['label-sort', 'opt-sort-new', 'opt-sort-old', 'opt-sort-asc', 'opt-sort-desc', 'opt-size-asc', 'opt-size-desc',
+    ['label-sort', 'opt-sort-new', 'opt-sort-rating', 'opt-sort-old', 'opt-sort-asc', 'opt-sort-desc', 'opt-size-asc', 'opt-size-desc',
         'label-size', 'opt-size-all', 'opt-size-small', 'opt-size-large', 'label-category', 'opt-cat-all'].forEach(id => {
             const el = document.getElementById(id);
             if (el) {
@@ -535,6 +565,21 @@ function setLanguage(lang) {
                 el.textContent = strings[lang][key];
             }
         });
+
+    const statRatingLabel = document.getElementById('stat-rating-label');
+    if (statRatingLabel) statRatingLabel.textContent = strings[lang].statRating;
+    const statVersionLabel = document.getElementById('stat-version-label');
+    if (statVersionLabel) statVersionLabel.textContent = strings[lang].statVersion;
+    const statSizeLabel = document.getElementById('stat-size-label');
+    if (statSizeLabel) statSizeLabel.textContent = strings[lang].statSize;
+    const statTypeLabel = document.getElementById('stat-type-label');
+    if (statTypeLabel) statTypeLabel.textContent = strings[lang].statType;
+    const ratingsTitleText = document.getElementById('ratings-title-text');
+    if (ratingsTitleText) ratingsTitleText.textContent = strings[lang].ratingsTitle;
+    const ratingsSubtext = document.getElementById('ratings-subtext');
+    if (ratingsSubtext) ratingsSubtext.textContent = strings[lang].ratingsSubtext;
+    const voteTgBtnText = document.getElementById('vote-tg-btn-text');
+    if (voteTgBtnText) voteTgBtnText.textContent = strings[lang].voteOnTelegram;
 
     // Update PWA UI
     const pwaBtnText = document.getElementById('pwa-btn-text');
@@ -874,10 +919,10 @@ function setupEventListeners() {
     const utilSort = document.getElementById('util-sort');
     if (utilSort) {
         utilSort.addEventListener('click', () => {
-            const sortModes = ['new', 'old', 'name_asc', 'name_desc'];
-            const icons = ['fa-clock', 'fa-clock-rotate-left', 'fa-arrow-down-a-z', 'fa-arrow-up-z-a'];
-            const labelsAr = ['الأحدث', 'الأقدم', 'أبجدي تصاعدي', 'أبجدي تنازلي'];
-            const labelsEn = ['Newest', 'Oldest', 'A-Z', 'Z-A'];
+            const sortModes = ['new', 'rating_desc', 'old', 'name_asc', 'name_desc'];
+            const icons = ['fa-clock', 'fa-star', 'fa-clock-rotate-left', 'fa-arrow-down-a-z', 'fa-arrow-up-z-a'];
+            const labelsAr = ['الأحدث', 'الأعلى تقييماً', 'الأقدم', 'أبجدي تصاعدي', 'أبجدي تنازلي'];
+            const labelsEn = ['Newest', 'Highest Rated', 'Oldest', 'A-Z', 'Z-A'];
             let idx = sortModes.indexOf(currentSortMode);
             idx = (idx + 1) % sortModes.length;
             currentSortMode = sortModes[idx];
@@ -1293,9 +1338,9 @@ function updateViewTitle(customTitle = null) {
     if (currentSearch) {
         pageTitle.textContent = strings[currentLanguage].titleSearch;
     } else if (activeView === 'home') {
-        const sortModes = ['new', 'old', 'name_asc', 'name_desc'];
-        const labelsAr = ['الأحدث', 'الأقدم', 'أبجدي تصاعدي', 'أبجدي تنازلي'];
-        const labelsEn = ['Newest', 'Oldest', 'A-Z', 'Z-A'];
+        const sortModes = ['new', 'rating_desc', 'old', 'name_asc', 'name_desc'];
+        const labelsAr = ['الأحدث', 'الأعلى تقييماً', 'الأقدم', 'أبجدي تصاعدي', 'أبجدي تنازلي'];
+        const labelsEn = ['Newest', 'Highest Rated', 'Oldest', 'A-Z', 'Z-A'];
         const idx = sortModes.indexOf(currentSortMode);
         const labels = currentLanguage === 'ar' ? labelsAr : labelsEn;
         pageTitle.textContent = labels[idx];
@@ -1646,6 +1691,12 @@ function renderApps() {
         const bDate = b.date ? b.date : b._index;
 
         if (sortMethod === 'new') return bDate - aDate; // Newest first
+        if (sortMethod === 'rating_desc') {
+            const aRating = a.rating || 0;
+            const bRating = b.rating || 0;
+            if (bRating !== aRating) return bRating - aRating;
+            return (b.votes || 0) - (a.votes || 0); // Tie-breaker: total votes
+        }
         if (sortMethod === 'old') return aDate - bDate; // Oldest first
         if (sortMethod === 'name_asc') return a.name.localeCompare(b.name);
         if (sortMethod === 'name_desc') return b.name.localeCompare(a.name);
@@ -1825,6 +1876,11 @@ function createAppCard(app, isInitial = false) {
 
     const isLarge = app.size > 19.5 * 1024 * 1024;
 
+    const hasRating = app.rating && app.votes > 0;
+    const ratingBadgeHTML = hasRating
+        ? `<span class="card-rating-badge"><i class="fa-solid fa-star"></i> ${app.rating.toFixed(1)}</span>`
+        : `<span class="card-rating-badge badge-new">${strings[currentLanguage].badgeNew || 'New'}</span>`;
+
     let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
     if (app.chat_id && app.chat_id.startsWith('-100')) {
         const baseChatId = app.chat_id.substring(4);
@@ -1844,7 +1900,10 @@ function createAppCard(app, isInitial = false) {
         </button>
         ${imgHTML}
         <div class="card-info">
-            <div class="card-title">${app.name}</div>
+            <div class="card-title-row">
+                <div class="card-title">${app.name}</div>
+                ${ratingBadgeHTML}
+            </div>
             <div class="card-desc card-category">${categoryText}</div>
         </div>
         <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
@@ -1939,6 +1998,16 @@ function openAppDetails(app, pushUrl = true) {
     // Resolve version for the Stat Bar (Title on top, value underneath)
     const resolvedVersion = app.version || parsed.extractedVersion || 'v1.0';
     const displayVersion = resolvedVersion.startsWith('v') ? resolvedVersion : 'v' + resolvedVersion;
+
+    // Stat Bar: Rating, Version, Size, Type
+    const statRatingVal = document.getElementById('stat-rating-val');
+    if (statRatingVal) {
+        if (app.rating && app.votes > 0) {
+            statRatingVal.innerHTML = `<i class="fa-solid fa-star" style="color: #ffb703;"></i> <span>${app.rating.toFixed(1)}</span>`;
+        } else {
+            statRatingVal.innerHTML = `<span class="stat-na">${strings[currentLanguage].badgeNew || 'New'}</span>`;
+        }
+    }
 
     const statVer = document.getElementById('stat-version-val');
     if (statVer) statVer.textContent = displayVersion;
@@ -2232,7 +2301,91 @@ function openAppDetails(app, pushUrl = true) {
         if (galleryTrack) galleryTrack.innerHTML = '';
     }
 
+    // Community Ratings Breakdown & Telegram Voting Link
+    renderModalRatings(app);
+
     modal.classList.add('active');
+}
+
+function renderModalRatings(app) {
+    const ratingsSection = document.getElementById('modal-ratings-section');
+    if (!ratingsSection) return;
+
+    const hasRatings = app.rating && app.votes > 0;
+    const votesCount = app.votes || 0;
+    const votesCountEl = document.getElementById('modal-votes-count');
+    const bigNumberEl = document.getElementById('ratings-big-number');
+    const starsMeterEl = document.getElementById('ratings-stars-meter');
+    const subtextEl = document.getElementById('ratings-subtext');
+    const titleTextEl = document.getElementById('ratings-title-text');
+    const voteBtn = document.getElementById('modal-vote-tg-btn');
+    const voteBtnText = document.getElementById('vote-tg-btn-text');
+
+    if (titleTextEl) titleTextEl.textContent = strings[currentLanguage].ratingsTitle || 'تقييمات المشتركين';
+    if (subtextEl) subtextEl.textContent = strings[currentLanguage].ratingsSubtext || 'تقييم القناة';
+    if (voteBtnText) voteBtnText.textContent = strings[currentLanguage].voteOnTelegram || 'شارك في التقييم على تليجرام';
+
+    if (votesCountEl) {
+        votesCountEl.textContent = `${votesCount} ${strings[currentLanguage].votesLabel || 'تقييم'}`;
+    }
+
+    if (bigNumberEl) {
+        bigNumberEl.textContent = hasRatings ? app.rating.toFixed(1) : '--';
+    }
+
+    if (starsMeterEl) {
+        const r = app.rating || 0;
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+            if (r >= i) {
+                starsHtml += '<i class="fa-solid fa-star star-filled"></i>';
+            } else if (r >= i - 0.5) {
+                starsHtml += '<i class="fa-solid fa-star-half-stroke star-half"></i>';
+            } else {
+                starsHtml += '<i class="fa-regular fa-star star-empty"></i>';
+            }
+        }
+        starsMeterEl.innerHTML = starsHtml;
+    }
+
+    const breakdown = app.rating_breakdown || {};
+    const categories = [
+        { key: 'excellent', label: strings[currentLanguage].ratingOptExcellent || '🔥 ممتاز' },
+        { key: 'good', label: strings[currentLanguage].ratingOptGood || '⚡️ جيد' },
+        { key: 'average', label: strings[currentLanguage].ratingOptAverage || '😐 عادي' },
+        { key: 'bad', label: strings[currentLanguage].ratingOptBad || '👎 سيء' }
+    ];
+
+    categories.forEach(cat => {
+        const row = ratingsSection.querySelector(`.rating-bar-row[data-key="${cat.key}"]`);
+        if (row) {
+            const count = breakdown[cat.key] || 0;
+            const percent = votesCount > 0 ? Math.round((count / votesCount) * 100) : 0;
+            const fill = row.querySelector('.bar-fill');
+            const countEl = row.querySelector('.bar-count');
+            const labelEl = row.querySelector('.bar-label');
+
+            if (labelEl) labelEl.textContent = cat.label;
+            if (fill) fill.style.width = `${percent}%`;
+            if (countEl) countEl.textContent = `${count}`;
+        }
+    });
+
+    if (voteBtn) {
+        let pollMsgId = app.poll_msg_id;
+        if (!pollMsgId && app.id && !isNaN(parseInt(app.id))) {
+            pollMsgId = parseInt(app.id) + 1;
+        }
+
+        let pollTgLink = 'https://t.me/+ij7-LS669ahhMDFk';
+        if (app.chat_id && app.chat_id.startsWith('-100') && pollMsgId) {
+            const baseChatId = app.chat_id.substring(4);
+            pollTgLink = `https://t.me/c/${baseChatId}/${pollMsgId}`;
+        } else if (pollMsgId) {
+            pollTgLink = `https://t.me/c/1423595432/${pollMsgId}`;
+        }
+        voteBtn.href = pollTgLink;
+    }
 }
 
 // ==========================================

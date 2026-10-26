@@ -336,6 +336,12 @@ def main():
                     
                     current_app['date'] = message.get('forward_date', message.get('date', 0))
                     
+                    # Associate deterministic poll message ID (Channel sequence: [N-1: Info] -> [N: APK] -> [N+1: Poll])
+                    try:
+                        current_app['poll_msg_id'] = int(current_app['id']) + 1
+                    except Exception:
+                        pass
+                    
                     # Remove older versions of the same app (Deduplication by Name)
                     apps = [a for a in apps if a.get('name', '').strip().lower() != current_app['name'].strip().lower()]
                     
