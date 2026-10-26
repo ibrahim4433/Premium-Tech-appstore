@@ -1879,7 +1879,7 @@ function createAppCard(app, isInitial = false) {
     const hasRating = app.rating && app.votes > 0;
     const ratingBadgeHTML = hasRating
         ? `<span class="card-rating-badge"><i class="fa-solid fa-star"></i> ${app.rating.toFixed(1)}</span>`
-        : `<span class="card-rating-badge badge-new">${strings[currentLanguage].badgeNew || 'New'}</span>`;
+        : '';
 
     let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
     if (app.chat_id && app.chat_id.startsWith('-100')) {
@@ -2005,7 +2005,7 @@ function openAppDetails(app, pushUrl = true) {
         if (app.rating && app.votes > 0) {
             statRatingVal.innerHTML = `<i class="fa-solid fa-star" style="color: #ffb703;"></i> <span>${app.rating.toFixed(1)}</span>`;
         } else {
-            statRatingVal.innerHTML = `<span class="stat-na">${strings[currentLanguage].badgeNew || 'New'}</span>`;
+            statRatingVal.innerHTML = `<span class="stat-na">--</span>`;
         }
     }
 
