@@ -1746,14 +1746,14 @@ a.modal-tool-btn:hover,
     border: 2px solid var(--modal-bg);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
     pointer-events: none;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s;
+    transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s;
 }
 :root[dir="rtl"] .fav-badge {
     right: auto;
     left: -4px;
 }
 .fav-badge.pop {
-    animation: badgePop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: badgePop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes badgePop {
     0% { transform: scale(0.6); }
@@ -1949,7 +1949,7 @@ html[lang="ar"] .chips-btn-left {
     justify-content: center;
     cursor: pointer;
     z-index: 5;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s, color 0.2s;
+    transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s, color 0.2s;
 }
 :root[dir="rtl"] .card-fav-btn {
     right: auto;
@@ -1967,7 +1967,7 @@ html[lang="ar"] .chips-btn-left {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 .card-fav-btn.pop {
-    animation: heartPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: heartPop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes heartPop {
     0% { transform: scale(1); }
@@ -2936,4 +2936,124 @@ a.modal-tool-btn:hover,
     }
     :root[dir="rtl"] .lightbox-close { left: 1rem; }
     :root[dir="ltr"] .lightbox-close { right: 1rem; }
+}
+
+/* ==========================================================================
+   POLISH EXTENSIONS: WCAG AAA Contrast, Search Metrics & Motion Safety
+   ========================================================================== */
+
+/* WCAG AAA Contrast: Dark text on Cyan hover in dark theme */
+:root[data-theme="dark"] .card-install-btn:hover,
+:root[data-theme="dark"] .action-btn:hover,
+:root[data-theme="dark"] .util-btn:hover,
+:root[data-theme="dark"] .util-btn.active {
+    color: #011b33;
+}
+
+/* Search Metrics Bar */
+.search-metrics-bar {
+    width: 100%;
+    margin: -0.5rem 0 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.search-count-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    background: rgba(0, 168, 232, 0.1);
+    border: 1px solid var(--border-color);
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    animation: fadeInPill 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes fadeInPill {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Polished Empty State for Zero Search Results */
+.apps-empty-state {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3.5rem 1.5rem;
+    background: var(--bg-primary);
+    border: 1px dashed var(--border-color);
+    border-radius: 24px;
+    margin: 1rem 0;
+    backdrop-filter: var(--glass-blur);
+    animation: fadeInPill 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.empty-state-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(0, 168, 232, 0.12);
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 1.25rem;
+}
+.empty-state-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+.empty-state-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    max-width: 420px;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+.empty-reset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.4rem;
+    border-radius: 24px;
+    background: var(--accent-color);
+    color: #ffffff;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.88rem;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), filter 0.18s ease;
+}
+:root[data-theme="dark"] .empty-reset-btn {
+    color: #011b33;
+}
+.empty-reset-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+.empty-reset-btn:active {
+    transform: scale(0.96);
+}
+
+/* Accessibility: Safe Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    .floating-background,
+    .bg-shapes {
+        display: none !important;
+    }
 }

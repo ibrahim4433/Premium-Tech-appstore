@@ -1,4 +1,4 @@
-const CACHE_NAME = 'premium-techs-cache-v19';
+const CACHE_NAME = 'premium-techs-cache-v20';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -36,10 +36,19 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch Event: Stale-While-Revalidate Strategy
+// Fetch Event: Stale-While-Revalidate Strategy (Excluding large binary downloads)
 self.addEventListener('fetch', (event) => {
   // We only want to handle GET requests
   if (event.request.method !== 'GET') return;
+
+  const url = new URL(event.request.url);
+  // Bypass cache for file downloads and external streams
+  if (url.searchParams.get('action') === 'download' || 
+      url.pathname.endsWith('.apk') || 
+      url.hostname.includes('telegram') || 
+      url.hostname.includes('t.me')) {
+    return;
+  }
 
   event.respondWith(
     caches.open(CACHE_NAME).then((cache) => {

@@ -15,6 +15,19 @@ let currentGroupMode = 'none';
 let currentViewMode = 'grid';
 let currentGridCols = 3;
 
+function normalizeArabic(text) {
+    if (!text) return '';
+    return text
+        .toLowerCase()
+        .replace(/[\u064B-\u065F\u0670]/g, '') // Remove Tashkeel / Harakat
+        .replace(/[أإآٱ]/g, 'ا')
+        .replace(/ة/g, 'ه')
+        .replace(/ى/g, 'ي')
+        .replace(/ؤ/g, 'و')
+        .replace(/ئ/g, 'ي')
+        .trim();
+}
+
 // DOM Elements
 const views = {
     home: document.getElementById('apps-page'), // Home reuses apps-page grid
@@ -1015,9 +1028,27 @@ function setupEventListeners() {
         if (aboutModal && aboutModal.classList.contains('active')) {
             closeAboutModal();
         }
+        const reqModal = document.getElementById('request-modal');
+        if (reqModal && reqModal.classList.contains('active')) {
+            reqModal.classList.remove('active');
+        }
+        const instModal = document.getElementById('install-modal');
+        if (instModal && instModal.classList.contains('active')) {
+            instModal.classList.remove('active');
+        }
     });
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
+            closeScreenshotLightbox();
+            if (modal && modal.classList.contains('active')) {
+                const closeBtn = document.querySelector('.close-modal');
+                if (closeBtn) closeBtn.click();
+                else {
+                    modal.classList.remove('active');
+                    window.currentModalApp = null;
+                    cleanAppQueryParam();
+                }
+            }
             const aboutModal = document.getElementById('about-modal');
             if (aboutModal && aboutModal.classList.contains('active')) {
                 closeAboutModal();
@@ -1025,6 +1056,20 @@ function setupEventListeners() {
             const favModal = document.getElementById('favorites-modal');
             if (favModal && favModal.classList.contains('active')) {
                 closeFavoritesModal();
+            }
+            const reqModal = document.getElementById('request-modal');
+            if (reqModal && reqModal.classList.contains('active')) {
+                reqModal.classList.remove('active');
+            }
+            const instModal = document.getElementById('install-modal');
+            if (instModal && instModal.classList.contains('active')) {
+                instModal.classList.remove('active');
+            }
+            const filterPanel = document.getElementById('filter-panel');
+            if (filterPanel && filterPanel.style.display !== 'none') {
+                filterPanel.style.display = 'none';
+                const filterToggle = document.getElementById('filter-toggle');
+                if (filterToggle) filterToggle.classList.remove('active');
             }
         }
     });
@@ -1321,8 +1366,23 @@ function renderBanners() {
         div.dataset.index = index;
         div.style.scrollSnapAlign = 'center';
 
-        // Handle Action Click
+        // Handle Action Click (avoiding accidental fire on touch swipe/drag)
+        let bannerTouchStartX = 0;
+        let isBannerSwiping = false;
+
+        div.addEventListener('touchstart', (e) => {
+            bannerTouchStartX = e.touches[0].clientX;
+            isBannerSwiping = false;
+        }, { passive: true });
+
+        div.addEventListener('touchmove', (e) => {
+            if (Math.abs(e.touches[0].clientX - bannerTouchStartX) > 10) {
+                isBannerSwiping = true;
+            }
+        }, { passive: true });
+
         div.addEventListener('click', () => {
+            if (isBannerSwiping) return;
             if (!bannerConfig.action) return;
             if (bannerConfig.action.type === 'link') {
                 window.open(bannerConfig.action.target, '_blank');
@@ -1462,11 +1522,12 @@ function renderCategories() {
         const count = allApps.filter(app => appMatchesCategory(app, cat.id)).length;
         if (count === 0) return;
 
-        // If user typed in search bar, filter by name or description
+        // If user typed in search bar, filter by name or description (with Arabic normalization)
         if (currentSearch && !currentSearch.startsWith('#')) {
             const query = currentSearch.toLowerCase();
-            const matchesName = catName.toLowerCase().includes(query);
-            const matchesDesc = catDesc.toLowerCase().includes(query);
+            const normQuery = normalizeArabic(currentSearch);
+            const matchesName = catName.toLowerCase().includes(query) || normalizeArabic(catName).includes(normQuery);
+            const matchesDesc = catDesc.toLowerCase().includes(query) || normalizeArabic(catDesc).includes(normQuery);
             if (!matchesName && !matchesDesc) return;
         }
 
@@ -1566,10 +1627,14 @@ function renderApps() {
         if (sizeFilter === 'small' && isLarge) return false;
         if (sizeFilter === 'large' && !isLarge) return false;
 
-        // Text Search
+        // Text Search (with smart Arabic normalization)
         if (currentSearch && !currentSearch.startsWith('#')) {
             const term = currentSearch.toLowerCase();
-            return app.name.toLowerCase().includes(term) || (app.description && app.description.toLowerCase().includes(term));
+            const normTerm = normalizeArabic(currentSearch);
+            const nameNorm = normalizeArabic(app.name);
+            const descNorm = normalizeArabic(app.description || '');
+            return nameNorm.includes(normTerm) || descNorm.includes(normTerm) ||
+                   app.name.toLowerCase().includes(term) || (app.description && app.description.toLowerCase().includes(term));
         }
         return true;
     });
@@ -1592,8 +1657,41 @@ function renderApps() {
     currentFilteredApps = filteredApps;
     currentlyRenderedCount = 0;
 
+    // Update Search Metrics Counter
+    const searchMetricsBar = document.getElementById('search-metrics-bar');
+    const searchCountPill = document.getElementById('search-count-pill');
+    if (searchMetricsBar && searchCountPill) {
+        if (currentSearch && !currentSearch.startsWith('#')) {
+            const countLabel = currentLanguage === 'ar'
+                ? `نتائج البحث (${filteredApps.length})`
+                : `Search results (${filteredApps.length})`;
+            searchCountPill.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> <span>${countLabel}</span>`;
+            searchMetricsBar.style.display = 'flex';
+        } else {
+            searchMetricsBar.style.display = 'none';
+        }
+    }
+
     if (filteredApps.length === 0) {
-        appsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 3rem;">${strings[currentLanguage].empty}</div>`;
+        const isSearch = Boolean(currentSearch);
+        const emptyTitle = isSearch
+            ? (currentLanguage === 'ar' ? 'لا توجد نتائج تطابق بحثك' : 'No matching results found')
+            : strings[currentLanguage].empty;
+        const emptyDesc = isSearch
+            ? (currentLanguage === 'ar' ? 'جرّب كتابة كلمات بحث أخرى أو تأكد من صحة الحروف' : 'Try searching for different keywords or check spelling')
+            : '';
+        const resetBtnHTML = isSearch
+            ? `<button type="button" class="empty-reset-btn" onclick="clearSearchFilter();"><i class="fa-solid fa-rotate-left"></i> ${currentLanguage === 'ar' ? 'مسح البحث وعرض الكل' : 'Clear search & show all'}</button>`
+            : '';
+
+        appsGrid.innerHTML = `
+            <div class="apps-empty-state">
+                <div class="empty-state-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <h3 class="empty-state-title">${emptyTitle}</h3>
+                ${emptyDesc ? `<p class="empty-state-desc">${emptyDesc}</p>` : ''}
+                ${resetBtnHTML}
+            </div>
+        `;
         return;
     }
 
@@ -2670,6 +2768,20 @@ function setActiveCategoryChip(chipId) {
     });
 }
 
+function clearSearchFilter() {
+    const searchInput = document.getElementById('search-input');
+    const searchClear = document.getElementById('search-clear');
+    if (searchInput) searchInput.value = '';
+    if (searchClear) searchClear.style.display = 'none';
+    currentSearch = '';
+    setActiveCategoryChip('all');
+    const catSelect = document.getElementById('category-select');
+    if (catSelect) catSelect.value = 'all';
+    updateViewTitle();
+    renderApps();
+}
+window.clearSearchFilter = clearSearchFilter;
+
 function initChipsDragAndScroll() {
     const container = document.getElementById('category-chips-bar');
     const btnLeft = document.getElementById('chips-btn-left');
@@ -2820,21 +2932,25 @@ function cleanAppQueryParam() {
 }
 
 function createFloatingBackground() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return; // Respect reduced motion accessibility preference
+    }
     const bgContainer = document.createElement('div');
     bgContainer.className = 'floating-background';
     document.body.appendChild(bgContainer);
 
     const icons = ['fa-paper-plane', 'fa-android'];
-    const numIcons = 20;
+    // On mobile devices, keep ambient animation lightweight to conserve battery and GPU
+    const numIcons = window.innerWidth < 768 ? 6 : 14;
 
     for (let i = 0; i < numIcons; i++) {
         const icon = document.createElement('i');
         const iconClass = icons[Math.floor(Math.random() * icons.length)];
         icon.className = iconClass === 'fa-paper-plane' ? `fa-solid ${iconClass} floating-icon` : `fa-brands ${iconClass} floating-icon`;
 
-        const size = Math.random() * 25 + 15;
+        const size = Math.random() * 20 + 14;
         const left = Math.random() * 100;
-        const duration = Math.random() * 20 + 15;
+        const duration = Math.random() * 20 + 18;
         const delay = Math.random() * 20;
 
         icon.style.fontSize = `${size}px`;
@@ -2904,9 +3020,10 @@ if (confirmInstallBtn) {
             if (installBtn) installBtn.style.display = 'none';
             if (staticInstallBtn) staticInstallBtn.style.display = 'none';
         } else {
-            alert(document.documentElement.lang === 'ar'
-                ? "لا يمكن تثبيت التطبيق حالياً. قد يكون مثبتاً بالفعل، أو أن المتصفح لا يدعم هذه الميزة (تأكد من فتح الرابط الرسمي)."
-                : "Cannot install app right now. It might already be installed, or your browser doesn't support it (make sure you are on the live HTTPS link).");
+            const msg = currentLanguage === 'ar'
+                ? "لا يمكن تثبيت المتجر حالياً. قد يكون مثبتاً بالفعل، أو افتح الموقع عبر متصفح Chrome/Safari الرسمي."
+                : "Cannot install app right now. It might already be installed, or browser support is limited.";
+            showToast(msg, 'info', 'fa-circle-info');
         }
     });
 }

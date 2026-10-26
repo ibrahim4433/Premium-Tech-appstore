@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Premium Techs | متجر تطبيقات وألعاب بريميوم</title> />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Premium Techs | متجر تطبيقات وألعاب بريميوم</title>
     <meta name="google-site-verification" content="3xQrIN_uGa8tSJMAcx0zVk6st3wzhpm6akJZOb0M7XM" />
     <meta name="description"
         content="أفضل متجر لتحميل التطبيقات والألعاب المدفوعة والمعدلة بريميوم مجاناً مباشرة. Download the latest premium apps and games for free.">
@@ -47,12 +47,12 @@
     <link rel="preload" href="css/style.css?v=27" as="style">
     <link rel="preload" href="js/app.js?v=27" as="script">
     <link rel="preload"
-        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
         as="style">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/style.css?v=27">
     <!-- FontAwesome for icons -->
@@ -74,8 +74,8 @@
             console.log('[PWA] beforeinstallprompt event fired! App is ready to be installed.');
             e.preventDefault();
             window.deferredPrompt = e;
-            const btn = document.getElementById('pwa-install-btn');
-            if (btn) btn.style.display = 'flex';
+            const btn = document.getElementById('static-install-btn') || document.getElementById('pwa-install-btn');
+            if (btn) btn.style.display = 'inline-flex';
 
             // Auto-show popup on big screens if not dismissed before
             if (window.innerWidth >= 768 && !localStorage.getItem('pwa-popup-dismissed')) {
@@ -7012,6 +7012,9 @@
                             aria-label="عدد الأعمدة">
                     </div>
                 </div>
+            </div>
+            <div id="search-metrics-bar" class="search-metrics-bar" style="display: none;">
+                <span id="search-count-pill" class="search-count-pill"></span>
             </div>
             <div id="loading" class="loading">
                 <i class="fa-solid fa-circle-notch fa-spin"></i> <span id="loading-text">جاري التحميل...</span>
