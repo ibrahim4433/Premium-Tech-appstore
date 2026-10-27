@@ -8,6 +8,11 @@ const STREAMER_URL = "";
 
 function getDownloadUrl(app) {
     if (!app) return '#';
+    // 1. Direct Cloud Mirror (e.g. GitHub Releases - instant high-speed browser download)
+    if (app.download_url) {
+        return app.download_url;
+    }
+
     const filename = encodeURIComponent(app.file_name || `${app.name || 'app'}.apk`);
     const chatId = encodeURIComponent(app.chat_id || '-1001423595432');
     const msgId = encodeURIComponent(app.id || '');

@@ -4,10 +4,17 @@ on:
   schedule:
     - cron: '0 */6 * * *' # Runs every 6 hours
   workflow_dispatch: # Allows manual trigger from GitHub UI
+    inputs:
+      max_mirror:
+        description: 'Number of large apps (>20MB) to mirror to GitHub Releases'
+        required: false
+        default: '10'
 
 jobs:
   update-data:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -20,11 +27,15 @@ jobs:
           python-version: '3.10'
 
       - name: Install Dependencies
-        run: pip install requests
+        run: pip install requests telethon cryptg
 
-      - name: Fetch Telegram Updates
+      - name: Fetch Telegram Updates and Mirror Large Apps
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
+          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAX_MIRROR: ${{ inputs.max_mirror || '5' }}
         run: python scripts/update.py
 
       - name: Commit and Push Changes
