@@ -1,0 +1,4 @@
+{
+  "install": "pip3 install --user -r streamer/requirements.txt",
+  "start": "python3 streamer/app.py"
+}

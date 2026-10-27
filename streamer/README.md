@@ -1,4 +1,4 @@
-# 🚀 Telegram MTProto File Streamer (100% Free Forever)
+# 🚀 Telegram MTProto File Streamer (100% Free Forever · No Credit Card Required)
 
 This microservice uses **Telethon (Telegram MTProto Client API)** to stream files up to **2,000 MB (2 GB)** directly from your Telegram channel to website visitors' browsers with **zero storage cost** and **100% security**.
 
@@ -17,29 +17,25 @@ This microservice uses **Telethon (Telegram MTProto Client API)** to stream file
 
 ---
 
-## ☁️ Step 2: Deploy to Render.com (100% Free Forever · Recommended)
+## ☁️ Step 2: Deploy to Glitch.com (100% Free · No Credit Card Required)
 
-Render offers a permanent **Free Web Service** tier ($0/month, no credit card required) that runs Python and FastAPI natively with zero restrictions.
+Glitch is a generous cloud platform that **never asks for a credit card** and gives you a free permanent HTTPS server.
 
-1. Go to [https://render.com](https://render.com) and click **Sign Up** -> choose **GitHub**.
-2. Click the **New +** button at the top right -> choose **Web Service**.
-3. Select **Build and deploy from a Git repository** and connect your repository: `Premium-Tech-appstore`.
-4. Configure these fields:
-   - **Name:** `appstore-streamer` (or any name)
-   - **Region:** Frankfurt (EU) or Oregon (US)
-   - **Branch:** `main`
-   - **Root Directory:** `streamer`
-   - **Runtime:** `Python 3`
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `uvicorn app:app --host 0.0.0.0 --port $PORT`
-   - **Instance Type:** Select **`Free`** ($0/month)
-5. Scroll down to **Environment Variables** and click **Add Environment Variable** for these 3:
-   - Key: `TELEGRAM_BOT_TOKEN` | Value: (Your Bot Token from @BotFather)
-   - Key: `TELEGRAM_API_ID` | Value: (Your numeric `api_id`)
-   - Key: `TELEGRAM_API_HASH` | Value: (Your string `api_hash`)
-6. Click **Deploy Web Service** at the bottom!
-7. Render will build and deploy your streamer in ~1 minute. Once live, copy your service URL:
-   - Format: `https://appstore-streamer.onrender.com`
+1. Go to **[https://glitch.com](https://glitch.com)** and sign in with your GitHub account.
+2. Click the **New Project** button at the top right -> choose **Import from GitHub**.
+3. In the popup, paste your GitHub repository:
+   `your-username/Premium-Tech-appstore`
+4. Glitch will clone your repository into a fresh project in 5 seconds!
+5. In the left sidebar file list, click on the **`.env`** file (Glitch's private secrets file) and add these 3 variables:
+   ```env
+   TELEGRAM_BOT_TOKEN=your_bot_token_here
+   TELEGRAM_API_ID=your_api_id_here
+   TELEGRAM_API_HASH=your_api_hash_here
+   ```
+6. Glitch reads `glitch.json` and automatically starts your streamer on port 3000!
+7. To find your public URL:
+   - Click **Share** (top right) -> copy the **Live Site** link (or click **Preview** -> **Open in new window**).
+   - Your URL looks like: `https://<your-project-name>.glitch.me`
 
 ---
 
@@ -49,15 +45,15 @@ Render offers a permanent **Free Web Service** tier ($0/month, no credit card re
 2. Go to **Settings** -> **Variables and Secrets**.
 3. Under **Environment Variables**, click **Add**:
    - Variable name: `STREAMER_URL`
-   - Value: `https://appstore-streamer.onrender.com` (your URL from Step 2)
+   - Value: `https://<your-project-name>.glitch.me` (your URL from Step 2)
 4. Click **Save and Deploy**.
-5. Update your worker code with [`worker/index.js`](../worker/index.js) and click **Deploy**.
+5. Deploy the updated worker code from [`worker/index.js`](../worker/index.js).
 
 ---
 
 ## 🧪 Testing the Streamer
 Visit your streamer URL in your browser:
-`https://appstore-streamer.onrender.com`
+`https://<your-project-name>.glitch.me`
 
-You will see the active status dashboard and connected bot name (`@Premium_tech_store_bot`).
-Now click "Download" on any 500MB+ game on your website and watch it download instantly in the browser!
+You will see the active dark-mode dashboard and your connected bot name (`@Premium_tech_store_bot`).
+Now click "Download" on any 500MB+ game on your website and watch it download directly in the browser!

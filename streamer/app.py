@@ -232,5 +232,5 @@ async def download_by_query(
     return await stream_telegram_file(chat_id, target_msg_id, filename, request)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 7860))
-    uvicorn.run("app:app", host="0.0.0.0", port=port, reload=False)
+    port = int(os.environ.get("PORT", 3000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
