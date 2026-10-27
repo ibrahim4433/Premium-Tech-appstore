@@ -237,169 +237,6 @@ def find_target_app(reply_msg, apps, current_app):
     return None
 
 
-TELEGRAM_API_ID = os.environ.get('TELEGRAM_API_ID')
-TELEGRAM_API_HASH = os.environ.get('TELEGRAM_API_HASH')
-GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN')
-GITHUB_REPOSITORY = os.environ.get('GITHUB_REPOSITORY', 'ibrahim4433/Premium-Tech-appstore')
-
-def get_tag_for_msg_id(msg_id):
-    try:
-        val = int(msg_id)
-        bucket = (val // 500) * 500
-        return f"apps-{bucket}"
-    except Exception:
-        return "apps-large"
-
-def get_or_create_release(repo, token, tag):
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Accept": "application/vnd.github+json"
-    }
-    url = f"https://api.github.com/repos/{repo}/releases/tags/{tag}"
-    try:
-        res = requests.get(url, headers=headers, timeout=15)
-        if res.status_code == 200:
-            return res.json()
-        
-        create_url = f"https://api.github.com/repos/{repo}/releases"
-        payload = {
-            "tag_name": tag,
-            "name": f"AppStore Downloads ({tag})",
-            "body": f"Automated cloud mirrors for large files in {tag}",
-            "draft": False,
-            "prerelease": False
-        }
-        cr = requests.post(create_url, headers=headers, json=payload, timeout=15)
-        if cr.status_code in (200, 201):
-            return cr.json()
-    except Exception as e:
-        print(f"Error getting/creating release {tag}: {e}")
-    return None
-
-def upload_release_asset(repo, token, release, filepath, asset_name):
-    import urllib.parse
-    for asset in release.get("assets", []):
-        if asset.get("name") == asset_name:
-            print(f"Asset {asset_name} already present in release.")
-            return asset.get("browser_download_url")
-            
-    upload_url_tmpl = release.get("upload_url", "")
-    upload_url = upload_url_tmpl.split("{")[0] + f"?name={urllib.parse.quote(asset_name)}"
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Accept": "application/vnd.github+json",
-        "Content-Type": "application/vnd.android.package-archive"
-    }
-    with open(filepath, "rb") as f:
-        res = requests.post(upload_url, headers=headers, data=f, timeout=300)
-    if res.status_code in (200, 201):
-        url = res.json().get("browser_download_url")
-        print(f"Successfully uploaded {asset_name} -> {url}")
-        return url
-    else:
-        print(f"Failed to upload asset {asset_name}: {res.status_code} {res.text[:100]}")
-        return None
-
-async def run_mirroring(apps, max_mirror=5):
-    from telethon import TelegramClient
-    import tempfile
-    
-    candidates = [a for a in apps if a.get('size', 0) > 20 * 1024 * 1024 and not a.get('download_url') and a.get('id')]
-    if not candidates:
-        print("All large apps already have direct download URLs!")
-        return 0
-        
-    print(f"Found {len(candidates)} large apps needing direct download mirrors. Processing up to {max_mirror}...")
-    to_process = candidates[:max_mirror]
-    
-    client = TelegramClient('action_bot_session', int(TELEGRAM_API_ID), TELEGRAM_API_HASH)
-    await client.start(bot_token=BOT_TOKEN)
-    
-    mirrored_count = 0
-    release_cache = {}
-    
-    try:
-        for app in to_process:
-            msg_id = str(app.get('id'))
-            chat_id = app.get('chat_id') or '-1001423595432'
-            name = app.get('name', 'app')
-            size_mb = app.get('size', 0) / (1024 * 1024)
-            print(f"\nMirroring [{msg_id}] {name} ({size_mb:.1f} MB)...")
-            
-            tag = get_tag_for_msg_id(msg_id)
-            if tag not in release_cache:
-                release_cache[tag] = get_or_create_release(GITHUB_REPOSITORY, GITHUB_TOKEN, tag)
-            release = release_cache.get(tag)
-            if not release:
-                print(f"Could not get or create release for tag {tag}. Skipping.")
-                continue
-                
-            raw_fn = app.get('file_name') or f"{name}.apk"
-            clean_filename = re.sub(r'[^a-zA-Z0-9_\-\.]', '_', raw_fn)
-            clean_filename = re.sub(r'_+', '_', clean_filename).strip('_')
-            if not clean_filename or clean_filename == '.apk':
-                clean_filename = f"app_{msg_id}.apk"
-            if not clean_filename.lower().endswith('.apk'):
-                clean_filename += '.apk'
-            asset_name = f"{msg_id}_{clean_filename}"
-            
-            existing_url = None
-            for asset in release.get("assets", []):
-                if asset.get("name") == asset_name:
-                    existing_url = asset.get("browser_download_url")
-                    break
-            if existing_url:
-                app['download_url'] = existing_url
-                mirrored_count += 1
-                print(f"Reused existing release asset: {existing_url}")
-                continue
-                
-            temp_dir = tempfile.mkdtemp()
-            temp_file = os.path.join(temp_dir, asset_name)
-            try:
-                norm_chat = int(chat_id)
-                try:
-                    entity = await client.get_entity(norm_chat)
-                except Exception:
-                    entity = norm_chat
-                message = await client.get_messages(entity, ids=int(msg_id))
-                if not message or not message.media:
-                    print(f"Message or media {msg_id} not found in channel {chat_id}.")
-                    continue
-                    
-                print(f"Downloading {name} from Telegram...")
-                await client.download_media(message, temp_file)
-                if not os.path.exists(temp_file):
-                    print("Download failed or file not saved.")
-                    continue
-                    
-                print(f"Uploading to GitHub Release '{tag}'...")
-                dl_url = upload_release_asset(GITHUB_REPOSITORY, GITHUB_TOKEN, release, temp_file, asset_name)
-                if dl_url:
-                    app['download_url'] = dl_url
-                    mirrored_count += 1
-            except Exception as e:
-                print(f"Error mirroring {name}: {e}")
-            finally:
-                if os.path.exists(temp_file):
-                    os.remove(temp_file)
-                if os.path.exists(temp_dir):
-                    os.rmdir(temp_dir)
-    finally:
-        await client.disconnect()
-        
-    return mirrored_count
-
-def mirror_large_apps(apps, max_mirror=5):
-    if not (TELEGRAM_API_ID and TELEGRAM_API_HASH and GITHUB_TOKEN and GITHUB_REPOSITORY and BOT_TOKEN):
-        return 0
-    try:
-        import asyncio
-        return asyncio.run(run_mirroring(apps, max_mirror=max_mirror))
-    except Exception as e:
-        print(f"Mirroring encountered an error: {e}")
-        return 0
-
 def main():
     if not BOT_TOKEN:
         print("Error: TELEGRAM_BOT_TOKEN environment variable not set.")
@@ -554,16 +391,12 @@ def main():
         offset = highest_offset
         save_offset(highest_offset)
 
-    # Automated Cloud Mirroring for large apps (> 20MB) to GitHub Releases
-    max_m = int(os.environ.get('MAX_MIRROR', '5'))
-    mirrored = mirror_large_apps(apps, max_mirror=max_m)
-
-    if added_count > 0 or mirrored > 0:
+    if added_count > 0:
         save_apps(apps)
         update_seo_html(apps)
         
     save_offset(highest_offset)
-    print(f"Processed {added_count} new apps, mirrored {mirrored} large downloads.")
+    print(f"Processed {added_count} new apps.")
 
 if __name__ == "__main__":
     main()
