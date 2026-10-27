@@ -2,6 +2,24 @@
 // STORE CONFIGURATION
 // ==========================================
 const WORKER_URL = "https://appstore-proxy.iateam.workers.dev"; // The worker URL from user
+// Optional direct MTProto Streamer URL (e.g. "https://your-username-appstore-streamer.hf.space")
+// If empty, downloads route via WORKER_URL, which auto-redirects large files to STREAMER_URL
+const STREAMER_URL = ""; 
+
+function getDownloadUrl(app) {
+    if (!app) return '#';
+    const filename = encodeURIComponent(app.file_name || `${app.name || 'app'}.apk`);
+    const chatId = encodeURIComponent(app.chat_id || '-1001423595432');
+    const msgId = encodeURIComponent(app.id || '');
+    const fileId = encodeURIComponent(app.file_id || '');
+
+    if (typeof STREAMER_URL !== 'undefined' && STREAMER_URL) {
+        const cleanStreamer = STREAMER_URL.replace(/\/+$/, '');
+        return `${cleanStreamer}/download/${chatId}/${msgId}?filename=${filename}`;
+    }
+
+    return `${WORKER_URL}/?id=${fileId}&chat_id=${chatId}&msg_id=${msgId}&action=download&filename=${filename}`;
+}
 
 let storeBanners = [];
 // ==========================================
@@ -331,8 +349,8 @@ const strings = {
         optSizeDesc: "الحجم (الأكبر)",
         labelSize: "حجم الملف",
         optSizeAll: "الكل",
-        optSizeSmall: "أصغر من 20MB (مباشر)",
-        optSizeLarge: "أكبر من 20MB (تليجرام)",
+        optSizeSmall: "أقل من 20MB",
+        optSizeLarge: "أكبر من 20MB",
         labelCategory: "التصنيف",
         optCatAll: "الكل",
         pwaInstallBtn: "تثبيت المتجر",
@@ -347,7 +365,30 @@ const strings = {
         reqModOtherPh: "تعديل آخر... (اكتب هنا)",
         reqLabelNotes: "ملاحظات إضافية (اختياري)",
         reqNotesPh: "أي تفاصيل أخرى...",
-        reqBtnSubmit: "إرسال الطلب عبر تليجرام",
+        reqBtnSubmit: "متابعة وإرسال عبر بوت تليجرام",
+        reqHintText: "سيتم تحويلك مباشرة إلى بوت تليجرام (@IA_Assistantbot) لتسليم طلبك لفريق الدعم ومتابعة توفيره فوراً.",
+        tgGateBadgeText: "تنبيه هام للتحميل عبر تليجرام",
+        tgGateTitle: "تنبيه هام قبل التحميل",
+        tgGateText: "روابط التحميل المباشرة خاصة بقناتنا. يرجى <strong>الانضمام للقناة أولاً</strong> لتجنب ظهور رسالة \"رسالة في قناة خاصة\" عند النقر على التحميل.",
+        tgGateJoinBtn: "1. انضمام للقناة أولاً (مطلوب)",
+        tgGateStepHint: "2. ثم اضغط زر التحميل أدناه ⬇️",
+        safetyTitle: "فحص الأمان ومصادقة IA Team",
+        safetyClean: "آمن 100%",
+        safetyPoint1: "مفحوص عبر أكثر من 70 محرك حماية (VirusTotal)",
+        safetyPoint2: "النسخة خالية من الإعلانات المزعجة والبرمجيات الخبيثة",
+        safetyPoint3: "توقيع رقمي موثوق وتم اختبار استقرار التثبيت",
+        safetyInstallTip: "نصيحة تثبيت: إذا كانت هذه أول مرة تثبّت فيها تطبيقاً خارج متجر Google Play، فعّل خيار \"السماح بالتثبيت من هذا المصدر\" في إعدادات جهازك.",
+        footerBrandSub: "بإشراف فريق IA Team | Incentive Aid",
+        footerDesc: "المتجر العربي الأول لاكتشاف وتنزيل أحدث التطبيقات والألعاب المعدلة الآمنة. بيئة موثوقة وخالية من الإعلانات مع روابط مباشرة وسريعة.",
+        footerTrustHeading: "الأمان والتحقق",
+        footerLinksHeading: "روابط سريعة",
+        footerTrust1: "فحص أمان كامل عبر أكثر من 70 محرك حماية (VirusTotal)",
+        footerTrust2: "خالٍ تماماً من الإعلانات المزعجة والتتبع",
+        footerTrust3: "تحميل مباشر وسريع بدون اختصار روابط",
+        footerTrust4: "تحديثات مستمرة واختبار استقرار دوري للنسخ",
+        footerAboutUs: "عن فريق IA Team",
+        footerDisclaimer: "<strong>إخلاء مسؤولية:</strong> كافة التطبيقات والألعاب المنشورة مقدمة لأغراض التجربة والمعاينة التعليمية فقط. جميع حقوق النشر والعلامات التجارية محفوظة لأصحابها ومطوريها الأصليين.",
+        footerCopyright: "© 2020-2026 <strong>IA Team | Incentive Aid</strong>. جميع الحقوق محفوظة.",
         favorites: "المفضلة",
         favoritesSubtitle: "التطبيقات المحفوظة",
         emptyFavorites: "قائمتك المفضلة فارغة حالياً",
@@ -425,8 +466,8 @@ const strings = {
         optSizeDesc: "Size (Largest)",
         labelSize: "File Size",
         optSizeAll: "All",
-        optSizeSmall: "< 20MB (Direct)",
-        optSizeLarge: "> 20MB (Telegram)",
+        optSizeSmall: "< 20MB",
+        optSizeLarge: "> 20MB",
         labelCategory: "Category",
         optCatAll: "All",
         pwaInstallBtn: "Install Store",
@@ -441,7 +482,30 @@ const strings = {
         reqModOtherPh: "Other mod... (Type here)",
         reqLabelNotes: "Additional Notes (Optional)",
         reqNotesPh: "Any other details...",
-        reqBtnSubmit: "Send Request via Telegram",
+        reqBtnSubmit: "Continue & Send via Telegram Bot",
+        reqHintText: "You will be redirected to the Telegram bot (@IA_Assistantbot) to submit your request directly to our team.",
+        tgGateBadgeText: "Important Prerequisite for Telegram Downloads",
+        tgGateTitle: "Important Prerequisite Before Downloading",
+        tgGateText: "Direct download links require Telegram channel membership. Please <strong>join the channel first</strong> to avoid the \"Message in a private channel\" error.",
+        tgGateJoinBtn: "1. Join Channel First (Required)",
+        tgGateStepHint: "2. Then click the download button below ⬇️",
+        safetyTitle: "Security Verification & IA Team Seal",
+        safetyClean: "100% Clean",
+        safetyPoint1: "Scanned across 70+ antivirus engines (VirusTotal Clean)",
+        safetyPoint2: "Zero intrusive ads, tracking, or malware detected",
+        safetyPoint3: "Verified digital signature & installation tested",
+        safetyInstallTip: "Installation tip: If this is your first time installing an APK outside Google Play, enable 'Allow from this source' in your device settings.",
+        footerBrandSub: "Supervised by IA Team | Incentive Aid",
+        footerDesc: "The premier storefront for discovering and downloading safe, verified modded Android apps & games. Clean, ad-free experience with direct links.",
+        footerTrustHeading: "Security & Trust",
+        footerLinksHeading: "Quick Links",
+        footerTrust1: "Rigorous virus scanning via 70+ engines (VirusTotal)",
+        footerTrust2: "Completely free of intrusive ads and tracking",
+        footerTrust3: "Fast, direct downloads without URL shorteners",
+        footerTrust4: "Continuous updates and stability testing",
+        footerAboutUs: "About IA Team",
+        footerDisclaimer: "<strong>Disclaimer:</strong> All published applications and games are provided for evaluation and testing purposes only. All copyrights belong to their respective creators.",
+        footerCopyright: "© 2020-2026 <strong>IA Team | Incentive Aid</strong>. All rights reserved.",
         favorites: "Favorites",
         favoritesSubtitle: "Saved Apps",
         emptyFavorites: "Your favorites list is currently empty",
@@ -758,24 +822,10 @@ function setLanguage(lang) {
             }
         }
 
-        const isLarge = window.currentModalApp.size > 19.5 * 1024 * 1024;
         const noteContainer = document.getElementById('modal-note-container');
         if (noteContainer) {
-            if (isLarge) {
-                const noteText = lang === 'ar'
-                    ? 'ملاحظة: يجب الانضمام للقناة الخاصة أولاً لتتمكن من تحميل هذا الملف الكبير عبر تليجرام.'
-                    : 'Note: You must join the private channel first to download this large file via Telegram.';
-                noteContainer.innerHTML = `
-                    <div class="modal-note-card">
-                        <i class="fa-solid fa-circle-info"></i>
-                        <span>${noteText}</span>
-                    </div>
-                `;
-                noteContainer.style.display = 'block';
-            } else {
-                noteContainer.innerHTML = '';
-                noteContainer.style.display = 'none';
-            }
+            noteContainer.innerHTML = '';
+            noteContainer.style.display = 'none';
         }
 
         const statType = document.getElementById('stat-type-val');
@@ -789,6 +839,70 @@ function setLanguage(lang) {
     document.querySelectorAll('.cb-text').forEach(span => {
         span.textContent = span.getAttribute(`data-${lang}`);
     });
+
+        // Update Telegram Gate Box strings
+    const tgGateBadgeText = document.getElementById('tg-gate-badge-text');
+    if (tgGateBadgeText) tgGateBadgeText.textContent = strings[lang].tgGateBadgeText;
+    const tgGateTitle = document.getElementById('tg-gate-title');
+    if (tgGateTitle) tgGateTitle.textContent = strings[lang].tgGateTitle;
+    const tgGateText = document.getElementById('tg-gate-text');
+    if (tgGateText) tgGateText.innerHTML = strings[lang].tgGateText;
+    const modalJoinGateText = document.getElementById('modal-join-gate-text');
+    if (modalJoinGateText) modalJoinGateText.textContent = strings[lang].tgGateJoinBtn;
+    const tgGateStepHint = document.getElementById('tg-gate-step-hint');
+    if (tgGateStepHint) tgGateStepHint.textContent = strings[lang].tgGateStepHint;
+
+    // Update Safety Box strings
+    const safetyTitleText = document.getElementById('safety-title-text');
+    if (safetyTitleText) safetyTitleText.textContent = strings[lang].safetyTitle;
+    const safetyCleanText = document.getElementById('safety-clean-text');
+    if (safetyCleanText) safetyCleanText.textContent = strings[lang].safetyClean;
+    const safetyPoint1 = document.getElementById('safety-point-1');
+    if (safetyPoint1) safetyPoint1.textContent = strings[lang].safetyPoint1;
+    const safetyPoint2 = document.getElementById('safety-point-2');
+    if (safetyPoint2) safetyPoint2.textContent = strings[lang].safetyPoint2;
+    const safetyPoint3 = document.getElementById('safety-point-3');
+    if (safetyPoint3) safetyPoint3.textContent = strings[lang].safetyPoint3;
+    const safetyInstallTip = document.getElementById('safety-install-tip');
+    if (safetyInstallTip) safetyInstallTip.textContent = strings[lang].safetyInstallTip;
+
+    // Update Request Modal Hint
+    const reqHintText = document.getElementById('req-hint-text');
+    if (reqHintText) reqHintText.textContent = strings[lang].reqHintText;
+
+    // Update Footer strings
+    const footerBrandSub = document.getElementById('footer-brand-sub');
+    if (footerBrandSub) footerBrandSub.textContent = strings[lang].footerBrandSub;
+    const footerDesc = document.getElementById('footer-desc');
+    if (footerDesc) footerDesc.textContent = strings[lang].footerDesc;
+    const footerHeadingTrust = document.getElementById('footer-heading-trust');
+    if (footerHeadingTrust) footerHeadingTrust.textContent = strings[lang].footerTrustHeading;
+    const footerHeadingLinks = document.getElementById('footer-heading-links');
+    if (footerHeadingLinks) footerHeadingLinks.textContent = strings[lang].footerLinksHeading;
+    const footerTrust1 = document.getElementById('footer-trust-1');
+    if (footerTrust1) footerTrust1.textContent = strings[lang].footerTrust1;
+    const footerTrust2 = document.getElementById('footer-trust-2');
+    if (footerTrust2) footerTrust2.textContent = strings[lang].footerTrust2;
+    const footerTrust3 = document.getElementById('footer-trust-3');
+    if (footerTrust3) footerTrust3.textContent = strings[lang].footerTrust3;
+    const footerTrust4 = document.getElementById('footer-trust-4');
+    if (footerTrust4) footerTrust4.textContent = strings[lang].footerTrust4;
+    const footerLinkHomeText = document.getElementById('footer-link-home-text');
+    if (footerLinkHomeText) footerLinkHomeText.textContent = strings[lang].navHome;
+    const footerLinkAppsText = document.getElementById('footer-link-apps-text');
+    if (footerLinkAppsText) footerLinkAppsText.textContent = strings[lang].navApps;
+    const footerLinkGamesText = document.getElementById('footer-link-games-text');
+    if (footerLinkGamesText) footerLinkGamesText.textContent = strings[lang].navGames;
+    const footerLinkCategoriesText = document.getElementById('footer-link-categories-text');
+    if (footerLinkCategoriesText) footerLinkCategoriesText.textContent = strings[lang].navCategories;
+    const footerLinkReqText = document.getElementById('footer-link-req-text');
+    if (footerLinkReqText) footerLinkReqText.textContent = strings[lang].reqModalTitle;
+    const footerLinkAboutText = document.getElementById('footer-link-about-text');
+    if (footerLinkAboutText) footerLinkAboutText.textContent = strings[lang].footerAboutUs;
+    const footerDisclaimer = document.getElementById('footer-disclaimer');
+    if (footerDisclaimer) footerDisclaimer.innerHTML = strings[lang].footerDisclaimer;
+    const footerCopyrightText = document.getElementById('footer-copyright-text');
+    if (footerCopyrightText) footerCopyrightText.innerHTML = strings[lang].footerCopyright;
 
     updateViewTitle();
     renderBanners();
@@ -1060,28 +1174,88 @@ function setupEventListeners() {
     });
     window.addEventListener('popstate', (e) => {
         closeScreenshotLightbox();
-        if (modal.classList.contains('active')) {
-            modal.classList.remove('active');
-            window.currentModalApp = null;
-            cleanAppQueryParam();
+        
+        const params = new URLSearchParams(window.location.search);
+        const appParam = params.get('app');
+        const tabParam = params.get('tab') || 'home';
+        const catParam = params.get('cat') || params.get('category') || 'all';
+        const qParam = params.get('q') || '';
+
+        // Handle Modal State
+        const modal = document.getElementById('app-modal');
+        if (appParam) {
+            const query = decodeURIComponent(appParam).trim().toLowerCase();
+            const target = allApps.find(a =>
+                a.name.toLowerCase() === query ||
+                a.name.toLowerCase().replace(/\s+/g, '') === query.replace(/\s+/g, '') ||
+                String(a.id) === query
+            );
+            if (target) {
+                openAppDetails(target, false);
+            }
+        } else {
+            if (modal && modal.classList.contains('active')) {
+                modal.classList.remove('active');
+                window.currentModalApp = null;
+            }
         }
-        const favModal = document.getElementById('favorites-modal');
-        if (favModal && favModal.classList.contains('active')) {
-            closeFavoritesModal();
+
+        // Handle View (Tab) State
+        if (activeView !== tabParam) {
+            switchView(tabParam, false);
         }
-        const aboutModal = document.getElementById('about-modal');
-        if (aboutModal && aboutModal.classList.contains('active')) {
-            closeAboutModal();
+
+        // Handle Category Chip State
+        if (activeCategoryChipId !== catParam) {
+            const chip = TOP_CHIPS.find(c => c.id.toLowerCase() === catParam.toLowerCase());
+            const chipLabel = chip ? chip[currentLanguage] : (currentLanguage === 'ar' ? 'الكل' : 'All');
+            selectCategoryChip(chip ? chip.id : 'all', chipLabel, null, false);
         }
-        const reqModal = document.getElementById('request-modal');
-        if (reqModal && reqModal.classList.contains('active')) {
-            reqModal.classList.remove('active');
+
+        // Handle Search Query State
+        if (currentSearch !== qParam.trim().toLowerCase()) {
+            currentSearch = qParam.trim().toLowerCase();
+            searchInput.value = qParam;
+            const searchClear = document.getElementById('search-clear');
+            if (searchClear) searchClear.style.display = currentSearch ? 'flex' : 'none';
+            renderApps();
         }
-        const instModal = document.getElementById('install-modal');
-        if (instModal && instModal.classList.contains('active')) {
-            instModal.classList.remove('active');
-        }
+
+        // Close auxiliary modals if open
+        ['favorites-modal', 'about-modal', 'request-modal', 'install-modal'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && el.classList.contains('active')) {
+                el.classList.remove('active');
+            }
+        });
     });
+
+    // Footer Navigation Links Event Listeners
+    document.querySelectorAll('.footer-nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetTab = link.getAttribute('data-tab');
+            if (targetTab) {
+                switchView(targetTab);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+    });
+
+    const footerBtnReq = document.getElementById('footer-btn-req');
+    if (footerBtnReq) {
+        footerBtnReq.addEventListener('click', () => {
+            const reqModal = document.getElementById('request-modal');
+            if (reqModal) reqModal.classList.add('active');
+        });
+    }
+
+    const footerBtnAbout = document.getElementById('footer-btn-about');
+    if (footerBtnAbout) {
+        footerBtnAbout.addEventListener('click', () => {
+            openAboutModal();
+        });
+    }
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeScreenshotLightbox();
@@ -1165,7 +1339,10 @@ function setupEventListeners() {
             if (notes) message += `📝 ملاحظات: ${notes}\n`;
 
             const botUrl = `https://t.me/IA_Assistantbot?text=${encodeURIComponent(message)}`;
-            window.open(botUrl, '_blank');
+            showToast(currentLanguage === 'ar' ? 'جاري توجيهك إلى بوت تليجرام لإرسال الطلب... 🚀' : 'Opening Telegram Bot to send your request... 🚀', 'info');
+            setTimeout(() => {
+                window.open(botUrl, '_blank');
+            }, 300);
 
             // Reset and close
             requestForm.reset();
@@ -1264,7 +1441,7 @@ function setupEventListeners() {
     });
 }
 
-function switchView(viewName) {
+function switchView(viewName, pushHistory = true) {
     if (activeView === viewName && currentSearch === '') return;
     activeView = viewName;
 
@@ -1322,6 +1499,9 @@ function switchView(viewName) {
         views.apps.classList.add('active');
         updateViewTitle();
         renderApps();
+    }
+    if (pushHistory) {
+        updateURLState({ push: true });
     }
 }
 
@@ -1857,6 +2037,74 @@ function updateGridClass() {
     if (currentViewMode !== 'grid') appsGrid.style.gridTemplateColumns = '';
 }
 
+function getAppInitials(name) {
+    if (!name) return 'PT';
+    const clean = name.replace(/[\(\[].*?[\)\]]/g, '').replace(/[^\p{L}\p{N}\s]/gu, '').trim();
+    const words = clean.split(/\s+/).filter(Boolean);
+    if (words.length === 0) return name.slice(0, 2).toUpperCase();
+    if (words.length === 1) {
+        return words[0].slice(0, Math.min(3, words[0].length)).toUpperCase();
+    }
+    return (words[0][0] + words[1][0]).toUpperCase();
+}
+
+function getAppCategoryVisuals(category, tags = []) {
+    const cat = (category || '').toLowerCase();
+    const tagStr = (Array.isArray(tags) ? tags.join(' ') : (tags || '')).toLowerCase();
+
+    if (cat.includes('game') || tagStr.includes('game') || tagStr.includes('ألعاب')) {
+        return { gradient: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%)', icon: 'fa-gamepad' };
+    }
+    if (tagStr.includes('ai') || cat.includes('ai') || tagStr.includes('ذكاء')) {
+        return { gradient: 'linear-gradient(135deg, #0284c7 0%, #06b6d4 50%, #3b82f6 100%)', icon: 'fa-microchip' };
+    }
+    if (tagStr.includes('design') || tagStr.includes('edit') || tagStr.includes('تصميم') || tagStr.includes('photo')) {
+        return { gradient: 'linear-gradient(135deg, #db2777 0%, #be185d 50%, #8b5cf6 100%)', icon: 'fa-wand-magic-sparkles' };
+    }
+    if (tagStr.includes('video') || tagStr.includes('stream') || tagStr.includes('فيديو') || tagStr.includes('بث')) {
+        return { gradient: 'linear-gradient(135deg, #dc2626 0%, #ea580c 50%, #f97316 100%)', icon: 'fa-play' };
+    }
+    if (tagStr.includes('tool') || tagStr.includes('system') || tagStr.includes('أدوات')) {
+        return { gradient: 'linear-gradient(135deg, #d97706 0%, #b45309 50%, #ea580c 100%)', icon: 'fa-screwdriver-wrench' };
+    }
+    if (tagStr.includes('social') || tagStr.includes('comm') || tagStr.includes('تواصل')) {
+        return { gradient: 'linear-gradient(135deg, #059669 0%, #0d9488 50%, #0284c7 100%)', icon: 'fa-comments' };
+    }
+    if (tagStr.includes('music') || tagStr.includes('audio') || tagStr.includes('صوت')) {
+        return { gradient: 'linear-gradient(135deg, #e11d48 0%, #be123c 50%, #fb7185 100%)', icon: 'fa-headphones' };
+    }
+    if (tagStr.includes('security') || tagStr.includes('vpn') || tagStr.includes('حماية')) {
+        return { gradient: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%)', icon: 'fa-shield-halved' };
+    }
+    return { gradient: 'linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #075985 100%)', icon: 'fa-cube' };
+}
+
+function renderAppIconFallbackHTML(appName, category, tags = [], extraClasses = '') {
+    const initials = getAppInitials(appName);
+    const visuals = getAppCategoryVisuals(category, tags);
+    const safeName = (appName || '').replace(/"/g, '&quot;');
+    return `<div class="card-icon app-icon-fallback ${extraClasses}" style="background: ${visuals.gradient};" title="${safeName}">
+        <span class="fallback-monogram">${initials}</span>
+        <i class="fa-solid ${visuals.icon} fallback-cat-badge"></i>
+    </div>`;
+}
+
+function handleCardImageError(imgEl, appName, category, tags = []) {
+    if (!imgEl || imgEl._handled) return;
+    imgEl._handled = true;
+    const initials = getAppInitials(appName);
+    const visuals = getAppCategoryVisuals(category, tags);
+    const fallbackDiv = document.createElement('div');
+    fallbackDiv.className = imgEl.classList.contains('fav-item-icon') ? 'fav-item-icon app-icon-fallback' : 'card-icon app-icon-fallback';
+    fallbackDiv.style.background = visuals.gradient;
+    fallbackDiv.title = appName;
+    fallbackDiv.innerHTML = `
+        <span class="fallback-monogram">${initials}</span>
+        <i class="fa-solid ${visuals.icon} fallback-cat-badge"></i>
+    `;
+    imgEl.replaceWith(fallbackDiv);
+}
+
 function createAppCard(app, isInitial = false) {
     const card = document.createElement('div');
     card.className = 'app-card';
@@ -1868,30 +2116,21 @@ function createAppCard(app, isInitial = false) {
         : (currentLanguage === 'ar' ? 'إضافة للمفضلة' : 'Add to Favorites');
 
     const loadingAttr = isInitial ? 'loading="eager"' : 'loading="lazy"';
+    const safeName = (app.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    const safeCat = (app.category || '').replace(/'/g, "\\'");
     const imgHTML = app.icon_id
-        ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="card-icon" ${loadingAttr} decoding="async" onerror="this.outerHTML='<div class=\\'card-icon fallback\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
-        : `<div class="card-icon fallback"><i class="fa-brands fa-android"></i></div>`;
+        ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${safeName}" class="card-icon" ${loadingAttr} decoding="async" onerror="handleCardImageError(this, '${safeName}', '${safeCat}')">`
+        : renderAppIconFallbackHTML(app.name, app.category, app.tags);
 
     const categoryText = app._descShort || (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
-
-    const isLarge = app.size > 19.5 * 1024 * 1024;
 
     const hasRating = app.rating && app.votes > 0;
     const ratingBadgeHTML = hasRating
         ? `<span class="card-rating-badge">${app.rating.toFixed(1)} <i class="fa-solid fa-star"></i></span>`
         : '';
 
-    let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
-    if (app.chat_id && app.chat_id.startsWith('-100')) {
-        const baseChatId = app.chat_id.substring(4);
-        tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
-    }
-
-    const downloadLink = isLarge
-        ? tgLink
-        : `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
-
-    const btnIcon = isLarge ? 'fa-paper-plane' : 'fa-download';
+    const downloadLink = getDownloadUrl(app);
+    const btnIcon = 'fa-download';
     const btnText = strings[currentLanguage].download;
 
     card.innerHTML = `
@@ -1983,9 +2222,7 @@ function parseAppDescription(rawDesc) {
 function openAppDetails(app, pushUrl = true) {
     window.currentModalApp = app;
     if (pushUrl) {
-        const url = new URL(window.location);
-        url.searchParams.set('app', app.name);
-        history.pushState({ modalOpen: true, appName: app.name }, '', url.toString());
+        updateURLState({ push: true });
     }
 
     document.getElementById('modal-title').textContent = app.name;
@@ -2132,24 +2369,11 @@ function openAppDetails(app, pushUrl = true) {
         });
     }
 
-    // Large File Telegram Note (Moved to the bottom under everything else)
+    // Large File Telegram Note (Direct download enabled for all sizes)
     const noteContainer = document.getElementById('modal-note-container');
     if (noteContainer) {
-        if (isLarge) {
-            const noteText = currentLanguage === 'ar'
-                ? 'ملاحظة: يجب الانضمام للقناة الخاصة أولاً لتتمكن من تحميل هذا الملف الكبير عبر تليجرام.'
-                : 'Note: You must join the private channel first to download this large file via Telegram.';
-            noteContainer.innerHTML = `
-                <div class="modal-note-card">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <span>${noteText}</span>
-                </div>
-            `;
-            noteContainer.style.display = 'block';
-        } else {
-            noteContainer.innerHTML = '';
-            noteContainer.style.display = 'none';
-        }
+        noteContainer.innerHTML = '';
+        noteContainer.style.display = 'none';
     }
 
     // Single Dominant CTA & Secondary Tools
@@ -2162,32 +2386,40 @@ function openAppDetails(app, pushUrl = true) {
     const existingJoinBtn = document.getElementById('modal-join-btn');
     if (existingJoinBtn) existingJoinBtn.remove();
 
-    if (isLarge) {
-        let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
-        if (app.chat_id && app.chat_id.startsWith('-100')) {
-            const baseChatId = app.chat_id.substring(4);
-            tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
-        }
+    const gateJoinBtn = document.getElementById('modal-join-gate-btn');
+    if (gateJoinBtn) {
+        gateJoinBtn.onclick = () => {
+            localStorage.setItem('has_joined_telegram', 'true');
+            const stepHint = document.getElementById('tg-gate-step-hint');
+            if (stepHint) {
+                stepHint.innerHTML = `<span style="color:#10b981;font-weight:700;"><i class="fa-solid fa-circle-check"></i> ${currentLanguage === 'ar' ? 'رائع! الآن اضغط زر التحميل أدناه' : 'Great! Now click download below'}</span>`;
+            }
+        };
+    }
 
-        downloadBtn.href = tgLink;
-        downloadBtn.className = 'download-btn btn-large main-cta-btn';
-        downloadBtn.innerHTML = `<i class="fa-brands fa-telegram"></i> <span id="download-text">${currentLanguage === 'ar' ? 'تحميل عبر تليجرام' : 'Download via Telegram'} • ${formatBytes(app.size)}</span>`;
+    const downloadLink = getDownloadUrl(app);
+    downloadBtn.href = downloadLink;
+    downloadBtn.className = 'download-btn btn-large main-cta-btn';
+    downloadBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span id="download-text">${currentLanguage === 'ar' ? 'تثبيت مباشر' : 'Direct Download'} • ${formatBytes(app.size)}</span>`;
 
-        if (toolsGroup) {
-            const channelTool = document.createElement('a');
-            channelTool.id = 'modal-channel-tool';
-            channelTool.href = 'https://t.me/+ij7-LS669ahhMDFk';
-            channelTool.target = '_blank';
-            channelTool.rel = 'noopener noreferrer';
-            channelTool.className = 'modal-tool-btn channel-tool-btn';
-            channelTool.style.textDecoration = 'none';
-            channelTool.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>${strings[currentLanguage].channelText || (currentLanguage === 'ar' ? 'القناة الخاصة' : 'Channel')}</span>`;
-            toolsGroup.appendChild(channelTool);
-        }
-    } else {
-        downloadBtn.href = `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
-        downloadBtn.className = 'download-btn btn-large main-cta-btn';
-        downloadBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span id="download-text">${currentLanguage === 'ar' ? 'تثبيت مباشر' : 'Direct Download'} • ${formatBytes(app.size)}</span>`;
+    // Optional Telegram channel tool
+    let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
+    if (app.chat_id && app.chat_id.startsWith('-100')) {
+        const baseChatId = app.chat_id.substring(4);
+        tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
+    }
+
+    if (toolsGroup) {
+        const channelTool = document.createElement('a');
+        channelTool.id = 'modal-channel-tool';
+        channelTool.href = tgLink;
+        channelTool.target = '_blank';
+        channelTool.rel = 'noopener noreferrer';
+        channelTool.className = 'modal-tool-btn channel-tool-btn';
+        channelTool.style.textDecoration = 'none';
+        channelTool.title = currentLanguage === 'ar' ? 'فتح في تليجرام' : 'Open in Telegram';
+        channelTool.innerHTML = `<i class="fa-brands fa-telegram"></i> <span>${strings[currentLanguage].channelText || (currentLanguage === 'ar' ? 'القناة الخاصة' : 'Channel')}</span>`;
+        toolsGroup.appendChild(channelTool);
     }
 
     // Modal Tools: Favorite & Share Buttons
@@ -2197,11 +2429,36 @@ function openAppDetails(app, pushUrl = true) {
     if (shareTextEl) shareTextEl.textContent = strings[currentLanguage].shareText;
 
     const modalIcon = document.getElementById('modal-icon');
+    const modalIconFallback = document.getElementById('modal-icon-fallback');
     if (app.icon_id) {
         modalIcon.src = `${WORKER_URL}/?id=${app.icon_id}&action=image`;
         modalIcon.style.display = 'block';
+        if (modalIconFallback) modalIconFallback.style.display = 'none';
+        modalIcon.onerror = () => {
+            modalIcon.style.display = 'none';
+            if (modalIconFallback) {
+                const initials = getAppInitials(app.name);
+                const visuals = getAppCategoryVisuals(app.category, app.tags);
+                modalIconFallback.style.background = visuals.gradient;
+                modalIconFallback.style.display = 'flex';
+                modalIconFallback.innerHTML = `
+                    <span class="fallback-monogram">${initials}</span>
+                    <i class="fa-solid ${visuals.icon} fallback-cat-badge"></i>
+                `;
+            }
+        };
     } else {
         modalIcon.style.display = 'none';
+        if (modalIconFallback) {
+            const initials = getAppInitials(app.name);
+            const visuals = getAppCategoryVisuals(app.category, app.tags);
+            modalIconFallback.style.background = visuals.gradient;
+            modalIconFallback.style.display = 'flex';
+            modalIconFallback.innerHTML = `
+                <span class="fallback-monogram">${initials}</span>
+                <i class="fa-solid ${visuals.icon} fallback-cat-badge"></i>
+            `;
+        }
     }
 
     // Setup mobile bottom sheet swipe-to-dismiss gesture once
@@ -2240,12 +2497,7 @@ function openAppDetails(app, pushUrl = true) {
             touchCurrentY = 0;
         });
     }
-    if (app.icon_id) {
-        modalIcon.src = `${WORKER_URL}/?id=${app.icon_id}&action=image`;
-        modalIcon.style.display = 'block';
-    } else {
-        modalIcon.style.display = 'none';
-    }
+// modal icon handled above
 
     // Screenshots Gallery (Google Play / App Store style)
     const galleryContainer = document.getElementById('modal-gallery-container');
@@ -2773,22 +3025,16 @@ function renderFavoritesList() {
         const app = allApps.find(a => String(a.id) === String(id) || a.name === id);
         if (!app) return;
 
-        const isLarge = app.size > 19.5 * 1024 * 1024;
-        let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
-        if (app.chat_id && app.chat_id.startsWith('-100')) {
-            const baseChatId = app.chat_id.substring(4);
-            tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
-        }
-        const downloadLink = isLarge
-            ? tgLink
-            : `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name)}`;
+        const downloadLink = getDownloadUrl(app);
 
         const card = document.createElement('div');
         card.className = 'fav-item-card';
 
+        const safeFavName = (app.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const safeFavCat = (app.category || '').replace(/'/g, "\\'");
         const imgHTML = app.icon_id
-            ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${app.name}" class="fav-item-icon" loading="lazy" onerror="this.outerHTML='<div class=\\'fav-item-icon fallback\\' style=\\'display:flex;align-items:center;justify-content:center;color:var(--accent-color);\\'><i class=\\'fa-brands fa-android\\'></i></div>'">`
-            : `<div class="fav-item-icon fallback" style="display:flex;align-items:center;justify-content:center;color:var(--accent-color);"><i class="fa-brands fa-android"></i></div>`;
+            ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${safeFavName}" class="fav-item-icon" loading="lazy" onerror="handleCardImageError(this, '${safeFavName}', '${safeFavCat}')">`
+            : renderAppIconFallbackHTML(app.name, app.category, app.tags, 'fav-item-icon');
 
         const badgeType = `<span class="status-badge badge-type" style="padding:0.15rem 0.5rem;font-size:0.72rem;"><i class="fa-solid ${app.category === 'Games' ? 'fa-gamepad' : 'fa-mobile-screen'}"></i> ${app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp}</span>`;
         const badgeSize = `<span class="status-badge badge-size" style="padding:0.15rem 0.5rem;font-size:0.72rem;"><i class="fa-solid fa-hard-drive"></i> ${formatBytes(app.size)}</span>`;
@@ -2804,7 +3050,7 @@ function renderFavoritesList() {
             </div>
             <div class="fav-item-actions">
                 <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" style="width:auto;padding:0.4rem 0.8rem;font-size:0.8rem;" onclick="event.stopPropagation();">
-                    <i class="fa-solid ${isLarge ? 'fa-paper-plane' : 'fa-download'}"></i>
+                    <i class="fa-solid fa-download"></i>
                 </a>
                 <button class="fav-del-btn" title="${currentLanguage === 'ar' ? 'حذف من المفضلة' : 'Remove'}">
                     <i class="fa-solid fa-trash-can"></i>
@@ -2875,7 +3121,7 @@ function renderCategoryChips() {
     updateHeaderSpacer();
 }
 
-function selectCategoryChip(chipId, chipLabel, chipBtn = null) {
+function selectCategoryChip(chipId, chipLabel, chipBtn = null, pushHistory = true) {
     // If the user clicks the currently active non-'all' chip, toggle back to 'all'
     if (activeCategoryChipId === chipId && chipId !== 'all') {
         chipId = 'all';
@@ -2910,6 +3156,9 @@ function selectCategoryChip(chipId, chipLabel, chipBtn = null) {
         updateViewTitle(chipLabel);
     }
     renderApps();
+    if (pushHistory) {
+        updateURLState({ push: true });
+    }
 }
 
 function setActiveCategoryChip(chipId) {
@@ -3054,32 +3303,95 @@ function fallbackCopy(url) {
     document.body.removeChild(tempInput);
 }
 
-function checkDeepLink() {
-    const params = new URLSearchParams(window.location.search);
-    const appParam = params.get('app');
-    if (!appParam || allApps.length === 0) return;
 
-    const query = decodeURIComponent(appParam).trim().toLowerCase();
-    const target = allApps.find(a =>
-        a.name.toLowerCase() === query ||
-        a.name.toLowerCase().replace(/\s+/g, '') === query.replace(/\s+/g, '') ||
-        String(a.id) === query
-    );
+// ==========================================
+// BROWSER HISTORY & URL ROUTING SYSTEM
+// ==========================================
+function updateURLState(options = {}) {
+    const url = new URL(window.location.origin + window.location.pathname);
+    
+    if (activeView && activeView !== 'home') {
+        url.searchParams.set('tab', activeView);
+    }
+    if (activeCategoryChipId && activeCategoryChipId !== 'all') {
+        url.searchParams.set('cat', activeCategoryChipId);
+    }
+    if (currentSearch && currentSearch.trim()) {
+        url.searchParams.set('q', currentSearch.trim());
+    }
+    if (window.currentModalApp && window.currentModalApp.name) {
+        url.searchParams.set('app', window.currentModalApp.name);
+    }
 
-    if (target) {
-        setTimeout(() => {
-            openAppDetails(target, false);
-        }, 150);
+    const newUrl = url.pathname + (url.search ? url.search : '') + url.hash;
+    const state = {
+        view: activeView,
+        cat: activeCategoryChipId,
+        q: currentSearch,
+        app: window.currentModalApp ? window.currentModalApp.name : null
+    };
+
+    if (options.replace) {
+        history.replaceState(state, '', newUrl);
+    } else if (options.push) {
+        history.pushState(state, '', newUrl);
+    } else {
+        if (window.location.search !== (url.search || '')) {
+            history.pushState(state, '', newUrl);
+        }
     }
 }
 
-function cleanAppQueryParam() {
-    const url = new URL(window.location);
-    if (url.searchParams.has('app')) {
-        url.searchParams.delete('app');
-        const cleanUrl = url.pathname + (url.search ? url.search : '') + url.hash;
-        history.replaceState({}, '', cleanUrl);
+function initRouterFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get('tab');
+    const catParam = params.get('cat') || params.get('category');
+    const qParam = params.get('q') || params.get('search');
+    const appParam = params.get('app');
+
+    if (tabParam && ['games', 'apps', 'categories'].includes(tabParam.toLowerCase())) {
+        switchView(tabParam.toLowerCase(), false);
     }
+
+    if (catParam) {
+        const normCat = catParam.toLowerCase();
+        const matchingChip = TOP_CHIPS.find(c => c.id.toLowerCase() === normCat);
+        if (matchingChip) {
+            selectCategoryChip(matchingChip.id, matchingChip[currentLanguage], null, false);
+        }
+    }
+
+    if (qParam && qParam.trim()) {
+        const query = decodeURIComponent(qParam).trim();
+        searchInput.value = query;
+        currentSearch = query.toLowerCase();
+        const searchClear = document.getElementById('search-clear');
+        if (searchClear) searchClear.style.display = 'flex';
+        renderApps();
+    }
+
+    if (appParam && allApps.length > 0) {
+        const query = decodeURIComponent(appParam).trim().toLowerCase();
+        const target = allApps.find(a =>
+            a.name.toLowerCase() === query ||
+            a.name.toLowerCase().replace(/\s+/g, '') === query.replace(/\s+/g, '') ||
+            String(a.id) === query
+        );
+        if (target) {
+            setTimeout(() => {
+                openAppDetails(target, false);
+            }, 100);
+        }
+    }
+}
+
+function checkDeepLink() {
+    initRouterFromURL();
+}
+
+function cleanAppQueryParam() {
+    window.currentModalApp = null;
+    updateURLState({ replace: true });
 }
 
 function createFloatingBackground() {

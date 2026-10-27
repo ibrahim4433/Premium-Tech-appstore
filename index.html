@@ -44,8 +44,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- Preload Critical Resources -->
-    <link rel="preload" href="css/style.css?v=27" as="style">
-    <link rel="preload" href="js/app.js?v=27" as="script">
+    <link rel="preload" href="css/style.css?v=28" as="style">
+    <link rel="preload" href="js/app.js?v=28" as="script">
     <link rel="preload"
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
         as="style">
@@ -54,7 +54,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=27">
+    <link rel="stylesheet" href="css/style.css?v=28">
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Favicon & Browser Tab Icons -->
@@ -6908,8 +6908,8 @@
                         <label id="label-size">حجم الملف</label>
                         <select id="size-select">
                             <option value="all" id="opt-size-all">الكل</option>
-                            <option value="small" id="opt-size-small">أصغر من 20MB (مباشر)</option>
-                            <option value="large" id="opt-size-large">أكبر من 20MB (تليجرام)</option>
+                            <option value="small" id="opt-size-small">أقل من 20MB</option>
+                            <option value="large" id="opt-size-large">أكبر من 20MB</option>
                         </select>
                     </div>
                     <div class="filter-group">
@@ -7026,6 +7026,71 @@
         </section>
     </main>
 
+    <!-- Storefront Footer with Trust Signals & IA Team Attribution -->
+    <footer id="site-footer" class="site-footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-col brand-col">
+                    <div class="footer-brand">
+                        <img src="assets/logo.jpg" alt="Premium Techs Logo" class="footer-logo">
+                        <div class="footer-brand-info">
+                            <h3 class="footer-brand-title">Premium Techs</h3>
+                            <span class="footer-brand-sub" id="footer-brand-sub">بإشراف فريق IA Team | Incentive Aid</span>
+                        </div>
+                    </div>
+                    <p class="footer-desc" id="footer-desc">
+                        المتجر العربي الأول لاكتشاف وتنزيل أحدث التطبيقات والألعاب المعدلة الآمنة. بيئة موثوقة وخالية من الإعلانات مع روابط مباشرة وسريعة.
+                    </p>
+                    <div class="footer-social-links">
+                        <a href="https://t.me/+ij7-LS669ahhMDFk" target="_blank" rel="noopener noreferrer" class="footer-social-btn" title="قناة تليجرام" aria-label="Telegram Channel">
+                            <i class="fa-brands fa-telegram"></i>
+                        </a>
+                        <a href="https://github.com/ibrahim4433/Premium-Tech-appstore" target="_blank" rel="noopener noreferrer" class="footer-social-btn" title="مستودع المشروع (GitHub)" aria-label="GitHub Repository">
+                            <i class="fa-brands fa-github"></i>
+                        </a>
+                        <a href="https://t.me/IA_Assistantbot" target="_blank" rel="noopener noreferrer" class="footer-social-btn" title="بوت المساعد والدعم" aria-label="Support Bot">
+                            <i class="fa-solid fa-headset"></i>
+                        </a>
+                        <a href="https://t.me/IA_Ibr" target="_blank" rel="noopener noreferrer" class="footer-social-btn" title="قهوة للمطورين" aria-label="Buy Us a Coffee">
+                            <i class="fa-solid fa-mug-hot"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-heading" id="footer-heading-trust">الأمان والتحقق</h4>
+                    <ul class="footer-trust-list">
+                        <li><i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> <span id="footer-trust-1">فحص أمان كامل عبر أكثر من 70 محرك حماية (VirusTotal)</span></li>
+                        <li><i class="fa-solid fa-ban" style="color: #06b6d4;"></i> <span id="footer-trust-2">خالٍ تماماً من الإعلانات المزعجة والتتبع</span></li>
+                        <li><i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> <span id="footer-trust-3">تحميل مباشر وسريع بدون اختصار روابط</span></li>
+                        <li><i class="fa-solid fa-code-branch" style="color: #a855f7;"></i> <span id="footer-trust-4">تحديثات مستمرة واختبار استقرار دوري للنسخ</span></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-heading" id="footer-heading-links">روابط سريعة</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="?tab=home" class="footer-nav-link" data-tab="home" id="footer-link-home"><i class="fa-solid fa-house"></i> <span id="footer-link-home-text">الرئيسية</span></a></li>
+                        <li><a href="?tab=apps" class="footer-nav-link" data-tab="apps" id="footer-link-apps"><i class="fa-solid fa-table-cells-large"></i> <span id="footer-link-apps-text">التطبيقات</span></a></li>
+                        <li><a href="?tab=games" class="footer-nav-link" data-tab="games" id="footer-link-games"><i class="fa-solid fa-gamepad"></i> <span id="footer-link-games-text">الألعاب</span></a></li>
+                        <li><a href="?tab=categories" class="footer-nav-link" data-tab="categories" id="footer-link-categories"><i class="fa-solid fa-layer-group"></i> <span id="footer-link-categories-text">التصنيفات</span></a></li>
+                        <li><button type="button" class="footer-btn-link" id="footer-btn-req"><i class="fa-solid fa-paper-plane"></i> <span id="footer-link-req-text">اطلب تطبيق/لعبة</span></button></li>
+                        <li><button type="button" class="footer-btn-link" id="footer-btn-about"><i class="fa-solid fa-circle-info"></i> <span id="footer-link-about-text">عن فريق IA Team</span></button></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-disclaimer" id="footer-disclaimer">
+                    <strong>إخلاء مسؤولية:</strong> كافة التطبيقات والألعاب المنشورة مقدمة لأغراض التجربة والمعاينة التعليمية فقط. جميع حقوق النشر والعلامات التجارية محفوظة لأصحابها ومطوريها الأصليين.
+                </div>
+                <div class="footer-copyright">
+                    <span id="footer-copyright-text">© 2020-2026 <strong>IA Team | Incentive Aid</strong>. جميع الحقوق محفوظة.</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <!-- Bottom Navigation Bar for Mobile UI -->
     <nav class="bottom-nav" aria-label="التنقل الرئيسي">
         <button class="nav-item active" data-view="home">
@@ -7056,6 +7121,7 @@
                 <img id="modal-icon" class="modal-app-icon"
                     src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
                     alt="App Icon">
+                <div id="modal-icon-fallback" class="modal-app-icon app-icon-fallback" style="display: none;"></div>
                 <div class="modal-title-group">
                     <h2 id="modal-title">App Title</h2>
                     <div id="modal-mod-tags" class="modal-mod-tags"></div>
@@ -7088,6 +7154,23 @@
                 </div>
             </div>
 
+            <!-- Telegram Channel Membership Gate Banner -->
+            <div id="modal-tg-gate" class="modal-tg-gate-box">
+                <div class="tg-gate-badge">
+                    <i class="fa-brands fa-telegram"></i>
+                    <span id="tg-gate-badge-text">تنبيه هام للتحميل عبر تليجرام</span>
+                </div>
+                <p id="tg-gate-text" class="tg-gate-text">
+                    روابط التحميل المباشرة خاصة بقناتنا. يرجى <strong>الانضمام للقناة أولاً</strong> لتجنب ظهور رسالة "رسالة في قناة خاصة" عند النقر على التحميل.
+                </p>
+                <div class="tg-gate-actions">
+                    <a href="https://t.me/+ij7-LS669ahhMDFk" target="_blank" rel="noopener noreferrer" class="tg-gate-btn" id="modal-join-gate-btn">
+                        <i class="fa-solid fa-user-plus"></i> <span id="modal-join-gate-text">1. انضمام للقناة أولاً (مطلوب)</span>
+                    </a>
+                    <span class="tg-gate-step-hint" id="tg-gate-step-hint">2. ثم اضغط زر التحميل أدناه ⬇️</span>
+                </div>
+            </div>
+
             <!-- Primary & Secondary Action CTAs -->
             <div class="modal-actions">
                 <div class="modal-download-group">
@@ -7104,6 +7187,35 @@
                         title="مشاركة التطبيق">
                         <i class="fa-solid fa-share-nodes"></i> <span id="modal-share-text">مشاركة</span>
                     </button>
+                </div>
+            </div>
+
+            <!-- APK Safety & Verification Seal -->
+            <div class="modal-safety-card">
+                <div class="safety-header">
+                    <div class="safety-title">
+                        <i class="fa-solid fa-shield-halved safety-badge-icon"></i>
+                        <span id="safety-title-text">فحص الأمان ومصادقة IA Team</span>
+                    </div>
+                    <span class="safety-clean-pill"><i class="fa-solid fa-check"></i> <span id="safety-clean-text">آمن 100%</span></span>
+                </div>
+                <div class="safety-grid">
+                    <div class="safety-item">
+                        <i class="fa-solid fa-virus-slash" style="color: #10b981;"></i>
+                        <span id="safety-point-1">مفحوص عبر أكثر من 70 محرك حماية (VirusTotal)</span>
+                    </div>
+                    <div class="safety-item">
+                        <i class="fa-solid fa-ban" style="color: #06b6d4;"></i>
+                        <span id="safety-point-2">النسخة خالية من الإعلانات المزعجة والبرمجيات الخبيثة</span>
+                    </div>
+                    <div class="safety-item">
+                        <i class="fa-solid fa-key" style="color: #f59e0b;"></i>
+                        <span id="safety-point-3">توقيع رقمي موثوق وتم اختبار استقرار التثبيت</span>
+                    </div>
+                </div>
+                <div class="safety-tip">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <span id="safety-install-tip">نصيحة تثبيت: إذا كانت هذه أول مرة تثبّت فيها تطبيقاً خارج متجر Google Play، فعّل خيار "السماح بالتثبيت من هذا المصدر" في إعدادات جهازك.</span>
                 </div>
             </div>
 
@@ -7332,8 +7444,13 @@
                 <div class="modal-icon" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 10px;"><i
                         class="fa-solid fa-paper-plane"></i></div>
             </div>
-            <h2 id="req-modal-title" style="margin-bottom: 1.5rem; color: var(--text-primary); text-align: center;">اطلب
+            <h2 id="req-modal-title" style="margin-bottom: 0.85rem; color: var(--text-primary); text-align: center;">اطلب
                 تطبيق/لعبة</h2>
+            <!-- Telegram Context Switch Notice -->
+            <div class="req-telegram-hint" id="req-telegram-hint">
+                <i class="fa-brands fa-telegram"></i>
+                <span id="req-hint-text">سيتم تحويلك مباشرة إلى بوت تليجرام (@IA_Assistantbot) لتسليم طلبك لفريق الدعم ومتابعة توفيره فوراً.</span>
+            </div>
             <div class="modal-body">
                 <form id="request-form">
                     <div class="form-group">
@@ -7364,8 +7481,7 @@
                     </div>
                     <button type="submit" class="download-btn btn-large" style="width: 100%; margin-top: 10px;"
                         id="req-submit-btn">
-                        <i class="fa-solid fa-paper-plane"></i> <span id="req-btn-submit-text">إرسال الطلب عبر
-                            تليجرام</span>
+                        <i class="fa-brands fa-telegram"></i> <span id="req-btn-submit-text">متابعة وإرسال عبر بوت تليجرام</span>
                     </button>
                 </form>
             </div>
@@ -7393,7 +7509,7 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="toast-container"></div>
 
-    <script src="js/app.js?v=27"></script>
+    <script src="js/app.js?v=28"></script>
     <!-- Register Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {
