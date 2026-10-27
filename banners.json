@@ -1,6 +1,6 @@
 [
   {
-    "id": "hall_of_fame",
+    "id": "hall_of_fame_apps",
     "action": {
       "type": "open_app",
       "appName": ": Snaptube",
@@ -8,10 +8,10 @@
     },
     "slides": [
       {
-        "image": "assets/banners/generated/alltime_app.jpg",
+        "image": "assets/banners/generated/alltime_app_1.jpg",
         "badge": {
-          "ar": "🏆 أسطورة التطبيقات",
-          "en": "ALL-TIME LEGEND APP"
+          "ar": "🏆 أسطورة التطبيقات #1",
+          "en": "ALL-TIME APP #1"
         },
         "title": {
           "ar": "Snaptube",
@@ -28,18 +28,108 @@
         }
       },
       {
-        "image": "assets/banners/generated/alltime_game.jpg",
+        "image": "assets/banners/generated/alltime_app_2.jpg",
         "badge": {
-          "ar": "🎮 صدارة الألعاب",
-          "en": "ALL-TIME TOP GAME"
+          "ar": "🏆 أسطورة التطبيقات #2",
+          "en": "ALL-TIME APP #2"
+        },
+        "title": {
+          "ar": "GitHub",
+          "en": "GitHub"
+        },
+        "subtitle": {
+          "ar": "التقييم الأعلى في تاريخ المنصة ★ 4.9 (14 صوت)",
+          "en": "Highest-rated app in store history ★ 4.9 (14 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": ": GitHub",
+          "appId": "20173"
+        }
+      },
+      {
+        "image": "assets/banners/generated/alltime_app_3.jpg",
+        "badge": {
+          "ar": "🏆 أسطورة التطبيقات #3",
+          "en": "ALL-TIME APP #3"
+        },
+        "title": {
+          "ar": "AIstats: Soccer Stats & Scores",
+          "en": "AIstats: Soccer Stats & Scores"
+        },
+        "subtitle": {
+          "ar": "التقييم الأعلى في تاريخ المنصة ★ 4.9 (12 صوت)",
+          "en": "Highest-rated app in store history ★ 4.9 (12 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": ": AIstats: Soccer Stats & Scores",
+          "appId": "23458"
+        }
+      }
+    ]
+  },
+  {
+    "id": "hall_of_fame_games",
+    "action": {
+      "type": "open_app",
+      "appName": "Video Game",
+      "appId": "29721"
+    },
+    "slides": [
+      {
+        "image": "assets/banners/generated/alltime_game_1.jpg",
+        "badge": {
+          "ar": "🎮 صدارة الألعاب #1",
+          "en": "TOP RATED GAME #1"
+        },
+        "title": {
+          "ar": "Video Game",
+          "en": "Video Game"
+        },
+        "subtitle": {
+          "ar": "تجربة ألعاب أسطورية بتقييم ★ 4.7 (3 صوت)",
+          "en": "Undisputed peak gaming score ★ 4.7 (3 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": "Video Game",
+          "appId": "29721"
+        }
+      },
+      {
+        "image": "assets/banners/generated/alltime_game_2.jpg",
+        "badge": {
+          "ar": "🎮 صدارة الألعاب #2",
+          "en": "TOP RATED GAME #2"
+        },
+        "title": {
+          "ar": "Gamedeck",
+          "en": "Gamedeck"
+        },
+        "subtitle": {
+          "ar": "تجربة ألعاب أسطورية بتقييم ★ 4.6 (5 صوت)",
+          "en": "Undisputed peak gaming score ★ 4.6 (5 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": "Gamedeck",
+          "appId": "29839"
+        }
+      },
+      {
+        "image": "assets/banners/generated/alltime_game_3.jpg",
+        "badge": {
+          "ar": "🎮 صدارة الألعاب #3",
+          "en": "TOP RATED GAME #3"
         },
         "title": {
           "ar": "Driving School Simulator : EVO",
           "en": "Driving School Simulator : EVO"
         },
         "subtitle": {
-          "ar": "اللعبة الأكثر تفضيلاً وتقييماً ★ 4.3 (24 صوت)",
-          "en": "Most-favored game with unlocked experience ★ 4.3 (24 votes)"
+          "ar": "تجربة ألعاب أسطورية بتقييم ★ 4.3 (24 صوت)",
+          "en": "Undisputed peak gaming score ★ 4.3 (24 votes)"
         },
         "action": {
           "type": "open_app",
@@ -58,7 +148,7 @@
     },
     "slides": [
       {
-        "image": "assets/banners/generated/weekly_app.jpg",
+        "image": "assets/banners/generated/weekly_app_1.jpg",
         "badge": {
           "ar": "⚡ اختيار هذا الأسبوع",
           "en": "APP OF THE WEEK"
@@ -68,8 +158,8 @@
           "en": "Apktool M"
         },
         "subtitle": {
-          "ar": "الأكثر تميزاً في تريند الأسبوع ★ 5.0 (5 صوت)",
-          "en": "Trending community pick this week ★ 5.0 (5 votes)"
+          "ar": "الأكثر تميزاً في تصويت المشتركين ★ 5.0 (5 صوت)",
+          "en": "Trending community drop this week ★ 5.0 (5 votes)"
         },
         "action": {
           "type": "open_app",
@@ -78,23 +168,243 @@
         }
       },
       {
-        "image": "assets/banners/generated/weekly_game.jpg",
+        "image": "assets/banners/generated/weekly_app_2.jpg",
+        "badge": {
+          "ar": "⚡ اختيار هذا الأسبوع",
+          "en": "APP OF THE WEEK"
+        },
+        "title": {
+          "ar": "EGYFILM TV",
+          "en": "EGYFILM TV"
+        },
+        "subtitle": {
+          "ar": "الأكثر تميزاً في تصويت المشتركين ★ 5.0 (5 صوت)",
+          "en": "Trending community drop this week ★ 5.0 (5 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": "EGYFILM TV",
+          "appId": "30084"
+        }
+      },
+      {
+        "image": "assets/banners/generated/weekly_game_1.jpg",
         "badge": {
           "ar": "🚀 لعبة الأسبوع الجديدة",
           "en": "GAME OF THE WEEK"
         },
         "title": {
-          "ar": "Sonic Time Twisted",
-          "en": "Sonic Time Twisted"
+          "ar": "Video Game",
+          "en": "Video Game"
         },
         "subtitle": {
-          "ar": "مغامرة الأسبوع الحصرية بأعلى تقييم ★ 4.2 (20 صوت)",
-          "en": "Fresh game drop with top community votes ★ 4.2 (20 votes)"
+          "ar": "أقوى لعبة أضيفت حديثاً بتقييم ★ 4.7 (3 صوت)",
+          "en": "Fresh game drop with top rating ★ 4.7 (3 votes)"
         },
         "action": {
           "type": "open_app",
-          "appName": "Sonic Time Twisted",
-          "appId": "12144"
+          "appName": "Video Game",
+          "appId": "29721"
+        }
+      }
+    ]
+  },
+  {
+    "id": "vpn_security",
+    "action": {
+      "type": "open_app",
+      "appName": "TunnelDOOM VPN",
+      "appId": "30038"
+    },
+    "slides": [
+      {
+        "image": "assets/banners/generated/vpn_app_1.jpg",
+        "badge": {
+          "ar": "🛡️ حماية وشبكات VPN",
+          "en": "SECURITY & VPN"
+        },
+        "title": {
+          "ar": "TunnelDOOM VPN",
+          "en": "TunnelDOOM VPN"
+        },
+        "subtitle": {
+          "ar": "فك الحجب وتأمين التصفح بسرعة فائقة ★ 4.8 (4 صوت)",
+          "en": "Fast proxy & privacy shield ★ 4.8 (4 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": "TunnelDOOM VPN",
+          "appId": "30038"
+        }
+      },
+      {
+        "image": "assets/banners/generated/vpn_app_2.jpg",
+        "badge": {
+          "ar": "🛡️ حماية وشبكات VPN",
+          "en": "SECURITY & VPN"
+        },
+        "title": {
+          "ar": "VPN Proton",
+          "en": "VPN Proton"
+        },
+        "subtitle": {
+          "ar": "فك الحجب وتأمين التصفح بسرعة فائقة ★ 4.5 (10 صوت)",
+          "en": "Fast proxy & privacy shield ★ 4.5 (10 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": "VPN Proton",
+          "appId": "29712"
+        }
+      }
+    ]
+  },
+  {
+    "id": "cinema_media",
+    "action": {
+      "type": "open_app",
+      "appName": "iLovePDF",
+      "appId": "29535"
+    },
+    "slides": [
+      {
+        "image": "assets/banners/generated/media_app_1.jpg",
+        "badge": {
+          "ar": "🎬 سينما ومشاهدة وموسيقى",
+          "en": "CINEMA & MEDIA"
+        },
+        "title": {
+          "ar": "iLovePDF",
+          "en": "iLovePDF"
+        },
+        "subtitle": {
+          "ar": "مشاهدة بدون إعلانات وبأعلى جودة ★ 5.0 (6 صوت)",
+          "en": "Ad-free cinema & high-res streaming ★ 5.0 (6 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": "iLovePDF",
+          "appId": "29535"
+        }
+      },
+      {
+        "image": "assets/banners/generated/media_app_2.jpg",
+        "badge": {
+          "ar": "🎬 سينما ومشاهدة وموسيقى",
+          "en": "CINEMA & MEDIA"
+        },
+        "title": {
+          "ar": "Anime Witcher",
+          "en": "Anime Witcher"
+        },
+        "subtitle": {
+          "ar": "مشاهدة بدون إعلانات وبأعلى جودة ★ 5.0 (6 صوت)",
+          "en": "Ad-free cinema & high-res streaming ★ 5.0 (6 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": ": Anime Witcher",
+          "appId": "28385"
+        }
+      }
+    ]
+  },
+  {
+    "id": "ai_smart_bots",
+    "action": {
+      "type": "open_app",
+      "appName": ": AIstats: Soccer Stats & Scores",
+      "appId": "23458"
+    },
+    "slides": [
+      {
+        "image": "assets/banners/generated/ai_app_1.jpg",
+        "badge": {
+          "ar": "🤖 ذكاء اصطناعي ومساعدات",
+          "en": "SMART AI & BOTS"
+        },
+        "title": {
+          "ar": "AIstats: Soccer Stats & Scores",
+          "en": "AIstats: Soccer Stats & Scores"
+        },
+        "subtitle": {
+          "ar": "مساعدات ذكية وتوليد فوري بتقييم ★ 4.9 (12 صوت)",
+          "en": "Generative intelligence & chatbots ★ 4.9 (12 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": ": AIstats: Soccer Stats & Scores",
+          "appId": "23458"
+        }
+      },
+      {
+        "image": "assets/banners/generated/ai_app_2.jpg",
+        "badge": {
+          "ar": "🤖 ذكاء اصطناعي ومساعدات",
+          "en": "SMART AI & BOTS"
+        },
+        "title": {
+          "ar": "AI Chat : Chatbot & Assistant",
+          "en": "AI Chat : Chatbot & Assistant"
+        },
+        "subtitle": {
+          "ar": "مساعدات ذكية وتوليد فوري بتقييم ★ 4.9 (10 صوت)",
+          "en": "Generative intelligence & chatbots ★ 4.9 (10 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": "AI Chat : Chatbot & Assistant",
+          "appId": "28698"
+        }
+      }
+    ]
+  },
+  {
+    "id": "tools_utilities",
+    "action": {
+      "type": "open_app",
+      "appName": ": Snaptube",
+      "appId": "20176"
+    },
+    "slides": [
+      {
+        "image": "assets/banners/generated/tool_app_1.jpg",
+        "badge": {
+          "ar": "🛠️ أدوات وأدوات مساعدة",
+          "en": "TOOLS & UTILITIES"
+        },
+        "title": {
+          "ar": "Snaptube",
+          "en": "Snaptube"
+        },
+        "subtitle": {
+          "ar": "أدوات احترافية لتحسين وإدارة هاتفك ★ 5.0 (21 صوت)",
+          "en": "System optimization & pro utilities ★ 5.0 (21 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": ": Snaptube",
+          "appId": "20176"
+        }
+      },
+      {
+        "image": "assets/banners/generated/tool_app_2.jpg",
+        "badge": {
+          "ar": "🛠️ أدوات وأدوات مساعدة",
+          "en": "TOOLS & UTILITIES"
+        },
+        "title": {
+          "ar": "GitHub",
+          "en": "GitHub"
+        },
+        "subtitle": {
+          "ar": "أدوات احترافية لتحسين وإدارة هاتفك ★ 4.9 (14 صوت)",
+          "en": "System optimization & pro utilities ★ 4.9 (14 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": ": GitHub",
+          "appId": "20173"
         }
       }
     ]
@@ -109,7 +419,7 @@
       {
         "image": "assets/banners/generated/guide_features.jpg",
         "badge": {
-          "ar": "💎 مزايا المنصة",
+          "ar": "💎 مزايا المنصة الحصرية",
           "en": "STORE FEATURES"
         },
         "title": {
