@@ -263,7 +263,7 @@ function appMatchesCategory(app, catId) {
 
     const tags = Array.isArray(app.tags) ? app.tags.map(t => String(t).toLowerCase()) : [];
     const name = (app.name || '').toLowerCase();
-    const desc = (app.description || '').toLowerCase();
+    const desc = ((app.description || '') + ' ' + (app.description_en || '')).toLowerCase();
     const category = app.category || '';
 
     const hasAnyTag = (keywords) => {
@@ -801,6 +801,10 @@ function setLanguage(lang) {
     updateFavoritesBadge();
     renderCategoryChips();
     if (window.currentModalApp) {
+        const appModal = document.getElementById('app-modal');
+        if (appModal && appModal.classList.contains('active')) {
+            openAppDetails(window.currentModalApp, false);
+        }
         updateModalFavBtn(isFavorite(window.currentModalApp.id || window.currentModalApp.name));
         if (window.currentModalApp.screenshots && window.currentModalApp.screenshots.length > 0) {
             const galleryCount = document.getElementById('modal-gallery-count');
@@ -832,9 +836,9 @@ function setLanguage(lang) {
         }
 
         const isLarge = window.currentModalApp.size > 19.5 * 1024 * 1024;
-        const gateCard = document.getElementById('modal-tg-gate-card');
+        const gateCard = document.getElementById('modal-tg-gate') || document.getElementById('modal-tg-gate-card');
         if (gateCard) {
-            gateCard.style.display = isLarge ? 'block' : 'none';
+            gateCard.style.display = isLarge ? 'flex' : 'none';
         }
 
         const noteContainer = document.getElementById('modal-note-container');
@@ -1572,14 +1576,25 @@ async function fetchApps() {
         allApps.forEach((app, idx) => {
             if (!app.category) app.category = 'Apps';
             app._index = idx; // Store original insertion order for sorting
-            if (app.description) {
-                const parsed = parseAppDescription(app.description);
-                const clean = (parsed.cleanDesc || app.description || '').trim();
-                const singleLine = clean.replace(/\r?\n+/g, ' ').replace(/\s+/g, ' ').trim();
-                app._descShort = singleLine;
+
+            // Extract short single-line summaries for Arabic
+            const rawAr = app.description || '';
+            const parsedAr = parseAppDescription(rawAr);
+            const cleanAr = (parsedAr.cleanDesc || rawAr).trim();
+            app._descShort_ar = cleanAr.replace(/\r?\n+/g, ' ').replace(/\s+/g, ' ').trim();
+
+            // Extract short single-line summaries for English
+            const rawEn = app.description_en || '';
+            if (rawEn) {
+                const parsedEn = parseAppDescription(rawEn);
+                const cleanEn = (parsedEn.cleanDesc || rawEn).trim();
+                app._descShort_en = cleanEn.replace(/\r?\n+/g, ' ').replace(/\s+/g, ' ').trim();
             } else {
-                app._descShort = '';
+                app._descShort_en = app._descShort_ar;
             }
+
+            // Default fallback
+            app._descShort = app._descShort_ar;
         });
         loading.style.display = 'none';
         renderCategoryChips();
@@ -1947,7 +1962,8 @@ function renderApps() {
             const normTerm = normalizeArabic(currentSearch);
             const nameNorm = normalizeArabic(app.name);
             const descNorm = normalizeArabic(app.description || '');
-            return nameNorm.includes(normTerm) || descNorm.includes(normTerm) ||
+            const descEn = (app.description_en || '').toLowerCase();
+            return nameNorm.includes(normTerm) || descNorm.includes(normTerm) || descEn.includes(term) ||
                    app.name.toLowerCase().includes(term) || (app.description && app.description.toLowerCase().includes(term));
         }
         return true;
@@ -2211,7 +2227,8 @@ function createAppCard(app, isInitial = false) {
         ? `<img src="${WORKER_URL}/?id=${app.icon_id}&action=image" alt="${safeName}" class="card-icon" ${loadingAttr} decoding="async" onerror="handleCardImageError(this, '${safeName}', '${safeCat}')">`
         : renderAppIconFallbackHTML(app.name, app.category, app.tags);
 
-    const categoryText = app._descShort || (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
+    const activeShortDesc = (currentLanguage === 'en' && app._descShort_en) ? app._descShort_en : (app._descShort_ar || app._descShort);
+    const categoryText = activeShortDesc || (app.category === 'Games' ? strings[currentLanguage].categoryGame : strings[currentLanguage].categoryApp);
 
     const hasRating = app.rating && app.votes > 0;
     const ratingBadgeHTML = hasRating
@@ -2286,15 +2303,20 @@ function parseAppDescription(rawDesc) {
             continue;
         }
 
-        // Check for version line (e.g. 🧊 الإصدار : v11.6.10, الإصدار : 1.26.52.3)
-        if (trimmed.includes('الإصدار') && (trimmed.includes('🧊') || trimmed.startsWith('الإصدار') || trimmed.startsWith('الاصدار'))) {
+        // Check for version line (Arabic or English, e.g. 🧊 الإصدار : v11.6.10, 🧊 Version: v26.10.0)
+        const isVerLine = (trimmed.includes('الإصدار') || trimmed.includes('الاصدار')) ||
+            /^(?:🧊\s*)?(?:version|release)\b/i.test(trimmed);
+        if (isVerLine && (trimmed.includes('🧊') || trimmed.includes(':') || trimmed.includes('：') || trimmed.startsWith('الإصدار') || trimmed.startsWith('الاصدار') || /^(?:🧊\s*)?(?:version|release)\b/i.test(trimmed))) {
             const vMatch = trimmed.match(/[:：]\s*(v?[\d\.\-_a-zA-Z]+)/i);
             if (vMatch) extractedVersion = vMatch[1];
             continue;
         }
 
-        // Check for mod header line (e.g. 🏷 النسخة المعدلة وفيها :, 🏷 النسخة معدلة وفيها :)
-        if (trimmed.includes('النسخة') && (trimmed.includes('معدلة') || trimmed.includes('المعدلة'))) {
+        // Check for mod header line (Arabic or English, e.g. 🏷 النسخة المعدلة وفيها :, 🏷 The modified version contains:, Mod features:)
+        const isModHeader = (trimmed.includes('النسخة') && (trimmed.includes('معدلة') || trimmed.includes('المعدلة'))) ||
+            /^(?:🏷\s*)?(?:the\s+)?mod(?:ified)?\s*(?:version|features|info)?\s*(?:and\s+in\s+it|contains|features|includes)?\s*[:：]?$/i.test(trimmed) ||
+            /^(?:🏷\s*)?(?:mod\s*features|mod\s*info)[:：]/i.test(trimmed);
+        if (isModHeader) {
             inModSection = true;
             continue;
         }
@@ -2325,8 +2347,12 @@ function openAppDetails(app, pushUrl = true) {
 
     document.getElementById('modal-title').textContent = app.name;
 
+    // Select description based on active language (English or Arabic)
+    const isEn = (currentLanguage === 'en');
+    const activeDesc = (isEn && app.description_en) ? app.description_en : (app.description || '');
+
     // Parse Description to extract clean text and mod features accurately
-    const parsed = parseAppDescription(app.description || '');
+    const parsed = parseAppDescription(activeDesc);
 
     // Resolve version for the Stat Bar (Title on top, value underneath)
     const resolvedVersion = app.version || parsed.extractedVersion || 'v1.0';
@@ -2374,7 +2400,7 @@ function openAppDetails(app, pushUrl = true) {
 
         // Fallback detection if no mod bullet list was in the description
         if (tagsList.length === 0) {
-            const textToScan = `${app.name} ${app.description || ''}`.toLowerCase();
+            const textToScan = `${app.name} ${app.description || ''} ${app.description_en || ''}`.toLowerCase();
             if (textToScan.includes('premium') || textToScan.includes('بريميوم') || textToScan.includes('مدفوع')) {
                 tagsList.push(currentLanguage === 'ar' ? 'مفتوح Premium' : 'Premium Unlocked');
             }
@@ -2474,9 +2500,13 @@ function openAppDetails(app, pushUrl = true) {
     }
 
     // Toggle Telegram Gate Warning Card
-    const gateCard = document.getElementById('modal-tg-gate-card');
+    const gateCard = document.getElementById('modal-tg-gate') || document.getElementById('modal-tg-gate-card');
     if (gateCard) {
-        gateCard.style.display = isLarge ? 'block' : 'none';
+        gateCard.style.display = isLarge ? 'flex' : 'none';
+        const stepHintEl = document.getElementById('tg-gate-step-hint');
+        if (stepHintEl) {
+            stepHintEl.textContent = strings[currentLanguage].tgGateStepHint;
+        }
     }
 
     const gateJoinBtn = document.getElementById('modal-join-gate-btn');

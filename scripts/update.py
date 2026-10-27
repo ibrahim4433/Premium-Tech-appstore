@@ -391,6 +391,24 @@ def main():
         offset = highest_offset
         save_offset(highest_offset)
 
+    # Free, safe, automated translation for any newly added or untranslated apps
+    try:
+        import sys
+        scripts_dir = os.path.dirname(os.path.abspath(__file__))
+        if scripts_dir not in sys.path:
+            sys.path.insert(0, scripts_dir)
+        try:
+            from translate_apps import translate_missing_apps
+        except ImportError:
+            from scripts.translate_apps import translate_missing_apps
+
+        translated_count = translate_missing_apps(apps, max_workers=5)
+        if translated_count > 0:
+            print(f"Auto-translated {translated_count} apps to English.")
+            added_count += translated_count
+    except Exception as e:
+        print(f"Warning: translation step encountered an error: {e}")
+
     if added_count > 0:
         save_apps(apps)
         update_seo_html(apps)
