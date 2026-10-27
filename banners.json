@@ -1,50 +1,181 @@
 [
-    {
-        "id": "telegram_campaign",
-        "action": { "type": "link", "target": "https://t.me/IA_Assistantbot" },
-        "slides": [
-            {
-                "image": "assets/banners/telegram/1.jpg",
-                "title": {"ar": "قناة Premium Techs", "en": "Premium Techs Channel"},
-                "subtitle": {"ar": "أفضل التطبيقات والألعاب من تليجرام", "en": "The best premium apps & games"}
-            },
-            {
-                "image": "assets/banners/telegram/2.jpg",
-                "title": {"ar": "تحديثات حصرية", "en": "Exclusive Updates"},
-                "subtitle": {"ar": "اكتشف الجديد كل يوم", "en": "Discover new apps daily"}
-            },
-            {
-                "image": "assets/banners/telegram/3.jpg",
-                "title": {"ar": "نسخ آمنة وموثوقة", "en": "Safe & Secure"},
-                "subtitle": {"ar": "بدون إعلانات مزعجة", "en": "Without annoying ads"}
-            }
-        ]
+  {
+    "id": "hall_of_fame",
+    "action": {
+      "type": "open_app",
+      "appName": ": Snaptube"
     },
-    {
-        "id": "app_highlight_1",
-        "action": { "type": "open_app", "appName": "Picsart" },
-        "slides": [
-            {
-                "image": "assets/banners/highlight1/1.jpg",
-                "title": {"ar": "تطبيق الأسبوع", "en": "App of the Week"},
-                "subtitle": {"ar": "Picsart النسخة المدفوعة", "en": "Picsart Premium"}
-            },
-            {
-                "image": "assets/banners/highlight1/2.jpg",
-                "title": {"ar": "تحرير احترافي للصور", "en": "Pro Photo Editing"},
-                "subtitle": {"ar": "جميع الفلاتر مفتوحة", "en": "All filters unlocked"}
-            }
-        ]
+    "slides": [
+      {
+        "image": "assets/banners/generated/alltime_app.jpg",
+        "badge": {
+          "ar": "🏆 أسطورة التطبيقات",
+          "en": "ALL-TIME LEGEND APP"
+        },
+        "title": {
+          "ar": "Snaptube",
+          "en": "Snaptube"
+        },
+        "subtitle": {
+          "ar": "التقييم الأعلى في تاريخ المنصة ★ 5.0 (21 صوت)",
+          "en": "Highest-rated app in store history ★ 5.0 (21 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": ": Snaptube"
+        }
+      },
+      {
+        "image": "assets/banners/generated/alltime_game.jpg",
+        "badge": {
+          "ar": "🎮 صدارة الألعاب",
+          "en": "ALL-TIME TOP GAME"
+        },
+        "title": {
+          "ar": "Driving School Simulator : EVO",
+          "en": "Driving School Simulator : EVO"
+        },
+        "subtitle": {
+          "ar": "اللعبة الأكثر تفضيلاً وتقييماً ★ 4.3 (24 صوت)",
+          "en": "Most-favored game with unlocked experience ★ 4.3 (24 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": "Driving School Simulator : EVO"
+        }
+      }
+    ]
+  },
+  {
+    "id": "weekly_spotlight",
+    "action": {
+      "type": "open_app",
+      "appName": "Apktool M"
     },
-    {
-        "id": "app_highlight_2",
-        "action": { "type": "open_app", "appName": "Minecraft" },
-        "slides": [
-            {
-                "image": "assets/banners/highlight2/1.jpg",
-                "title": {"ar": "لعبة الأسبوع", "en": "Game of the Week"},
-                "subtitle": {"ar": "Minecraft للاندرويد", "en": "Minecraft for Android"}
-            }
-        ]
-    }
+    "slides": [
+      {
+        "image": "assets/banners/generated/weekly_app.jpg",
+        "badge": {
+          "ar": "⚡ اختيار هذا الأسبوع",
+          "en": "APP OF THE WEEK"
+        },
+        "title": {
+          "ar": "Apktool M",
+          "en": "Apktool M"
+        },
+        "subtitle": {
+          "ar": "الأكثر تميزاً في تريند الأسبوع ★ 5.0 (5 صوت)",
+          "en": "Trending community pick this week ★ 5.0 (5 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": "Apktool M"
+        }
+      },
+      {
+        "image": "assets/banners/generated/weekly_game.jpg",
+        "badge": {
+          "ar": "🚀 لعبة الأسبوع الجديدة",
+          "en": "GAME OF THE WEEK"
+        },
+        "title": {
+          "ar": "Sonic Time Twisted",
+          "en": "Sonic Time Twisted"
+        },
+        "subtitle": {
+          "ar": "مغامرة الأسبوع الحصرية بأعلى تقييم ★ 4.2 (20 صوت)",
+          "en": "Fresh game drop with top community votes ★ 4.2 (20 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": "Sonic Time Twisted"
+        }
+      }
+    ]
+  },
+  {
+    "id": "ecosystem_guide",
+    "action": {
+      "type": "scroll",
+      "target": "#categories-view"
+    },
+    "slides": [
+      {
+        "image": "assets/banners/generated/guide_features.jpg",
+        "badge": {
+          "ar": "💎 مزايا المنصة",
+          "en": "STORE FEATURES"
+        },
+        "title": {
+          "ar": "سرعة، أمان، وبدون إعلانات",
+          "en": "Speed, Security & Zero Ads"
+        },
+        "subtitle": {
+          "ar": "تحميل فوري عبر سيرفرات تليجرام، وتطبيق PWA يعمل بدون إنترنت",
+          "en": "Direct Telegram CDN streaming & offline PWA support"
+        },
+        "action": {
+          "type": "scroll",
+          "target": "#categories-view"
+        }
+      },
+      {
+        "image": "assets/banners/generated/guide_telegram.jpg",
+        "badge": {
+          "ar": "📢 المجتمع الرسمي",
+          "en": "TELEGRAM COMMUNITY"
+        },
+        "title": {
+          "ar": "قناة Premium Techs الرسمية",
+          "en": "Official Telegram Channel"
+        },
+        "subtitle": {
+          "ar": "تحديثات يومية حصرية، وتصويت مباشر لاختيار النسخ القادمة",
+          "en": "Daily exclusive updates, requests, and poll voting"
+        },
+        "action": {
+          "type": "link",
+          "target": "https://t.me/IA_Assistantbot"
+        }
+      },
+      {
+        "image": "assets/banners/generated/guide_github.jpg",
+        "badge": {
+          "ar": "💻 كود مفتوح المصدر",
+          "en": "100% OPEN SOURCE"
+        },
+        "title": {
+          "ar": "مشروع مفتوح على GitHub",
+          "en": "Open Source on GitHub"
+        },
+        "subtitle": {
+          "ar": "تصفح الكود، أبلغ عن أفكارك، أو ضع نجمة ⭐ لدعم المشروع",
+          "en": "Inspect code, submit issues, or leave a star ⭐"
+        },
+        "action": {
+          "type": "link",
+          "target": "https://github.com/ibrahim432/Premium-Tech-appstore"
+        }
+      },
+      {
+        "image": "assets/banners/generated/guide_coffee.jpg",
+        "badge": {
+          "ar": "☕ دعم المطورين",
+          "en": "BUY ME A COFFEE"
+        },
+        "title": {
+          "ar": "ادعم استمرار وتطوير المتجر",
+          "en": "Support Store Development"
+        },
+        "subtitle": {
+          "ar": "مساهمتك الرمزية تساعدنا في تغطية الخوادم وإبقاء المتجر مجانياً",
+          "en": "Your support keeps the platform free, fast, and ad-free"
+        },
+        "action": {
+          "type": "link",
+          "target": "https://buymeacoffee.com"
+        }
+      }
+    ]
+  }
 ]

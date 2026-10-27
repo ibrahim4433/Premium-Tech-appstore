@@ -8,11 +8,7 @@ const STREAMER_URL = "";
 
 function getDownloadUrl(app) {
     if (!app) return '#';
-    // 1. Direct Cloud Mirror (e.g. GitHub Releases - instant high-speed browser download)
-    if (app.download_url) {
-        return app.download_url;
-    }
-
+    const isLarge = app.size > 19.5 * 1024 * 1024;
     const filename = encodeURIComponent(app.file_name || `${app.name || 'app'}.apk`);
     const chatId = encodeURIComponent(app.chat_id || '-1001423595432');
     const msgId = encodeURIComponent(app.id || '');
@@ -21,6 +17,14 @@ function getDownloadUrl(app) {
     if (typeof STREAMER_URL !== 'undefined' && STREAMER_URL) {
         const cleanStreamer = STREAMER_URL.replace(/\/+$/, '');
         return `${cleanStreamer}/download/${chatId}/${msgId}?filename=${filename}`;
+    }
+
+    if (isLarge) {
+        if (app.chat_id && app.chat_id.startsWith('-100')) {
+            const baseChatId = app.chat_id.substring(4);
+            return `https://t.me/c/${baseChatId}/${app.id}`;
+        }
+        return `https://t.me/+ij7-LS669ahhMDFk`;
     }
 
     return `${WORKER_URL}/?id=${fileId}&chat_id=${chatId}&msg_id=${msgId}&action=download&filename=${filename}`;
@@ -354,8 +358,8 @@ const strings = {
         optSizeDesc: "الحجم (الأكبر)",
         labelSize: "حجم الملف",
         optSizeAll: "الكل",
-        optSizeSmall: "أقل من 20MB",
-        optSizeLarge: "أكبر من 20MB",
+        optSizeSmall: "أصغر من 20MB (مباشر)",
+        optSizeLarge: "أكبر من 20MB (تليجرام)",
         labelCategory: "التصنيف",
         optCatAll: "الكل",
         pwaInstallBtn: "تثبيت المتجر",
@@ -471,8 +475,8 @@ const strings = {
         optSizeDesc: "Size (Largest)",
         labelSize: "File Size",
         optSizeAll: "All",
-        optSizeSmall: "< 20MB",
-        optSizeLarge: "> 20MB",
+        optSizeSmall: "Under 20MB (Direct)",
+        optSizeLarge: "Over 20MB (Telegram)",
         labelCategory: "Category",
         optCatAll: "All",
         pwaInstallBtn: "Install Store",
@@ -827,10 +831,34 @@ function setLanguage(lang) {
             }
         }
 
+        const isLarge = window.currentModalApp.size > 19.5 * 1024 * 1024;
+        const gateCard = document.getElementById('modal-tg-gate-card');
+        if (gateCard) {
+            gateCard.style.display = isLarge ? 'block' : 'none';
+        }
+
         const noteContainer = document.getElementById('modal-note-container');
         if (noteContainer) {
-            noteContainer.innerHTML = '';
-            noteContainer.style.display = 'none';
+            if (isLarge) {
+                const noteText = lang === 'ar'
+                    ? 'ملاحظة: يجب الانضمام للقناة الخاصة أولاً لتتمكن من تحميل هذا الملف الكبير عبر تليجرام.'
+                    : 'Note: You must join the private channel first to download this large file via Telegram.';
+                noteContainer.innerHTML = `
+                    <div class="modal-note-card">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>${noteText}</span>
+                    </div>
+                `;
+                noteContainer.style.display = 'block';
+            } else {
+                noteContainer.innerHTML = '';
+                noteContainer.style.display = 'none';
+            }
+        }
+
+        const downloadText = document.getElementById('download-text');
+        if (downloadText) {
+            downloadText.textContent = `${isLarge ? (lang === 'ar' ? 'تحميل عبر تليجرام' : 'Download via Telegram') : (lang === 'ar' ? 'تثبيت مباشر' : 'Direct Download')} • ${formatBytes(window.currentModalApp.size)}`;
         }
 
         const statType = document.getElementById('stat-type-val');
@@ -1594,9 +1622,22 @@ function renderBanners() {
         const div = document.createElement('div');
         div.className = 'banner';
         div.dataset.index = index;
+        div.dataset.activeSlide = '0';
         div.style.scrollSnapAlign = 'center';
 
-        // Handle Action Click (avoiding accidental fire on touch swipe/drag)
+        // Indicators (Progress Dots) for multi-slide banners
+        if (bannerConfig.slides && bannerConfig.slides.length > 1) {
+            const indContainer = document.createElement('div');
+            indContainer.className = 'banner-indicators';
+            bannerConfig.slides.forEach((_, sIdx) => {
+                const dot = document.createElement('div');
+                dot.className = `banner-indicator-dot ${sIdx === 0 ? 'active' : ''}`;
+                indContainer.appendChild(dot);
+            });
+            div.appendChild(indContainer);
+        }
+
+        // Handle Action Click (Slide-aware)
         let bannerTouchStartX = 0;
         let isBannerSwiping = false;
 
@@ -1613,13 +1654,21 @@ function renderBanners() {
 
         div.addEventListener('click', () => {
             if (isBannerSwiping) return;
-            if (!bannerConfig.action) return;
-            if (bannerConfig.action.type === 'link') {
-                window.open(bannerConfig.action.target, '_blank');
-            } else if (bannerConfig.action.type === 'open_app') {
-                const targetApp = allApps.find(a => a.name.toLowerCase() === bannerConfig.action.appName.toLowerCase());
+            const currentSlideIdx = parseInt(div.dataset.activeSlide || '0', 10);
+            const activeSlideConfig = (bannerConfig.slides && bannerConfig.slides[currentSlideIdx]) || bannerConfig;
+            const action = activeSlideConfig.action || bannerConfig.action;
+            if (!action) return;
+
+            if (action.type === 'link') {
+                window.open(action.target, '_blank');
+            } else if (action.type === 'open_app') {
+                const targetApp = allApps.find(a => a.name.toLowerCase() === action.appName.toLowerCase());
                 if (targetApp) openAppDetails(targetApp);
-                else console.warn('App not found for banner click:', bannerConfig.action.appName);
+                else console.warn('App not found for banner click:', action.appName);
+            } else if (action.type === 'scroll') {
+                const targetView = document.querySelector(action.target);
+                if (targetView) targetView.scrollIntoView({ behavior: 'smooth' });
+                else switchView('categories');
             }
         });
 
@@ -1629,16 +1678,24 @@ function renderBanners() {
                 const slideDiv = document.createElement('div');
                 slideDiv.className = `banner-slide ${sIdx === 0 ? 'active' : ''}`;
 
-                const titleStr = slide.title[currentLanguage] || slide.title.en || '';
-                const subStr = slide.subtitle[currentLanguage] || slide.subtitle.en || '';
+                const titleStr = (slide.title && (slide.title[currentLanguage] || slide.title.en)) || '';
+                const subStr = (slide.subtitle && (slide.subtitle[currentLanguage] || slide.subtitle.en)) || '';
+                const badgeStr = (slide.badge && (slide.badge[currentLanguage] || slide.badge.en)) || '';
+                const ctaText = currentLanguage === 'ar' ? 'عرض التفاصيل' : 'Explore';
+                const ctaIcon = currentLanguage === 'ar' ? 'fa-arrow-left' : 'fa-arrow-right';
 
                 slideDiv.innerHTML = `
                     <div style="background: linear-gradient(45deg, #024773, #11a6d4); width:100%; height:100%; position:absolute; top:0; left:0; z-index:-2;"></div>
-                    <img src="${slide.image}" onerror="this.style.display='none'" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;" alt="Banner Image">
-                    <div class="banner-overlay" style="position:absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%); z-index:0;"></div>
-                    <div class="banner-content" style="position:relative; z-index:1; width:100%;">
-                        <h2 style="margin: 0 0 5px 0;">${titleStr}</h2>
-                        <p style="margin: 0;">${subStr}</p>
+                    <img src="${slide.image}" onerror="this.style.display='none'" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-1;" alt="${titleStr}">
+                    <div class="banner-overlay"></div>
+                    <div class="banner-content">
+                        ${badgeStr ? `<div class="banner-badge"><i class="fa-solid fa-sparkles"></i> <span>${badgeStr}</span></div>` : ''}
+                        <h2 class="banner-title">${titleStr}</h2>
+                        <p class="banner-subtitle">${subStr}</p>
+                        <div class="banner-cta">
+                            <span>${ctaText}</span>
+                            <i class="fa-solid ${ctaIcon}"></i>
+                        </div>
                     </div>
                 `;
                 div.appendChild(slideDiv);
@@ -1657,31 +1714,59 @@ function setupRobustBanners() {
     const banners = document.querySelectorAll('.banner');
     if (!banners.length) return;
 
-    // 1. Setup independent internal slide cycling for EVERY banner
+    // 1. Setup independent internal slide cycling for EVERY banner with Pause-on-Hover
     banners.forEach((banner) => {
         const slides = banner.querySelectorAll('.banner-slide');
+        const dots = banner.querySelectorAll('.banner-indicator-dot');
         if (slides.length <= 1) return;
 
         let currentSlide = 0;
-        // Make sure first is active
+        let isPaused = false;
+
+        banner.addEventListener('mouseenter', () => { isPaused = true; });
+        banner.addEventListener('mouseleave', () => { isPaused = false; });
+        banner.addEventListener('touchstart', () => { isPaused = true; }, { passive: true });
+        banner.addEventListener('touchend', () => { isPaused = false; }, { passive: true });
+
+        // Initialize active state
         slides.forEach((s, i) => {
             if (i === 0) s.classList.add('active');
             else s.classList.remove('active');
         });
+        if (dots.length > 0) {
+            dots.forEach((d, i) => {
+                if (i === 0) d.classList.add('active');
+                else d.classList.remove('active');
+            });
+        }
 
         const timer = setInterval(() => {
+            if (isPaused) return;
             slides[currentSlide].classList.remove('active');
+            if (dots[currentSlide]) dots[currentSlide].classList.remove('active');
+
             currentSlide = (currentSlide + 1) % slides.length;
+            banner.dataset.activeSlide = currentSlide;
+
             slides[currentSlide].classList.add('active');
-        }, 3000); // Crossfade every 3 seconds
+            if (dots[currentSlide]) dots[currentSlide].classList.add('active');
+        }, 3600); // Crossfade every 3.6s
 
         window.slideTimers.push(timer);
     });
 
     // 2. Setup a continuous auto-scroller for the main container
     currentBannerIndex = 0;
+    let isSliderPaused = false;
+    if (bannersSection) {
+        bannersSection.addEventListener('mouseenter', () => { isSliderPaused = true; });
+        bannersSection.addEventListener('mouseleave', () => { isSliderPaused = false; });
+        bannersSection.addEventListener('touchstart', () => { isSliderPaused = true; }, { passive: true });
+        bannersSection.addEventListener('touchend', () => { isSliderPaused = false; }, { passive: true });
+    }
+
     window.mainScrollTimer = setInterval(() => {
-        if (!bannersSection || bannersSection.style.display === 'none') return;
+        if (!bannersSection || bannersSection.style.display === 'none' || isSliderPaused) return;
         const allBanners = document.querySelectorAll('.banner');
         if (!allBanners.length) return;
 
@@ -1691,10 +1776,9 @@ function setupRobustBanners() {
         }
 
         const targetBanner = allBanners[currentBannerIndex];
-        // Calculate scroll position to center the banner horizontally
         const scrollLeft = targetBanner.offsetLeft - (bannersSection.clientWidth - targetBanner.clientWidth) / 2;
         bannersSection.scrollTo({ left: scrollLeft, behavior: 'smooth' });
-    }, 5000); // Move to next banner every 5 seconds
+    }, 6000); // Move to next main card every 6 seconds
 }
 
 function getTagInfo(tag) {
@@ -2134,8 +2218,17 @@ function createAppCard(app, isInitial = false) {
         ? `<span class="card-rating-badge">${app.rating.toFixed(1)} <i class="fa-solid fa-star"></i></span>`
         : '';
 
-    const downloadLink = getDownloadUrl(app);
-    const btnIcon = 'fa-download';
+    const isLarge = app.size > 19.5 * 1024 * 1024;
+    let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
+    if (app.chat_id && app.chat_id.startsWith('-100')) {
+        const baseChatId = app.chat_id.substring(4);
+        tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
+    }
+
+    const downloadLink = isLarge
+        ? tgLink
+        : `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name || `${app.name}.apk`)}`;
+    const btnIcon = isLarge ? 'fa-paper-plane' : 'fa-download';
     const btnText = strings[currentLanguage].download;
 
     card.innerHTML = `
@@ -2374,22 +2467,17 @@ function openAppDetails(app, pushUrl = true) {
         });
     }
 
-    // Large File Telegram Note (Direct download enabled for all sizes)
-    const noteContainer = document.getElementById('modal-note-container');
-    if (noteContainer) {
-        noteContainer.innerHTML = '';
-        noteContainer.style.display = 'none';
+    let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
+    if (app.chat_id && app.chat_id.startsWith('-100')) {
+        const baseChatId = app.chat_id.substring(4);
+        tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
     }
 
-    // Single Dominant CTA & Secondary Tools
-    const downloadBtn = document.getElementById('modal-download');
-    const toolsGroup = document.querySelector('.modal-tools-group');
-
-    const existingChannelTool = document.getElementById('modal-channel-tool');
-    if (existingChannelTool) existingChannelTool.remove();
-
-    const existingJoinBtn = document.getElementById('modal-join-btn');
-    if (existingJoinBtn) existingJoinBtn.remove();
+    // Toggle Telegram Gate Warning Card
+    const gateCard = document.getElementById('modal-tg-gate-card');
+    if (gateCard) {
+        gateCard.style.display = isLarge ? 'block' : 'none';
+    }
 
     const gateJoinBtn = document.getElementById('modal-join-gate-btn');
     if (gateJoinBtn) {
@@ -2402,29 +2490,58 @@ function openAppDetails(app, pushUrl = true) {
         };
     }
 
-    const downloadLink = getDownloadUrl(app);
-    downloadBtn.href = downloadLink;
-    downloadBtn.className = 'download-btn btn-large main-cta-btn';
-    downloadBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span id="download-text">${currentLanguage === 'ar' ? 'تثبيت مباشر' : 'Direct Download'} • ${formatBytes(app.size)}</span>`;
-
-    // Optional Telegram channel tool
-    let tgLink = `https://t.me/+ij7-LS669ahhMDFk`;
-    if (app.chat_id && app.chat_id.startsWith('-100')) {
-        const baseChatId = app.chat_id.substring(4);
-        tgLink = `https://t.me/c/${baseChatId}/${app.id}`;
+    // Large File Telegram Note
+    const noteContainer = document.getElementById('modal-note-container');
+    if (noteContainer) {
+        if (isLarge) {
+            const noteText = currentLanguage === 'ar'
+                ? 'ملاحظة: يجب الانضمام للقناة الخاصة أولاً لتتمكن من تحميل هذا الملف الكبير عبر تليجرام.'
+                : 'Note: You must join the private channel first to download this large file via Telegram.';
+            noteContainer.innerHTML = `
+                <div class="modal-note-card">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>${noteText}</span>
+                </div>
+            `;
+            noteContainer.style.display = 'block';
+        } else {
+            noteContainer.innerHTML = '';
+            noteContainer.style.display = 'none';
+        }
     }
 
-    if (toolsGroup) {
-        const channelTool = document.createElement('a');
-        channelTool.id = 'modal-channel-tool';
-        channelTool.href = tgLink;
-        channelTool.target = '_blank';
-        channelTool.rel = 'noopener noreferrer';
-        channelTool.className = 'modal-tool-btn channel-tool-btn';
-        channelTool.style.textDecoration = 'none';
-        channelTool.title = currentLanguage === 'ar' ? 'فتح في تليجرام' : 'Open in Telegram';
-        channelTool.innerHTML = `<i class="fa-brands fa-telegram"></i> <span>${strings[currentLanguage].channelText || (currentLanguage === 'ar' ? 'القناة الخاصة' : 'Channel')}</span>`;
-        toolsGroup.appendChild(channelTool);
+    // Single Dominant CTA & Secondary Tools
+    const downloadBtn = document.getElementById('modal-download');
+    const toolsGroup = document.querySelector('.modal-tools-group');
+
+    const existingChannelTool = document.getElementById('modal-channel-tool');
+    if (existingChannelTool) existingChannelTool.remove();
+
+    const existingJoinBtn = document.getElementById('modal-join-btn');
+    if (existingJoinBtn) existingJoinBtn.remove();
+
+    if (isLarge) {
+        downloadBtn.href = tgLink;
+        downloadBtn.className = 'download-btn btn-large main-cta-btn';
+        downloadBtn.innerHTML = `<i class="fa-brands fa-telegram"></i> <span id="download-text">${currentLanguage === 'ar' ? 'تحميل عبر تليجرام' : 'Download via Telegram'} • ${formatBytes(app.size)}</span>`;
+
+        if (toolsGroup) {
+            const channelTool = document.createElement('a');
+            channelTool.id = 'modal-channel-tool';
+            channelTool.href = 'https://t.me/+ij7-LS669ahhMDFk';
+            channelTool.target = '_blank';
+            channelTool.rel = 'noopener noreferrer';
+            channelTool.className = 'modal-tool-btn channel-tool-btn';
+            channelTool.style.textDecoration = 'none';
+            channelTool.title = currentLanguage === 'ar' ? 'القناة الخاصة' : 'Channel';
+            channelTool.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>${strings[currentLanguage].channelText || (currentLanguage === 'ar' ? 'القناة الخاصة' : 'Channel')}</span>`;
+            toolsGroup.appendChild(channelTool);
+        }
+    } else {
+        const downloadLink = `${WORKER_URL}/?id=${app.file_id}&action=download&filename=${encodeURIComponent(app.file_name || `${app.name}.apk`)}`;
+        downloadBtn.href = downloadLink;
+        downloadBtn.className = 'download-btn btn-large main-cta-btn';
+        downloadBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span id="download-text">${currentLanguage === 'ar' ? 'تثبيت مباشر' : 'Direct Download'} • ${formatBytes(app.size)}</span>`;
     }
 
     // Modal Tools: Favorite & Share Buttons
@@ -3055,7 +3172,7 @@ function renderFavoritesList() {
             </div>
             <div class="fav-item-actions">
                 <a href="${downloadLink}" class="card-install-btn" target="_blank" rel="noopener noreferrer" style="width:auto;padding:0.4rem 0.8rem;font-size:0.8rem;" onclick="event.stopPropagation();">
-                    <i class="fa-solid fa-download"></i>
+                    <i class="fa-solid ${app.size > 19.5 * 1024 * 1024 ? 'fa-paper-plane' : 'fa-download'}"></i>
                 </a>
                 <button class="fav-del-btn" title="${currentLanguage === 'ar' ? 'حذف من المفضلة' : 'Remove'}">
                     <i class="fa-solid fa-trash-can"></i>
