@@ -86,6 +86,12 @@ html[data-theme="light"] {
     background-size: cover;
 }
 
+/* Typography Scale Floor */
+h1 { font-size: 1.85rem; font-weight: 800; line-height: 1.25; }
+h2 { font-size: 1.45rem; font-weight: 800; line-height: 1.3; }
+h3 { font-size: 1.18rem; font-weight: 700; line-height: 1.35; }
+h4 { font-size: 0.98rem; font-weight: 700; line-height: 1.4; }
+
 body {
     background: transparent;
     color: var(--text-primary);
@@ -3298,7 +3304,7 @@ a.modal-tool-btn:hover,
     font-weight: 700;
     text-decoration: none;
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 4px 12px rgba(0, 136, 204, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 .ratings-vote-btn i {
     font-size: 1.1rem;
@@ -3309,7 +3315,7 @@ a.modal-tool-btn:hover,
     border-color: #229ed9;
     color: #fff;
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0, 136, 204, 0.3);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
 }
 .ratings-vote-btn:hover i {
     color: #fff;
