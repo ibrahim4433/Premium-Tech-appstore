@@ -1640,13 +1640,19 @@ function renderBanners() {
         div.dataset.activeSlide = '0';
         div.style.scrollSnapAlign = 'center';
 
-        // Indicators (Progress Dots) for multi-slide banners
+        // Indicators (Progress Dots) with click-to-switch support
         if (bannerConfig.slides && bannerConfig.slides.length > 1) {
             const indContainer = document.createElement('div');
             indContainer.className = 'banner-indicators';
             bannerConfig.slides.forEach((_, sIdx) => {
-                const dot = document.createElement('div');
+                const dot = document.createElement('button');
+                dot.type = 'button';
                 dot.className = `banner-indicator-dot ${sIdx === 0 ? 'active' : ''}`;
+                dot.setAttribute('aria-label', `Slide ${sIdx + 1}`);
+                dot.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    switchBannerSlide(div, sIdx);
+                });
                 indContainer.appendChild(dot);
             });
             div.appendChild(indContainer);
@@ -1677,7 +1683,13 @@ function renderBanners() {
             if (action.type === 'link') {
                 window.open(action.target, '_blank');
             } else if (action.type === 'open_app') {
-                const targetApp = allApps.find(a => a.name.toLowerCase() === action.appName.toLowerCase());
+                const cleanStr = (s) => (s || '').replace(/^[:\s\-•⚡🔥🎮📌💎\u200B-\u200D\uFEFF]+/, '').trim().toLowerCase();
+                const targetApp = allApps.find(a => 
+                    (action.appId && String(a.id) === String(action.appId)) ||
+                    a.name.toLowerCase() === action.appName.toLowerCase() ||
+                    cleanStr(a.name) === cleanStr(action.appName) ||
+                    (action.appName && action.appName.length > 3 && a.name.toLowerCase().includes(action.appName.toLowerCase()))
+                );
                 if (targetApp) openAppDetails(targetApp);
                 else console.warn('App not found for banner click:', action.appName);
             } else if (action.type === 'scroll') {
@@ -1724,6 +1736,24 @@ function renderBanners() {
 }
 
 let currentBannerIndex = 0;
+
+
+function switchBannerSlide(bannerEl, targetIdx) {
+    if (!bannerEl) return;
+    const slides = bannerEl.querySelectorAll('.banner-slide');
+    const dots = bannerEl.querySelectorAll('.banner-indicator-dot');
+    if (!slides.length || targetIdx < 0 || targetIdx >= slides.length) return;
+
+    const currentSlide = parseInt(bannerEl.dataset.activeSlide || '0', 10);
+    if (currentSlide === targetIdx) return;
+
+    if (slides[currentSlide]) slides[currentSlide].classList.remove('active');
+    if (dots[currentSlide]) dots[currentSlide].classList.remove('active');
+
+    bannerEl.dataset.activeSlide = targetIdx;
+    slides[targetIdx].classList.add('active');
+    if (dots[targetIdx]) dots[targetIdx].classList.add('active');
+}
 
 function setupRobustBanners() {
     const banners = document.querySelectorAll('.banner');

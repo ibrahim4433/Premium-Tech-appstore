@@ -2,6 +2,7 @@ import json
 import os
 import sys
 import time
+import re
 from generate_banners import composite_app_banner, create_guide_banner
 
 APPS_JSON_PATH = "apps.json"
@@ -11,10 +12,8 @@ def clean_name(name):
     """Strip unnecessary emoji or channel prefixes from titles."""
     if not name:
         return ""
-    # remove leading emoji or colons if present
-    name = name.strip()
-    if name.startswith(":") or name.startswith("⚡") or name.startswith("🔥") or name.startswith("🎮"):
-        name = name.lstrip(": ⚡🔥🎮📌").strip()
+    # Strip leading colon, bullet, dash, emojis, or zero-width spaces
+    name = re.sub(r"^[\s:\-–—•⚡🔥🎮📌💎🚀✨🧊🏷️\u200B-\u200D\uFEFF]+", "", name).strip()
     return name
 
 def is_game(app):
@@ -33,7 +32,7 @@ def select_weekly_winners():
     with open(APPS_JSON_PATH, "r", encoding="utf-8") as f:
         apps = json.load(f)
 
-    # 1. Global Mean
+    # 1. Global Mean Rating for Bayesian formula
     rated_apps = [a for a in apps if a.get("votes", 0) > 0 and a.get("rating", 0) > 0]
     C = sum(a["rating"] for a in rated_apps) / len(rated_apps) if rated_apps else 4.2
 
@@ -48,7 +47,7 @@ def select_weekly_winners():
     top_game_alltime = all_time_games[0] if all_time_games else None
 
     # 3. Weekly / Trending Champions (last 7 -> 14 -> 30 -> 90 days fallback ladder)
-    max_date = max(a.get("date", 0) for a in apps) if apps else time.time()
+    max_date = max((a.get("date") or 0) for a in apps) if apps else time.time()
     
     top_app_weekly = None
     top_game_weekly = None
@@ -57,7 +56,7 @@ def select_weekly_winners():
         cutoff = max_date - (days * 86400)
         recent_apps = [
             a for a in apps 
-            if not is_game(a) and a.get("date", 0) >= cutoff and a.get("votes", 0) > 0
+            if not is_game(a) and (a.get("date") or 0) >= cutoff and a.get("votes", 0) > 0
             and (top_app_alltime is None or a["name"] != top_app_alltime["name"])
         ]
         if recent_apps and not top_app_weekly:
@@ -66,14 +65,14 @@ def select_weekly_winners():
 
         recent_games = [
             a for a in apps 
-            if is_game(a) and a.get("date", 0) >= cutoff and a.get("votes", 0) > 0
+            if is_game(a) and (a.get("date") or 0) >= cutoff and a.get("votes", 0) > 0
             and (top_game_alltime is None or a["name"] != top_game_alltime["name"])
         ]
         if recent_games and not top_game_weekly:
             recent_games.sort(key=lambda a: compute_bayesian_score(a, m=2, C=C), reverse=True)
             top_game_weekly = recent_games[0]
 
-    # Graceful fallback if no fresh games voted
+    # Graceful fallback if no fresh games or apps voted in recent windows
     if not top_app_weekly and len(all_time_apps) > 1:
         top_app_weekly = all_time_apps[1]
     if not top_game_weekly and len(all_time_games) > 1:
@@ -135,7 +134,11 @@ def main():
                 "ar": f"التقييم الأعلى في تاريخ المنصة ★ {app.get('rating', 5.0)} ({app.get('votes', 0)} صوت)",
                 "en": f"Highest-rated app in store history ★ {app.get('rating', 5.0)} ({app.get('votes', 0)} votes)"
             },
-            "action": {"type": "open_app", "appName": app["name"]}
+            "action": {
+                "type": "open_app",
+                "appName": app["name"],
+                "appId": str(app.get("id", ""))
+            }
         })
 
     if winners["alltime_game"]:
@@ -149,13 +152,17 @@ def main():
                 "ar": f"اللعبة الأكثر تفضيلاً وتقييماً ★ {game.get('rating', 4.5)} ({game.get('votes', 0)} صوت)",
                 "en": f"Most-favored game with unlocked experience ★ {game.get('rating', 4.5)} ({game.get('votes', 0)} votes)"
             },
-            "action": {"type": "open_app", "appName": game["name"]}
+            "action": {
+                "type": "open_app",
+                "appName": game["name"],
+                "appId": str(game.get("id", ""))
+            }
         })
 
     if hall_of_fame_slides:
         banners_data.append({
             "id": "hall_of_fame",
-            "action": hall_of_fame_slides[0]["action"], # Default fallback action
+            "action": hall_of_fame_slides[0]["action"],
             "slides": hall_of_fame_slides
         })
 
@@ -172,7 +179,11 @@ def main():
                 "ar": f"الأكثر تميزاً في تريند الأسبوع ★ {w_app.get('rating', 4.8)} ({w_app.get('votes', 0)} صوت)",
                 "en": f"Trending community pick this week ★ {w_app.get('rating', 4.8)} ({w_app.get('votes', 0)} votes)"
             },
-            "action": {"type": "open_app", "appName": w_app["name"]}
+            "action": {
+                "type": "open_app",
+                "appName": w_app["name"],
+                "appId": str(w_app.get("id", ""))
+            }
         })
 
     if winners["weekly_game"]:
@@ -186,7 +197,11 @@ def main():
                 "ar": f"مغامرة الأسبوع الحصرية بأعلى تقييم ★ {w_game.get('rating', 4.5)} ({w_game.get('votes', 0)} صوت)",
                 "en": f"Fresh game drop with top community votes ★ {w_game.get('rating', 4.5)} ({w_game.get('votes', 0)} votes)"
             },
-            "action": {"type": "open_app", "appName": w_game["name"]}
+            "action": {
+                "type": "open_app",
+                "appName": w_game["name"],
+                "appId": str(w_game.get("id", ""))
+            }
         })
 
     if weekly_slides:
@@ -216,7 +231,7 @@ def main():
                 "ar": "تحديثات يومية حصرية، وتصويت مباشر لاختيار النسخ القادمة",
                 "en": "Daily exclusive updates, requests, and poll voting"
             },
-            "action": {"type": "link", "target": "https://t.me/IA_Assistantbot"}
+            "action": {"type": "link", "target": "https://t.me/+ij7-LS669ahhMDFk"}
         },
         {
             "image": guide_gh_img,
@@ -236,7 +251,7 @@ def main():
                 "ar": "مساهمتك الرمزية تساعدنا في تغطية الخوادم وإبقاء المتجر مجانياً",
                 "en": "Your support keeps the platform free, fast, and ad-free"
             },
-            "action": {"type": "link", "target": "https://buymeacoffee.com"}
+            "action": {"type": "link", "target": "https://t.me/IA_Ibr"}
         }
     ]
 

@@ -543,23 +543,30 @@ body {
     display: flex;
     gap: 6px;
     z-index: 10;
-    pointer-events: none;
+    pointer-events: auto;
 }
 :root[dir="rtl"] .banner-indicators {
     left: auto;
     right: 18px;
 }
 .banner-indicator-dot {
-    width: 20px;
-    height: 3px;
+    width: 22px;
+    height: 4px;
     border-radius: 2px;
-    background: rgba(255, 255, 255, 0.25);
-    transition: all 0.35s ease;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.banner-indicator-dot:hover {
+    background: rgba(255, 255, 255, 0.6);
 }
 .banner-indicator-dot.active {
     background: #38bdf8;
-    width: 34px;
-    box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+    width: 36px;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
 }
 
 .banner-badge {

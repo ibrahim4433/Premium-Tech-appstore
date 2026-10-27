@@ -3,7 +3,8 @@
     "id": "hall_of_fame",
     "action": {
       "type": "open_app",
-      "appName": ": Snaptube"
+      "appName": ": Snaptube",
+      "appId": "20176"
     },
     "slides": [
       {
@@ -22,7 +23,8 @@
         },
         "action": {
           "type": "open_app",
-          "appName": ": Snaptube"
+          "appName": ": Snaptube",
+          "appId": "20176"
         }
       },
       {
@@ -41,7 +43,8 @@
         },
         "action": {
           "type": "open_app",
-          "appName": "Driving School Simulator : EVO"
+          "appName": "Driving School Simulator : EVO",
+          "appId": "12525"
         }
       }
     ]
@@ -50,7 +53,8 @@
     "id": "weekly_spotlight",
     "action": {
       "type": "open_app",
-      "appName": "Apktool M"
+      "appName": "Apktool M",
+      "appId": "30293"
     },
     "slides": [
       {
@@ -69,7 +73,8 @@
         },
         "action": {
           "type": "open_app",
-          "appName": "Apktool M"
+          "appName": "Apktool M",
+          "appId": "30293"
         }
       },
       {
@@ -88,7 +93,8 @@
         },
         "action": {
           "type": "open_app",
-          "appName": "Sonic Time Twisted"
+          "appName": "Sonic Time Twisted",
+          "appId": "12144"
         }
       }
     ]
@@ -135,7 +141,7 @@
         },
         "action": {
           "type": "link",
-          "target": "https://t.me/IA_Assistantbot"
+          "target": "https://t.me/+ij7-LS669ahhMDFk"
         }
       },
       {
@@ -173,7 +179,7 @@
         },
         "action": {
           "type": "link",
-          "target": "https://buymeacoffee.com"
+          "target": "https://t.me/IA_Ibr"
         }
       }
     ]
