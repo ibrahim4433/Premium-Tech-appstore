@@ -215,19 +215,21 @@ def load_tag_background(tag, width=1200, height=600):
     canvas.alpha_composite(orb, (int(width * 0.72) - 400, height // 2 - 400))
     return canvas
 
-def draw_thematic_tag_effects(canvas, tag, dom_color, width=1200, height=600):
+def draw_thematic_tag_effects(canvas, tag, dom_color, width=1200, height=600, cx=None, cy=None):
     """Draw high-contrast, luminous visual effects matching each of the 16 categories."""
     effects = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     draw = ImageDraw.Draw(effects)
     r, g, b = dom_color
-    cx = int(width * 0.76)
-    cy = int(height * 0.50)
+    if cx is None:
+        cx = int(width * 0.775)
+    if cy is None:
+        cy = int(height * 0.50)
 
     # 1. Games: Cyber HUD & Targeting Crosshairs & Laser Grid
     if tag == "games":
-        hud_c = (r, g, b, 120)
-        hw, hh = 160, 160
-        arm = 35
+        hud_c = (r, g, b, 140)
+        hw, hh = 195, 195
+        arm = 40
         draw.line([(cx - hw, cy - hh), (cx - hw + arm, cy - hh)], fill=hud_c, width=3)
         draw.line([(cx - hw, cy - hh), (cx - hw, cy - hh + arm)], fill=hud_c, width=3)
         draw.line([(cx + hw, cy - hh), (cx + hw - arm, cy - hh)], fill=hud_c, width=3)
@@ -408,8 +410,8 @@ def composite_app_banner(app, filename, badge_text="TOP RATED"):
     if app.get("screenshots") and len(app["screenshots"]) > 0:
         screenshot = load_or_download_image(app["screenshots"][0])
 
-    # 3. Ambient Color Bloom
-    center_x = int(width * 0.77)
+    # 3. Ambient Color Bloom (Aligned to Unified Focal Center)
+    center_x = int(width * 0.775)
     center_y = int(height * 0.50)
 
     bloom = Image.new("RGBA", (580, 580), (0, 0, 0, 0))
@@ -419,8 +421,8 @@ def composite_app_banner(app, filename, badge_text="TOP RATED"):
         bloom_draw.ellipse([(290 - rad, 290 - rad), (290 + rad, 290 + rad)], fill=(r, g, b, alpha))
     canvas.alpha_composite(bloom, (center_x - 290, center_y - 290))
 
-    # 4. Thematic Effects
-    draw_thematic_tag_effects(canvas, tag, dom_color, width, height)
+    # 4. Thematic Effects (Centered at Exact Same Focal Point)
+    draw_thematic_tag_effects(canvas, tag, dom_color, width, height, cx=center_x, cy=center_y)
 
     # 5. Soft, Controlled Left Vignette (Leaves Background Visible, No Black Mud!)
     soft_vignette = Image.new("RGBA", (width, height), (0, 0, 0, 0))
@@ -489,10 +491,10 @@ def composite_app_banner(app, filename, badge_text="TOP RATED"):
             icon_res = icon.resize((icon_size, icon_size), Image.Resampling.LANCZOS)
             icon_mask = create_squircle_mask((icon_size, icon_size), int(icon_size * 0.22))
             
-            bp_w, bp_h = 330, 330
+            bp_w, bp_h = 340, 340
             backplate = Image.new("RGBA", (bp_w, bp_h), (0, 0, 0, 0))
             bp_draw = ImageDraw.Draw(backplate)
-            bp_draw.rounded_rectangle([(0, 0), (bp_w - 1, bp_h - 1)], radius=42, fill=(10, 18, 30, 140), outline=(255, 255, 255, 45), width=2)
+            bp_draw.rounded_rectangle([(0, 0), (bp_w - 1, bp_h - 1)], radius=44, fill=(10, 18, 30, 140), outline=(255, 255, 255, 55), width=2)
             
             shadow_pad = 70
             icon_shadow = Image.new("RGBA", (icon_size + shadow_pad * 2, icon_size + shadow_pad * 2), (0, 0, 0, 0))
@@ -504,16 +506,19 @@ def composite_app_banner(app, filename, badge_text="TOP RATED"):
             )
             icon_shadow = icon_shadow.filter(ImageFilter.GaussianBlur(24))
             
-            pos_x = center_x - icon_size // 2 + 25
+            pos_x = center_x - icon_size // 2
             pos_y = center_y - icon_size // 2
             
-            canvas.alpha_composite(backplate, (pos_x - 30, pos_y - 30))
+            bp_x = center_x - bp_w // 2
+            bp_y = center_y - bp_h // 2
+            
+            canvas.alpha_composite(backplate, (bp_x, bp_y))
             canvas.alpha_composite(icon_shadow, (pos_x - shadow_pad, pos_y - shadow_pad))
             
             icon_framed = Image.new("RGBA", (icon_size, icon_size), (0, 0, 0, 0))
             icon_framed.paste(icon_res, (0, 0), icon_mask)
             icon_border = ImageDraw.Draw(icon_framed)
-            icon_border.rounded_rectangle([(0, 0), (icon_size - 1, icon_size - 1)], radius=int(icon_size * 0.22), outline=(255, 255, 255, 100), width=2)
+            icon_border.rounded_rectangle([(0, 0), (icon_size - 1, icon_size - 1)], radius=int(icon_size * 0.22), outline=(255, 255, 255, 110), width=2)
             canvas.alpha_composite(icon_framed, (pos_x, pos_y))
 
     final_rgb = canvas.convert("RGB")

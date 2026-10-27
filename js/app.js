@@ -4,7 +4,7 @@
 const WORKER_URL = "https://appstore-proxy.iateam.workers.dev"; // The worker URL from user
 // Optional direct MTProto Streamer URL (e.g. "https://your-username-appstore-streamer.hf.space")
 // If empty, downloads route via WORKER_URL, which auto-redirects large files to STREAMER_URL
-const STREAMER_URL = ""; 
+const STREAMER_URL = "";
 
 function getDownloadUrl(app) {
     if (!app) return '#';
@@ -319,7 +319,7 @@ function appMatchesCategory(app, catId) {
 
         case 'sports':
             return hasAnyTag(['sport', 'football', 'fitness', 'workout', 'gym', 'رياض']) ||
-                   name.includes('fit') || name.includes('sport');
+                name.includes('fit') || name.includes('sport');
 
         case 'productivity':
             return hasAnyTag(['product', 'office', 'business']) || name.includes('office');
@@ -877,7 +877,7 @@ function setLanguage(lang) {
         span.textContent = span.getAttribute(`data-${lang}`);
     });
 
-        // Update Telegram Gate Box strings
+    // Update Telegram Gate Box strings
     const tgGateBadgeText = document.getElementById('tg-gate-badge-text');
     if (tgGateBadgeText) tgGateBadgeText.textContent = strings[lang].tgGateBadgeText;
     const tgGateTitle = document.getElementById('tg-gate-title');
@@ -1211,7 +1211,7 @@ function setupEventListeners() {
     });
     window.addEventListener('popstate', (e) => {
         closeScreenshotLightbox();
-        
+
         const params = new URLSearchParams(window.location.search);
         const appParam = params.get('app');
         const tabParam = params.get('tab') || 'home';
@@ -1684,7 +1684,7 @@ function renderBanners() {
                 window.open(action.target, '_blank');
             } else if (action.type === 'open_app') {
                 const cleanStr = (s) => (s || '').replace(/^[:\s\-•⚡🔥🎮📌💎\u200B-\u200D\uFEFF]+/, '').trim().toLowerCase();
-                const targetApp = allApps.find(a => 
+                const targetApp = allApps.find(a =>
                     (action.appId && String(a.id) === String(action.appId)) ||
                     a.name.toLowerCase() === action.appName.toLowerCase() ||
                     cleanStr(a.name) === cleanStr(action.appName) ||
@@ -1894,10 +1894,10 @@ function renderCategories() {
         card.className = 'category-card';
         card.setAttribute('role', 'button');
         card.setAttribute('tabindex', '0');
-        card.setAttribute('aria-label', `${catName} - ${count} ${currentLanguage === 'ar' ? 'تطبيق ولعبة' : 'Apps & Games'}`);
+        card.setAttribute('aria-label', `${catName} - ${count} ${currentLanguage === 'ar' ? 'عنصر' : 'element'}`);
 
         const arrowIcon = currentLanguage === 'ar' ? 'fa-chevron-left' : 'fa-chevron-right';
-        const countUnit = currentLanguage === 'ar' ? 'تطبيق ولعبة' : 'Apps & Games';
+        const countUnit = currentLanguage === 'ar' ? 'عنصر' : 'element';
 
         card.innerHTML = `
             <div class="cat-card-header">
@@ -1994,7 +1994,7 @@ function renderApps() {
             const descNorm = normalizeArabic(app.description || '');
             const descEn = (app.description_en || '').toLowerCase();
             return nameNorm.includes(normTerm) || descNorm.includes(normTerm) || descEn.includes(term) ||
-                   app.name.toLowerCase().includes(term) || (app.description && app.description.toLowerCase().includes(term));
+                app.name.toLowerCase().includes(term) || (app.description && app.description.toLowerCase().includes(term));
         }
         return true;
     });
@@ -2679,7 +2679,7 @@ function openAppDetails(app, pushUrl = true) {
             touchCurrentY = 0;
         });
     }
-// modal icon handled above
+    // modal icon handled above
 
     // Screenshots Gallery (Google Play / App Store style)
     const galleryContainer = document.getElementById('modal-gallery-container');
@@ -3491,7 +3491,7 @@ function fallbackCopy(url) {
 // ==========================================
 function updateURLState(options = {}) {
     const url = new URL(window.location.origin + window.location.pathname);
-    
+
     if (activeView && activeView !== 'home') {
         url.searchParams.set('tab', activeView);
     }

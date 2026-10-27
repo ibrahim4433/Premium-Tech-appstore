@@ -12,10 +12,11 @@ APPS_JSON_PATH = "apps.json"
 BANNERS_JSON_PATH = "banners.json"
 
 def clean_name(name):
-    """Strip unnecessary emoji or channel prefixes from titles."""
+    """Strip unnecessary emoji or channel prefixes and trailing colons/dashes from titles."""
     if not name:
         return ""
     name = re.sub(r"^[\s:\-–—•⚡🔥🎮📌💎🚀✨🧊🏷️\u200B-\u200D\uFEFF]+", "", name).strip()
+    name = re.sub(r"[\s:\-–—•]+$", "", name).strip()
     return name
 
 def is_game(app):

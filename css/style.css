@@ -518,9 +518,10 @@ body {
         left: 24px !important;
     }
     .banner-title { 
-        font-size: clamp(1.4rem, 2vw, 2.1rem) !important; 
-        line-height: 1.25;
+        font-size: clamp(1.25rem, 1.8vw, 1.95rem) !important; 
+        line-height: 1.3;
         margin-bottom: 0.35rem;
+        -webkit-line-clamp: 2 !important;
     }
     .banner-subtitle { 
         font-size: clamp(0.85rem, 1.1vw, 1.05rem) !important; 
@@ -623,15 +624,17 @@ body {
     font-size: 1.25rem;
     font-weight: 800;
     color: #ffffff;
-    margin: 0 0 3px 0;
-    line-height: 1.25;
+    margin: 0 0 4px 0;
+    line-height: 1.3;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
     display: -webkit-box;
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
+    unicode-bidi: plaintext;
+    text-align: start;
 }
 
 .banner-subtitle {
