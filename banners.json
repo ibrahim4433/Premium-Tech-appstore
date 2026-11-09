@@ -143,8 +143,8 @@
     "id": "weekly_spotlight",
     "action": {
       "type": "open_app",
-      "appName": "Apktool M",
-      "appId": "30293"
+      "appName": "HA Tunnel Plus",
+      "appId": "30442"
     },
     "slides": [
       {
@@ -154,17 +154,17 @@
           "en": "APP OF THE WEEK"
         },
         "title": {
-          "ar": "Apktool M",
-          "en": "Apktool M"
+          "ar": "HA Tunnel Plus",
+          "en": "HA Tunnel Plus"
         },
         "subtitle": {
-          "ar": "الأكثر تميزاً في تصويت المشتركين ★ 5.0 (5 صوت)",
-          "en": "Trending community drop this week ★ 5.0 (5 votes)"
+          "ar": "الأكثر تميزاً في تصويت المشتركين ★ 4.9 (9 صوت)",
+          "en": "Trending community drop this week ★ 4.9 (9 votes)"
         },
         "action": {
           "type": "open_app",
-          "appName": "Apktool M",
-          "appId": "30293"
+          "appName": "HA Tunnel Plus",
+          "appId": "30442"
         }
       },
       {
@@ -174,17 +174,17 @@
           "en": "APP OF THE WEEK"
         },
         "title": {
-          "ar": "EGYFILM TV",
-          "en": "EGYFILM TV"
+          "ar": "Bubble Translate",
+          "en": "Bubble Translate"
         },
         "subtitle": {
-          "ar": "الأكثر تميزاً في تصويت المشتركين ★ 5.0 (5 صوت)",
-          "en": "Trending community drop this week ★ 5.0 (5 votes)"
+          "ar": "الأكثر تميزاً في تصويت المشتركين ★ 4.8 (6 صوت)",
+          "en": "Trending community drop this week ★ 4.8 (6 votes)"
         },
         "action": {
           "type": "open_app",
-          "appName": "EGYFILM TV",
-          "appId": "30084"
+          "appName": "Bubble Translate",
+          "appId": "30436"
         }
       },
       {
@@ -213,12 +213,32 @@
     "id": "vpn_security",
     "action": {
       "type": "open_app",
-      "appName": "TunnelDOOM VPN",
-      "appId": "30038"
+      "appName": "HA Tunnel Plus",
+      "appId": "30442"
     },
     "slides": [
       {
         "image": "assets/banners/generated/vpn_app_1.jpg",
+        "badge": {
+          "ar": "🛡️ حماية وشبكات VPN",
+          "en": "SECURITY & VPN"
+        },
+        "title": {
+          "ar": "HA Tunnel Plus",
+          "en": "HA Tunnel Plus"
+        },
+        "subtitle": {
+          "ar": "فك الحجب وتأمين التصفح بسرعة فائقة ★ 4.9 (9 صوت)",
+          "en": "Fast proxy & privacy shield ★ 4.9 (9 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": "HA Tunnel Plus",
+          "appId": "30442"
+        }
+      },
+      {
+        "image": "assets/banners/generated/vpn_app_2.jpg",
         "badge": {
           "ar": "🛡️ حماية وشبكات VPN",
           "en": "SECURITY & VPN"
@@ -235,26 +255,6 @@
           "type": "open_app",
           "appName": "TunnelDOOM VPN",
           "appId": "30038"
-        }
-      },
-      {
-        "image": "assets/banners/generated/vpn_app_2.jpg",
-        "badge": {
-          "ar": "🛡️ حماية وشبكات VPN",
-          "en": "SECURITY & VPN"
-        },
-        "title": {
-          "ar": "VPN Proton",
-          "en": "VPN Proton"
-        },
-        "subtitle": {
-          "ar": "فك الحجب وتأمين التصفح بسرعة فائقة ★ 4.5 (10 صوت)",
-          "en": "Fast proxy & privacy shield ★ 4.5 (10 votes)"
-        },
-        "action": {
-          "type": "open_app",
-          "appName": "VPN Proton",
-          "appId": "29712"
         }
       }
     ]
