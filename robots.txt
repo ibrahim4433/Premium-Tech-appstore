@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://premiumtechs.linkpc.net/sitemap.xml
+Sitemap: https://www.premiumtechs.linkpc.net/sitemap.xml
