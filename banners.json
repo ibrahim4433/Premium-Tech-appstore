@@ -34,6 +34,26 @@
           "en": "ALL-TIME APP #2"
         },
         "title": {
+          "ar": "Battery Guru",
+          "en": "Battery Guru"
+        },
+        "subtitle": {
+          "ar": "التقييم الأعلى في تاريخ المنصة ★ 4.9 (14 صوت)",
+          "en": "Highest-rated app in store history ★ 4.9 (14 votes)"
+        },
+        "action": {
+          "type": "open_app",
+          "appName": "Battery Guru",
+          "appId": "30745"
+        }
+      },
+      {
+        "image": "assets/banners/generated/alltime_app_3.jpg",
+        "badge": {
+          "ar": "🏆 أسطورة التطبيقات #3",
+          "en": "ALL-TIME APP #3"
+        },
+        "title": {
           "ar": "GitHub",
           "en": "GitHub"
         },
@@ -45,26 +65,6 @@
           "type": "open_app",
           "appName": ": GitHub",
           "appId": "20173"
-        }
-      },
-      {
-        "image": "assets/banners/generated/alltime_app_3.jpg",
-        "badge": {
-          "ar": "🏆 أسطورة التطبيقات #3",
-          "en": "ALL-TIME APP #3"
-        },
-        "title": {
-          "ar": "AIstats: Soccer Stats & Scores",
-          "en": "AIstats: Soccer Stats & Scores"
-        },
-        "subtitle": {
-          "ar": "التقييم الأعلى في تاريخ المنصة ★ 4.9 (12 صوت)",
-          "en": "Highest-rated app in store history ★ 4.9 (12 votes)"
-        },
-        "action": {
-          "type": "open_app",
-          "appName": ": AIstats: Soccer Stats & Scores",
-          "appId": "23458"
         }
       }
     ]
@@ -143,8 +143,8 @@
     "id": "weekly_spotlight",
     "action": {
       "type": "open_app",
-      "appName": "HA Tunnel Plus",
-      "appId": "30442"
+      "appName": "Battery Guru",
+      "appId": "30745"
     },
     "slides": [
       {
@@ -154,17 +154,17 @@
           "en": "APP OF THE WEEK"
         },
         "title": {
-          "ar": "HA Tunnel Plus",
-          "en": "HA Tunnel Plus"
+          "ar": "Battery Guru",
+          "en": "Battery Guru"
         },
         "subtitle": {
-          "ar": "الأكثر تميزاً في تصويت المشتركين ★ 4.8 (10 صوت)",
-          "en": "Trending community drop this week ★ 4.8 (10 votes)"
+          "ar": "الأكثر تميزاً في تصويت المشتركين ★ 4.9 (14 صوت)",
+          "en": "Trending community drop this week ★ 4.9 (14 votes)"
         },
         "action": {
           "type": "open_app",
-          "appName": "HA Tunnel Plus",
-          "appId": "30442"
+          "appName": "Battery Guru",
+          "appId": "30745"
         }
       },
       {
@@ -174,17 +174,17 @@
           "en": "APP OF THE WEEK"
         },
         "title": {
-          "ar": "Bubble Translate",
-          "en": "Bubble Translate"
+          "ar": "MX Player",
+          "en": "MX Player"
         },
         "subtitle": {
-          "ar": "الأكثر تميزاً في تصويت المشتركين ★ 4.8 (6 صوت)",
-          "en": "Trending community drop this week ★ 4.8 (6 votes)"
+          "ar": "الأكثر تميزاً في تصويت المشتركين ★ 4.9 (8 صوت)",
+          "en": "Trending community drop this week ★ 4.9 (8 votes)"
         },
         "action": {
           "type": "open_app",
-          "appName": "Bubble Translate",
-          "appId": "30436"
+          "appName": "MX Player",
+          "appId": "30528"
         }
       },
       {
@@ -213,8 +213,8 @@
     "id": "vpn_security",
     "action": {
       "type": "open_app",
-      "appName": "HA Tunnel Plus",
-      "appId": "30442"
+      "appName": "Psiphon VPN",
+      "appId": "30702"
     },
     "slides": [
       {
@@ -224,17 +224,17 @@
           "en": "SECURITY & VPN"
         },
         "title": {
-          "ar": "HA Tunnel Plus",
-          "en": "HA Tunnel Plus"
+          "ar": "Psiphon VPN",
+          "en": "Psiphon VPN"
         },
         "subtitle": {
-          "ar": "فك الحجب وتأمين التصفح بسرعة فائقة ★ 4.8 (10 صوت)",
-          "en": "Fast proxy & privacy shield ★ 4.8 (10 votes)"
+          "ar": "فك الحجب وتأمين التصفح بسرعة فائقة ★ 4.7 (9 صوت)",
+          "en": "Fast proxy & privacy shield ★ 4.7 (9 votes)"
         },
         "action": {
           "type": "open_app",
-          "appName": "HA Tunnel Plus",
-          "appId": "30442"
+          "appName": "Psiphon VPN",
+          "appId": "30702"
         }
       },
       {
@@ -244,17 +244,17 @@
           "en": "SECURITY & VPN"
         },
         "title": {
-          "ar": "TunnelDOOM VPN",
-          "en": "TunnelDOOM VPN"
+          "ar": "MinaProNet VPN",
+          "en": "MinaProNet VPN"
         },
         "subtitle": {
-          "ar": "فك الحجب وتأمين التصفح بسرعة فائقة ★ 4.6 (5 صوت)",
-          "en": "Fast proxy & privacy shield ★ 4.6 (5 votes)"
+          "ar": "فك الحجب وتأمين التصفح بسرعة فائقة ★ 4.7 (6 صوت)",
+          "en": "Fast proxy & privacy shield ★ 4.7 (6 votes)"
         },
         "action": {
           "type": "open_app",
-          "appName": "TunnelDOOM VPN",
-          "appId": "30038"
+          "appName": "MinaProNet VPN",
+          "appId": "30696"
         }
       }
     ]
